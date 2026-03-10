@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\RoutineRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -28,6 +30,17 @@ class Routine
 
     #[ORM\Column]
     private ?int $stepCount = null;
+
+    /**
+     * @var Collection<int, RoutineStep>
+     */
+    #[ORM\OneToMany(targetEntity: RoutineStep::class, mappedBy: 'routine')]
+    private Collection $routineSteps;
+
+    public function __construct()
+    {
+        $this->routineSteps = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -90,6 +103,36 @@ class Routine
     public function setStepCount(int $stepCount): static
     {
         $this->stepCount = $stepCount;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, RoutineStep>
+     */
+    public function getRoutineSteps(): Collection
+    {
+        return $this->routineSteps;
+    }
+
+    public function addRoutineStep(RoutineStep $routineStep): static
+    {
+        if (!$this->routineSteps->contains($routineStep)) {
+            $this->routineSteps->add($routineStep);
+            $routineStep->setRoutine($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRoutineStep(RoutineStep $routineStep): static
+    {
+        if ($this->routineSteps->removeElement($routineStep)) {
+            // set the owning side to null (unless already changed)
+            if ($routineStep->getRoutine() === $this) {
+                $routineStep->setRoutine(null);
+            }
+        }
 
         return $this;
     }
