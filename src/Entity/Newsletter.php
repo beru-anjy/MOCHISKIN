@@ -1,8 +1,12 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Newsletter;
 
+use App\Entity\NewsletterConcern;
+use App\Entity\SkinType;
 use App\Repository\NewsletterRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: NewsletterRepository::class)]
@@ -27,6 +31,17 @@ class Newsletter
 
     #[ORM\ManyToOne(inversedBy: 'newsletters')]
     private ?SkinType $skinType = null;
+
+    /**
+     * @var Collection<int, NewsletterConcern>
+     */
+    #[ORM\OneToMany(targetEntity: NewsletterConcern::class, mappedBy: 'newsletter')]
+    private Collection $newsletterConcerns;
+
+    public function __construct()
+    {
+        $this->newsletterConcerns = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -89,6 +104,36 @@ class Newsletter
     public function setSkinType(?SkinType $skinType): static
     {
         $this->skinType = $skinType;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, NewsletterConcern>
+     */
+    public function getNewsletterConcerns(): Collection
+    {
+        return $this->newsletterConcerns;
+    }
+
+    public function addNewsletterConcern(NewsletterConcern $newsletterConcern): static
+    {
+        if (!$this->newsletterConcerns->contains($newsletterConcern)) {
+            $this->newsletterConcerns->add($newsletterConcern);
+            $newsletterConcern->setNewsletter($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNewsletterConcern(NewsletterConcern $newsletterConcern): static
+    {
+        if ($this->newsletterConcerns->removeElement($newsletterConcern)) {
+            // set the owning side to null (unless already changed)
+            if ($newsletterConcern->getNewsletter() === $this) {
+                $newsletterConcern->setNewsletter(null);
+            }
+        }
 
         return $this;
     }
