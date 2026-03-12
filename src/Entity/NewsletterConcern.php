@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 
-use App\Entity\Newsletter\Newsletter;
+use App\Entity\Newsletter;
 use App\Repository\NewsletterConcernRepository;
 use Doctrine\ORM\Mapping as ORM;
 

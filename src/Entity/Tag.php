@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TagRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TagRepository::class)]
@@ -19,6 +21,17 @@ class Tag
     #[ORM\Column(length: 120, unique: true)]
     private ?string $slug = null;
 
+    /**
+     * @var Collection<int, Article>
+     */
+    #[ORM\ManyToMany(targetEntity: Article::class, mappedBy: 'tags')]
+    private Collection $articles;
+
+    public function __construct()
+    {
+        $this->articles = new ArrayCollection(); // ✅ articles, pas article_tag
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -32,7 +45,6 @@ class Tag
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -44,7 +56,31 @@ class Tag
     public function setSlug(string $slug): static
     {
         $this->slug = $slug;
+        return $this;
+    }
 
+    /**
+     * @return Collection<int, Article>
+     */
+    public function getArticles(): Collection // ✅ getArticles, pas getArticleTag
+    {
+        return $this->articles;
+    }
+
+    public function addArticle(Article $article): static // ✅ addArticle
+    {
+        if (!$this->articles->contains($article)) {
+            $this->articles->add($article);
+            $article->addTag($this);
+        }
+        return $this;
+    }
+
+    public function removeArticle(Article $article): static // ✅ removeArticle
+    {
+        if ($this->articles->removeElement($article)) {
+            $article->removeTag($this);
+        }
         return $this;
     }
 }

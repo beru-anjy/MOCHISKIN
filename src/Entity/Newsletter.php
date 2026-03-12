@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\Newsletter;
+namespace App\Entity;
 
 use App\Entity\NewsletterConcern;
 use App\Entity\SkinType;
@@ -38,9 +38,18 @@ class Newsletter
     #[ORM\OneToMany(targetEntity: NewsletterConcern::class, mappedBy: 'newsletter')]
     private Collection $newsletterConcerns;
 
+    /**
+     * @var Collection<int, NewsletterInterest>
+     */
+    #[ORM\OneToMany(targetEntity: NewsletterInterest::class, mappedBy: 'newsletter')]
+    private Collection $newsletterInterests;
+
     public function __construct()
     {
+        $this->subscribetAt= new \DateTimeImmutable();
+        $this->isActive=true;
         $this->newsletterConcerns = new ArrayCollection();
+        $this->newsletterInterests = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -132,6 +141,36 @@ class Newsletter
             // set the owning side to null (unless already changed)
             if ($newsletterConcern->getNewsletter() === $this) {
                 $newsletterConcern->setNewsletter(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, NewsletterInterest>
+     */
+    public function getNewsletterInterests(): Collection
+    {
+        return $this->newsletterInterests;
+    }
+
+    public function addNewsletterInterest(NewsletterInterest $newsletterInterest): static
+    {
+        if (!$this->newsletterInterests->contains($newsletterInterest)) {
+            $this->newsletterInterests->add($newsletterInterest);
+            $newsletterInterest->setNewsletter($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNewsletterInterest(NewsletterInterest $newsletterInterest): static
+    {
+        if ($this->newsletterInterests->removeElement($newsletterInterest)) {
+            // set the owning side to null (unless already changed)
+            if ($newsletterInterest->getNewsletter() === $this) {
+                $newsletterInterest->setNewsletter(null);
             }
         }
 

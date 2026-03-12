@@ -28,9 +28,16 @@ class SkinType
     #[ORM\OneToMany(targetEntity: Newsletter::class, mappedBy: 'skinType')]
     private Collection $newsletters;
 
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'skinType')]
+    private Collection $users;
+
     public function __construct()
     {
         $this->newsletters = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -86,6 +93,36 @@ class SkinType
             // set the owning side to null (unless already changed)
             if ($newsletter->getSkinType() === $this) {
                 $newsletter->setSkinType(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->setSkinType($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        if ($this->users->removeElement($user)) {
+            // set the owning side to null (unless already changed)
+            if ($user->getSkinType() === $this) {
+                $user->setSkinType(null);
             }
         }
 

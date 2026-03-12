@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article
 {
@@ -35,7 +36,7 @@ class Article
     private ?\DateTimeImmutable $publishedAt = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $updateAt = null;
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column]
     private ?int $viewCount = null;
@@ -49,14 +50,24 @@ class Article
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]
     private Collection $comments;
 
+    #[ORM\ManyToOne(inversedBy: 'articles')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $author = null;
+
+    /**
+     * @var Collection<int, Tag>
+     */
+    #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'article_tag')]
+    private Collection $tags;
+
     public function __construct()
-    {
-        $this->publishedAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTimeImmutable();
-        $this->viewCount = 0;
-        $this->tags = new ArrayCollection();
-        $this->comments = new ArrayCollection();
-    }
+{
+    $this->publishedAt  = new \DateTimeImmutable();
+    $this->updatedAt    = new \DateTimeImmutable();   
+    $this->viewCount    = 0;
+    $this->tags         = new ArrayCollection();
+    $this->comments     = new ArrayCollection();
+}
 
     public function getId(): ?int
     {
@@ -197,6 +208,42 @@ class Article
                 $comment->setArticle(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): static
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Tag>
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(Tag $tag): static
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+        }
+
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): static
+    {
+        $this->tags->removeElement($tag);
 
         return $this;
     }

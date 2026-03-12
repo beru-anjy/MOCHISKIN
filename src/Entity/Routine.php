@@ -29,6 +29,18 @@ class Routine
     #[ORM\Column]
     private ?int $stepCount = null;
 
+    /**
+    * @var Collection<int, RoutineStep>
+    */
+    #[ORM\OneToMany(targetEntity: RoutineStep::class, mappedBy: 'routine')]
+    private Collection $routineSteps;
+
+    public function __construct()
+    {
+        $this->routineSteps= new ArrayCollection();
+        $this->stepCount=0;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
