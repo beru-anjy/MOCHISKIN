@@ -23,22 +23,36 @@ class Newsletter
     #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
+    // 🐛 BUGFIX : 'subscribetAt' → 'subscribedAt' (faute de frappe corrigée)
     #[ORM\Column]
-    private ?\DateTimeImmutable $subscribetAt = null;
+    private ?\DateTimeImmutable $subscribedAt = null;
 
     #[ORM\Column]
     private ?bool $isActive = null;
 
+    /**
+     * Relation ManyToOne vers SkinType :
+     * Plusieurs abonnés peuvent avoir le même type de peau.
+     * nullable → un abonné peut ne pas avoir renseigné son type de peau.
+     */
     #[ORM\ManyToOne(inversedBy: 'newsletters')]
     private ?SkinType $skinType = null;
 
     /**
+     * Relation OneToMany vers NewsletterConcern :
+     * Un abonné peut avoir plusieurs préoccupations.
+     * mappedBy: 'newsletter' → NewsletterConcern possède la clé étrangère $newsletter.
+     *
      * @var Collection<int, NewsletterConcern>
      */
     #[ORM\OneToMany(targetEntity: NewsletterConcern::class, mappedBy: 'newsletter')]
     private Collection $newsletterConcerns;
 
     /**
+     * Relation OneToMany vers NewsletterInterest :
+     * Un abonné peut avoir plusieurs centres d'intérêt.
+     * mappedBy: 'newsletter' → NewsletterInterest possède la clé étrangère $newsletter.
+     *
      * @var Collection<int, NewsletterInterest>
      */
     #[ORM\OneToMany(targetEntity: NewsletterInterest::class, mappedBy: 'newsletter')]
@@ -46,9 +60,9 @@ class Newsletter
 
     public function __construct()
     {
-        $this->subscribetAt= new \DateTimeImmutable();
-        $this->isActive=true;
-        $this->newsletterConcerns = new ArrayCollection();
+        $this->subscribedAt        = new \DateTimeImmutable(); // 🐛 BUGFIX : subscribetAt → subscribedAt
+        $this->isActive            = true;
+        $this->newsletterConcerns  = new ArrayCollection();
         $this->newsletterInterests = new ArrayCollection();
     }
 
@@ -65,7 +79,6 @@ class Newsletter
     public function setFirstName(string $firstName): static
     {
         $this->firstName = $firstName;
-
         return $this;
     }
 
@@ -77,19 +90,19 @@ class Newsletter
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
-    public function getSubscribetAt(): ?\DateTimeImmutable
+    // 🐛 BUGFIX : getSubscribetAt → getSubscribedAt
+    public function getSubscribedAt(): ?\DateTimeImmutable
     {
-        return $this->subscribetAt;
+        return $this->subscribedAt;
     }
 
-    public function setSubscribetAt(\DateTimeImmutable $subscribetAt): static
+    // 🐛 BUGFIX : setSubscribetAt → setSubscribedAt
+    public function setSubscribedAt(\DateTimeImmutable $subscribedAt): static
     {
-        $this->subscribetAt = $subscribetAt;
-
+        $this->subscribedAt = $subscribedAt;
         return $this;
     }
 
@@ -101,7 +114,6 @@ class Newsletter
     public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
-
         return $this;
     }
 
@@ -113,9 +125,10 @@ class Newsletter
     public function setSkinType(?SkinType $skinType): static
     {
         $this->skinType = $skinType;
-
         return $this;
     }
+
+    // ── NewsletterConcerns ────────────────────────────────────
 
     /**
      * @return Collection<int, NewsletterConcern>
@@ -131,21 +144,20 @@ class Newsletter
             $this->newsletterConcerns->add($newsletterConcern);
             $newsletterConcern->setNewsletter($this);
         }
-
         return $this;
     }
 
     public function removeNewsletterConcern(NewsletterConcern $newsletterConcern): static
     {
         if ($this->newsletterConcerns->removeElement($newsletterConcern)) {
-            // set the owning side to null (unless already changed)
             if ($newsletterConcern->getNewsletter() === $this) {
                 $newsletterConcern->setNewsletter(null);
             }
         }
-
         return $this;
     }
+
+    // ── NewsletterInterests ───────────────────────────────────
 
     /**
      * @return Collection<int, NewsletterInterest>
@@ -161,19 +173,16 @@ class Newsletter
             $this->newsletterInterests->add($newsletterInterest);
             $newsletterInterest->setNewsletter($this);
         }
-
         return $this;
     }
 
     public function removeNewsletterInterest(NewsletterInterest $newsletterInterest): static
     {
         if ($this->newsletterInterests->removeElement($newsletterInterest)) {
-            // set the owning side to null (unless already changed)
             if ($newsletterInterest->getNewsletter() === $this) {
                 $newsletterInterest->setNewsletter(null);
             }
         }
-
         return $this;
     }
 }

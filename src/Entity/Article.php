@@ -8,7 +8,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article
 {
@@ -45,29 +44,54 @@ class Article
     private ?int $readingTime = null;
 
     /**
+     * Relation OneToMany vers Comment :
+     * Un article peut avoir plusieurs commentaires.
+     * mappedBy: 'article' → Comment possède la clé étrangère $article.
+     *
      * @var Collection<int, Comment>
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]
     private Collection $comments;
 
+    /**
+     * Relation ManyToOne vers User :
+     * Plusieurs articles peuvent être écrits par le même auteur.
+     * inversedBy: 'articles' → User possède une Collection $articles.
+     * nullable: false → un article DOIT avoir un auteur.
+     */
     #[ORM\ManyToOne(inversedBy: 'articles')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $author = null;
 
     /**
+     * Relation ManyToOne vers Category :
+     * Plusieurs articles peuvent appartenir à la même catégorie.
+     * inversedBy: 'articles' → Category possède une Collection $articles.
+     * nullable: false → un article DOIT avoir une catégorie.
+     */
+    #[ORM\ManyToOne(inversedBy: 'articles')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $category = null;
+
+    /**
+     * Relation ManyToMany vers Tag :
+     * Un article peut avoir plusieurs tags, un tag peut appartenir à plusieurs articles.
+     * Crée la table pivot article_tag en base de données.
+     * inversedBy: 'articles' → Tag possède la collection inverse $articles.
+     *
      * @var Collection<int, Tag>
      */
-    #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'article_tag')]
+    #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'articles')]
     private Collection $tags;
 
     public function __construct()
-{
-    $this->publishedAt  = new \DateTimeImmutable();
-    $this->updatedAt    = new \DateTimeImmutable();   
-    $this->viewCount    = 0;
-    $this->tags         = new ArrayCollection();
-    $this->comments     = new ArrayCollection();
-}
+    {
+        $this->publishedAt = new \DateTimeImmutable();
+        $this->updatedAt   = new \DateTimeImmutable();
+        $this->viewCount   = 0;
+        $this->tags        = new ArrayCollection();
+        $this->comments    = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -82,7 +106,6 @@ class Article
     public function setTitle(string $title): static
     {
         $this->title = $title;
-
         return $this;
     }
 
@@ -94,7 +117,6 @@ class Article
     public function setSlug(string $slug): static
     {
         $this->slug = $slug;
-
         return $this;
     }
 
@@ -106,7 +128,6 @@ class Article
     public function setContent(string $content): static
     {
         $this->content = $content;
-
         return $this;
     }
 
@@ -118,7 +139,6 @@ class Article
     public function setExcerpt(string $excerpt): static
     {
         $this->excerpt = $excerpt;
-
         return $this;
     }
 
@@ -130,7 +150,6 @@ class Article
     public function setImageUrl(?string $imageUrl): static
     {
         $this->imageUrl = $imageUrl;
-
         return $this;
     }
 
@@ -142,19 +161,17 @@ class Article
     public function setPublishedAt(\DateTimeImmutable $publishedAt): static
     {
         $this->publishedAt = $publishedAt;
-
         return $this;
     }
 
-    public function getUpdateAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
-        return $this->updateAt;
+        return $this->updatedAt;
     }
 
-    public function setUpdateAt(\DateTimeImmutable $updateAt): static
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
     {
-        $this->updateAt = $updateAt;
-
+        $this->updatedAt = $updatedAt;
         return $this;
     }
 
@@ -166,7 +183,6 @@ class Article
     public function setViewCount(int $viewCount): static
     {
         $this->viewCount = $viewCount;
-
         return $this;
     }
 
@@ -178,9 +194,10 @@ class Article
     public function setReadingTime(int $readingTime): static
     {
         $this->readingTime = $readingTime;
-
         return $this;
     }
+
+    // ── Comments ──────────────────────────────────────────────
 
     /**
      * @return Collection<int, Comment>
@@ -196,21 +213,20 @@ class Article
             $this->comments->add($comment);
             $comment->setArticle($this);
         }
-
         return $this;
     }
 
     public function removeComment(Comment $comment): static
     {
         if ($this->comments->removeElement($comment)) {
-            // set the owning side to null (unless already changed)
             if ($comment->getArticle() === $this) {
                 $comment->setArticle(null);
             }
         }
-
         return $this;
     }
+
+    // ── Author ────────────────────────────────────────────────
 
     public function getAuthor(): ?User
     {
@@ -220,9 +236,23 @@ class Article
     public function setAuthor(?User $author): static
     {
         $this->author = $author;
-
         return $this;
     }
+
+    // ── Category ──────────────────────────────────────────────
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
+        return $this;
+    }
+
+    // ── Tags ──────────────────────────────────────────────────
 
     /**
      * @return Collection<int, Tag>
@@ -237,14 +267,12 @@ class Article
         if (!$this->tags->contains($tag)) {
             $this->tags->add($tag);
         }
-
         return $this;
     }
 
     public function removeTag(Tag $tag): static
     {
         $this->tags->removeElement($tag);
-
         return $this;
     }
 }

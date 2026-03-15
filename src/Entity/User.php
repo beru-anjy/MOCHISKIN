@@ -40,7 +40,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $lastName = null;
 
     #[ORM\Column]
-    private ?\DateTime $registrationDate = null;
+    private ?\DateTimeImmutable $registrationDate = null;
 
     #[ORM\Column]
     private ?bool $isActive = null;
@@ -49,18 +49,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?SkinType $skinType = null;
 
     /**
-     * @var Collection<int, Article>
+     * Relation OneToMany vers Article :
+     * Un utilisateur peut rédiger plusieurs articles.
+     * mappedBy: 'author' → Article possède la clé étrangère $author.
      */
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'author')]
     private Collection $articles;
 
+    /**
+     * Relation OneToMany vers Comment :
+     * Un utilisateur peut écrire plusieurs commentaires.
+     * mappedBy: 'author' → Comment possède la clé étrangère $author.
+     */
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'author')]
+    private Collection $comments;
+
     public function __construct()
     {
-            $this->registrationDate = new \DateTimeImmutable();
-            $this->isActive         = true;
-            $this->roles = [];
-            $this->articles         = new ArrayCollection();
-            $this->comments         = new ArrayCollection();
+        $this->registrationDate = new \DateTimeImmutable();
+        $this->isActive         = true;
+        $this->roles            = [];
+        $this->articles         = new ArrayCollection();
+        $this->comments         = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -76,45 +86,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
-
         return array_unique($roles);
     }
 
-    /**
-     * @param list<string> $roles
-     */
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
-
         return $this;
     }
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
     public function getPassword(): ?string
     {
         return $this->password;
@@ -123,18 +115,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
-
         return $this;
     }
 
-    /**
-     * Ensure the session doesn't contain actual password hashes by CRC32C-hashing them, as supported since Symfony 7.3.
-     */
     public function __serialize(): array
     {
         $data = (array) $this;
         $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
-
         return $data;
     }
 
@@ -152,7 +139,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFirstName(string $firstName): static
     {
         $this->firstName = $firstName;
-
         return $this;
     }
 
@@ -164,19 +150,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
-
         return $this;
     }
 
-    public function getRegistrationDate(): ?\DateTime
+   public function getRegistrationDate(): ?\DateTimeImmutable
     {
         return $this->registrationDate;
     }
 
-    public function setRegistrationDate(\DateTime $registrationDate): static
+    public function setRegistrationDate(\DateTimeImmutable $registrationDate): static
     {
         $this->registrationDate = $registrationDate;
-
         return $this;
     }
 
@@ -188,7 +172,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
-
         return $this;
     }
 
@@ -200,9 +183,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setSkinType(?SkinType $skinType): static
     {
         $this->skinType = $skinType;
-
         return $this;
     }
+
+    // ── Articles ──────────────────────────────────────────────
 
     /**
      * @return Collection<int, Article>
@@ -218,19 +202,45 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $this->articles->add($article);
             $article->setAuthor($this);
         }
-
         return $this;
     }
 
     public function removeArticle(Article $article): static
     {
         if ($this->articles->removeElement($article)) {
-            // set the owning side to null (unless already changed)
             if ($article->getAuthor() === $this) {
                 $article->setAuthor(null);
             }
         }
+        return $this;
+    }
 
+    // ── Comments ──────────────────────────────────────────────
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): static
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setAuthor($this);
+        }
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): static
+    {
+        if ($this->comments->removeElement($comment)) {
+            if ($comment->getAuthor() === $this) {
+                $comment->setAuthor(null);
+            }
+        }
         return $this;
     }
 }

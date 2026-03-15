@@ -23,12 +23,27 @@ class Comment
     #[ORM\Column]
     private ?bool $isApproved = null;
 
+    /**
+     * Relation ManyToOne vers Article :
+     * Plusieurs commentaires peuvent appartenir à un seul article.
+     * inversedBy: 'comments' signifie que Article possède une collection $comments.
+     * nullable: false → un commentaire DOIT être lié à un article.
+     */
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Article $article = null;
 
-    public function __construct()
-    {
+    /**
+     * Relation ManyToOne vers User :
+     * Plusieurs commentaires peuvent être écrits par un seul utilisateur.
+     * inversedBy: 'comments' signifie que User possédera une collection $comments.
+     * nullable: false → un commentaire DOIT avoir un auteur.
+     */
+    #[ORM\ManyToOne(inversedBy: 'comments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $author = null;
+
+    public function __construct() {
         $this->createdAt = new \DateTimeImmutable();
         $this->isApproved = false;
     }
@@ -46,7 +61,6 @@ class Comment
     public function setContent(string $content): static
     {
         $this->content = $content;
-
         return $this;
     }
 
@@ -58,7 +72,6 @@ class Comment
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
-
         return $this;
     }
 
@@ -70,7 +83,6 @@ class Comment
     public function setIsApproved(bool $isApproved): static
     {
         $this->isApproved = $isApproved;
-
         return $this;
     }
 
@@ -82,7 +94,18 @@ class Comment
     public function setArticle(?Article $article): static
     {
         $this->article = $article;
+        return $this;
+    }
 
+    // Getter et Setter pour l'auteur du commentaire
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): static
+    {
+        $this->author = $author;
         return $this;
     }
 }

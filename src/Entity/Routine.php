@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\RoutineRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -30,15 +32,20 @@ class Routine
     private ?int $stepCount = null;
 
     /**
-    * @var Collection<int, RoutineStep>
-    */
-    #[ORM\OneToMany(targetEntity: RoutineStep::class, mappedBy: 'routine')]
+     * Relation OneToMany vers RoutineStep :
+     * Une routine peut contenir plusieurs étapes.
+     * mappedBy: 'routine' → RoutineStep possède la clé étrangère $routine.
+     * orphanRemoval: true → si une étape est retirée de la collection, elle est supprimée en BDD.
+     *
+     * @var Collection<int, RoutineStep>
+     */
+    #[ORM\OneToMany(targetEntity: RoutineStep::class, mappedBy: 'routine', orphanRemoval: true)]
     private Collection $routineSteps;
 
     public function __construct()
     {
-        $this->routineSteps= new ArrayCollection();
-        $this->stepCount=0;
+        $this->routineSteps = new ArrayCollection();
+        $this->stepCount    = 0;
     }
 
     public function getId(): ?int
@@ -54,7 +61,6 @@ class Routine
     public function setType(string $type): static
     {
         $this->type = $type;
-
         return $this;
     }
 
@@ -66,7 +72,6 @@ class Routine
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -78,7 +83,6 @@ class Routine
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -90,7 +94,6 @@ class Routine
     public function setDurationMinutes(int $durationMinutes): static
     {
         $this->durationMinutes = $durationMinutes;
-
         return $this;
     }
 
@@ -102,7 +105,37 @@ class Routine
     public function setStepCount(int $stepCount): static
     {
         $this->stepCount = $stepCount;
+        return $this;
+    }
 
+    // ── RoutineSteps ──────────────────────────────────────────
+
+    /**
+     * @return Collection<int, RoutineStep>
+     */
+    public function getRoutineSteps(): Collection
+    {
+        return $this->routineSteps;
+    }
+
+    public function addRoutineStep(RoutineStep $routineStep): static
+    {
+        if (!$this->routineSteps->contains($routineStep)) {
+            $this->routineSteps->add($routineStep);
+            $routineStep->setRoutine($this);
+        }
+        return $this;
+    }
+
+    public function removeRoutineStep(RoutineStep $routineStep): static
+    {
+        if ($this->routineSteps->removeElement($routineStep)) {
+            // Met la clé étrangère à null côté RoutineStep si orphanRemoval est false
+            // Avec orphanRemoval: true, l'étape sera supprimée automatiquement
+            if ($routineStep->getRoutine() === $this) {
+                $routineStep->setRoutine(null);
+            }
+        }
         return $this;
     }
 }
