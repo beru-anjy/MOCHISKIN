@@ -18,7 +18,7 @@ class NewsletterConcern
     #[ORM\Column(length: 150)]
     private ?string $concern = null;
 
-    #[ORM\ManyToOne(inversedBy: 'NewsletterConcerns')]
+    #[ORM\ManyToOne(inversedBy: 'newsletterConcerns')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Newsletter $newsletter = null;
 
