@@ -1,18 +1,110 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} — MOCHISKIN</title>
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+    <meta name="description" content="{% block description %}Blog skincare naturel{% endblock %}">
+    <meta name="keywords"    content="{% block keywords %}skincare, beaute, routine{% endblock %}">
+    <meta name="robots"      content="index, follow">
+    <meta name="author"      content="Anjy">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abel&family=Savate:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" href="{{ path('app_home') }}">MOCHISKIN</a>
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_home') }}">Accueil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_articles') }}">Articles</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_routine') }}">Routine</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_about') }}">À propos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_newsletter') }}">Newsletter</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link btn btn-sm btn-outline-secondary px-3"
+                       href="{{ path('app_contact') }}">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }} alert-dismissible fade show container mt-3">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endfor %}
+
+<main>
+    {% block main %}{% endblock %}
+</main>
+
+<footer class="mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <h5>MOCHISKIN</h5>
+                <p class="small">Blog dédié au skincare naturel et aux routines beauté.</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <h5>Navigation</h5>
+                <ul class="list-unstyled small">
+                    <li><a href="{{ path('app_home') }}"        class="text-white">Accueil</a></li>
+                    <li><a href="{{ path('app_articles') }}"    class="text-white">Articles</a></li>
+                    <li><a href="{{ path('app_routine') }}"     class="text-white">Ma Routine</a></li>
+                    <li><a href="{{ path('app_about') }}"       class="text-white">À propos</a></li>
+                    <li><a href="{{ path('app_newsletter') }}"  class="text-white">Newsletter</a></li>
+                    <li><a href="{{ path('app_contact') }}"     class="text-white">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4 mb-4">
+                <h5>Informations</h5>
+                <ul class="list-unstyled small">
+                    <li><a href="#" class="text-white">Mentions légales</a></li>
+                    <li><a href="#" class="text-white">Politique de confidentialité</a></li>
+                    <li><a href="{{ path('app_contact') }}" class="text-white">Nous contacter</a></li>
+                </ul>
+            </div>
+        </div>
+        <hr class="border-white opacity-25">
+        <p class="small text-center mb-0">
+            &copy; {{ 'now'|date('Y') }} MOCHISKIN. Tous droits réservés.
+        </p>
+    </div>
+</footer>
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}
+
+</body>
 </html>

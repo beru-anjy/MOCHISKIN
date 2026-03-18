@@ -1,0 +1,181 @@
+{% extends 'base.html.twig' %}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Prendre soin de sa peau naturellement{% endblock %}
+{% block description %}MOCHISKIN — blog skincare naturel, routines beauté et conseils produits.{% endblock %}
+{% block keywords %}skincare, routine, beauté, peau, soins naturels{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* HERO */
+        .hero-section {
+            min-height: 80vh;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; padding: 4rem 2rem;
+            position: relative; overflow: hidden;
+        }
+        .hero-title    { font-size: 3.8rem; font-weight: 700; animation: fadeInUp 1s ease; }
+        .hero-subtitle { font-size: 1.4rem; font-weight: 300; animation: fadeInUp 1.2s ease; }
+
+        /* ROUTINE CARDS */
+        .routine-card {
+            background: white; border-radius: 20px; padding: 2.5rem;
+            text-align: center; box-shadow: 0 10px 30px rgba(255,182,193,.15);
+            transition: transform .3s ease;
+        }
+        .routine-card:hover { transform: translateY(-10px); }
+
+        /* ARTICLE CARDS */
+        .article-card {
+            background: white; border-radius: 15px; overflow: hidden;
+            height: 100%; box-shadow: 0 5px 20px rgba(255,182,193,.1);
+            transition: transform .3s ease;
+        }
+        .article-card:hover { transform: translateY(-5px); }
+        .article-image { width: 100%; height: 200px; object-fit: cover; display: block; }
+        .article-image-placeholder {
+            width: 100%; height: 200px; background: var(--peach-light);
+            display: flex; align-items: center; justify-content: center; font-size: 3rem;
+        }
+
+        /* SECTION TITLE */
+        .section-title {
+            font-size: 2.2rem; text-align: center; margin-bottom: 3rem;
+            position: relative; display: inline-block;
+        }
+        .section-title::after {
+            content: ''; position: absolute; bottom: -8px; left: 50%;
+            transform: translateX(-50%); width: 70px; height: 3px;
+            background: linear-gradient(90deg, var(--peach-main), var(--pink-main));
+            border-radius: 5px;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 768px) { .hero-title { font-size: 2.2rem; } }
+    </style>
+{% endblock %}
+
+{% block main %}
+
+    {# ── HERO ── #}
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="hero-title">Prendre soin de sa peau<br>naturellement</h1>
+            <p class="hero-subtitle mb-4">
+                Découvrez les secrets d'une peau saine et éclatante
+            </p>
+            <a href="{{ path('app_about') }}" class="btn btn-lg px-5 py-3"
+               style="background:var(--peach-main);color:white;border-radius:50px;">
+                Découvrir
+            </a>
+        </div>
+    </section>
+
+    {# ── ROUTINE CARDS ── #}
+    <section class="py-5">
+        <div class="container text-center">
+            <h2 class="section-title">Ma routine skincare</h2>
+            <div class="row g-4 mt-2">
+                <div class="col-md-6">
+                    <div class="routine-card">
+                        <div class="fs-1 mb-3">🌅</div>
+                        <h3>Routine Matin</h3>
+                        <p class="text-muted">5 étapes — 10 minutes</p>
+                        <a href="{{ path('app_routine') }}"
+                           class="btn mt-3" style="background:var(--peach-light);">
+                            Voir ma routine &rarr;
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="routine-card">
+                        <div class="fs-1 mb-3">🌙</div>
+                        <h3>Routine Soir</h3>
+                        <p class="text-muted">7 étapes — 15 minutes</p>
+                        <a href="{{ path('app_routine') }}"
+                           class="btn mt-3" style="background:var(--peach-light);">
+                            Voir ma routine &rarr;
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# ── ARTICLES GRID ── #}
+    <section class="py-5" style="background:white;">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-title">Articles récents</h2>
+                <input type="text" id="searchInput"
+                       class="form-control w-auto mx-auto mb-4"
+                       placeholder="Rechercher un article..."
+                       style="max-width:320px; border:2px solid var(--peach-light);">
+            </div>
+            <div class="row g-4" id="articlesContainer">
+
+            {% for article in articles %}
+                <div class="col-md-4 article-card-wrapper">
+                    <div class="article-card">
+                        {% if article.imageUrl %}
+                            <img class="article-image"
+                                 src="/assets/images/{{ article.imageUrl }}"
+                                 alt="{{ article.title }}">
+                        {% else %}
+                            <div class="article-image-placeholder">🧴</div>
+                        {% endif %}
+                        <div class="p-3">
+                            <h5 class="mb-1">{{ article.title }}</h5>
+                            <small class="text-muted">
+                                {{ article.author.firstName }}
+                                — {{ article.publishedAt|date('d M Y') }}
+                            </small>
+                            <p class="mt-2 small">{{ article.excerpt }}</p>
+                            <a href="{{ path('app_article_show', {slug: article.slug}) }}"
+                               class="btn btn-sm mt-1"
+                               style="background:var(--peach-main);color:white;">
+                                Lire la suite
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                {# Fallback statique si DB vide #}
+                <div class="col-md-4 article-card-wrapper">
+                    <div class="article-card">
+                        <div class="article-image-placeholder">☀️</div>
+                        <div class="p-3">
+                            <h5>Les 5 étapes d'une routine matin</h5>
+                            <small class="text-muted">Ji-min Park — 15 jan. 2025</small>
+                            <p class="mt-2 small">Découvrez comment préparer votre peau chaque matin...</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    $(document).ready(function () {
+        $('#searchInput').on('keyup', function () {
+            var s = $(this).val().toLowerCase();
+            $('.article-card-wrapper').each(function () {
+                var title   = $(this).find('h5').text().toLowerCase();
+                var excerpt = $(this).find('p').text().toLowerCase();
+                $(this).toggle(title.includes(s) || excerpt.includes(s));
+            });
+        });
+    });
+    </script>
+{% endblock %}
