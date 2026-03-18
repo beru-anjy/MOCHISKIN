@@ -1,20 +1,289 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello RoutineController!{% endblock %}
+{% block title %}Ma Routine Skincare{% endblock %}
+{% block description %}Découvrez ma routine beauté complète : Matin et Soir.{% endblock %}
+{% block keywords %}routine skincare, matin, soir, étapes beauté{% endblock %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .routine-tabs {
+            display: flex; gap: 1rem;
+            background: white; padding: .8rem;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(255,182,193,.12);
+            margin-bottom: 2rem;
+        }
+        .tab-btn {
+            flex: 1; padding: .9rem; border: none;
+            background: transparent; border-radius: 10px;
+            font-size: 1rem; font-weight: 600; cursor: pointer;
+            transition: all .3s ease;
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
+            color: white;
+        }
+        .tab-btn:hover:not(.active) { background: var(--rose-light); }
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/wamp64/www/MOCHISKIN/src/Controller/RoutineController.php</code></li>
-        <li>Your template at <code>C:/wamp64/www/MOCHISKIN/templates/routine/index.html.twig</code></li>
-    </ul>
+        .timeline { position: relative; padding: 1.5rem 0; }
+        .timeline::before {
+            content: ''; position: absolute; left: 28px; top: 0; bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--peach-main), var(--pink-main));
+        }
+
+        .tl-item {
+            position: relative; padding-left: 75px;
+            margin-bottom: 2.5rem;
+            opacity: 0; transform: translateX(-25px);
+            transition: all .45s ease;
+        }
+        .tl-item.show { opacity: 1; transform: translateX(0); }
+
+        .tl-num {
+            position: absolute; left: 0; top: 0;
+            width: 56px; height: 56px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
+            color: white; font-size: 1.3rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 14px rgba(255,182,193,.35);
+        }
+
+        .tl-content {
+            background: var(--rose-light); padding: 1.3rem;
+            border-left: 4px solid var(--peach-main);
+            border-radius: 0 14px 14px 0;
+        }
+
+        .product-tag {
+            display: inline-block; background: white;
+            padding: .3rem .9rem; border-radius: 20px;
+            font-size: .85rem; color: var(--peach-dark);
+            font-weight: 500; margin: .3rem;
+            box-shadow: 0 2px 8px rgba(255,182,193,.15);
+        }
+
+        .add-btn {
+            display: block; margin: 2rem auto 0;
+            background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
+            border: none; border-radius: 25px;
+            padding: .9rem 2.5rem; color: white; font-weight: 600;
+            cursor: pointer; transition: transform .3s;
+        }
+        .add-btn:hover { transform: translateY(-3px); }
+    </style>
+{% endblock %}
+
+{% block main %}
+<div class="container my-5">
+
+    {# TABS #}
+    <div class="routine-tabs">
+        <button class="tab-btn active" data-tab="morning">🌅 Routine Matin</button>
+        <button class="tab-btn" data-tab="evening">🌙 Routine Soir</button>
+    </div>
+
+    {# ── TAB MATIN ── #}
+    <div id="morning" class="tab-pane active">
+        <h2 class="text-center mb-4" style="color:var(--peach-dark);">
+            {% if morningRoutine %}
+                {{ morningRoutine.name }}
+            {% else %}
+                Timeline Matin — 5 étapes (10 min)
+            {% endif %}
+        </h2>
+        <div class="timeline">
+        {% if morningRoutine %}
+            {% for step in morningRoutine.routineSteps %}
+                <div class="tl-item">
+                    <div class="tl-num">{{ loop.index }}</div>
+                    <div class="tl-content">
+                        <h5 class="mb-1">{{ step.name }}</h5>
+                        <p class="mb-2">{{ step.description }}</p>
+                        {% for product in step.productRecommendations %}
+                            <span class="product-tag">✨ {{ product.name }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            {# Fallback 5 étapes statiques #}
+            <div class="tl-item">
+                <div class="tl-num">1</div>
+                <div class="tl-content">
+                    <h5>Nettoyant doux</h5>
+                    <p>Éliminez les impuretés de la nuit.</p>
+                    <span class="product-tag">🧴 Gel nettoyant purifiant</span>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-num">2</div>
+                <div class="tl-content">
+                    <h5>Tonique hydratant</h5>
+                    <p>Rééquilibrez le pH avant les soins.</p>
+                    <span class="product-tag">💧 Tonique sans alcool</span>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-num">3</div>
+                <div class="tl-content">
+                    <h5>Sérum vitamine C</h5>
+                    <p>Illumine et protège contre les radicaux libres.</p>
+                    <span class="product-tag">✨ Sérum éclat vitamine C 20%</span>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-num">4</div>
+                <div class="tl-content">
+                    <h5>Crème hydratante</h5>
+                    <p>Maintient l'hydratation toute la journée.</p>
+                    <span class="product-tag">🌸 Crème hydratante légère</span>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-num">5</div>
+                <div class="tl-content">
+                    <h5>Crème solaire SPF50+</h5>
+                    <p>L'étape la plus importante ! Appliquez généreusement.</p>
+                    <span class="product-tag">☀️ Protection solaire SPF50+</span>
+                </div>
+            </div>
+        {% endif %}
+        </div>
+        <button class="add-btn" onclick="addProduct('morning')">+ Ajouter un produit</button>
+    </div>
+
+    {# ── TAB SOIR ── #}
+    <div id="evening" class="tab-pane">
+        <h2 class="text-center mb-4" style="color:var(--peach-dark);">
+            {% if eveningRoutine %}
+                {{ eveningRoutine.name }}
+            {% else %}
+                Timeline Soir — 7 étapes (15 min)
+            {% endif %}
+        </h2>
+        <div class="timeline">
+        {% if eveningRoutine %}
+            {% for step in eveningRoutine.routineSteps %}
+                <div class="tl-item">
+                    <div class="tl-num">{{ loop.index }}</div>
+                    <div class="tl-content">
+                        <h5 class="mb-1">{{ step.name }}</h5>
+                        <p class="mb-2">{{ step.description }}</p>
+                        {% for product in step.productRecommendations %}
+                            <span class="product-tag">✨ {{ product.name }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            {# Fallback 7 étapes statiques #}
+            <div class="tl-item">
+                <div class="tl-num">1</div>
+                <div class="tl-content">
+                    <h5>Démaquillant huile</h5>
+                    <p>1ère étape du double nettoyage. Dissout le maquillage et les impuretés liposolubles.</p>
+                    <span class="product-tag">🌿 Huile démaquillante douce</span>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-num">2</div>
+                <div class="tl-content">
+                    <h5>Nettoyant moussant</h5>
+                    <p>2ème étape du double nettoyage. Élimine les résidus et nettoie en profondeur.</p>
+                    <span class="product-tag">🧴 Mousse nettoyante purifiante</span>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-num">3</div>
+                <div class="tl-content">
+                    <h5>Exfoliant doux (2x/semaine)</h5>
+                    <p>Deux fois par semaine, éliminez les cellules mortes pour affiner le grain de peau.</p>
+                    <span class="product-tag">✨ Exfoliant enzymatique</span>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-num">4</div>
+                <div class="tl-content">
+                    <h5>Tonique</h5>
+                    <p>Rééquilibrez le pH avec un tonique apaisant pour préparer la peau aux actifs suivants.</p>
+                    <span class="product-tag">💧 Tonique hydratant et apaisant</span>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-num">5</div>
+                <div class="tl-content">
+                    <h5>Sérum réparateur</h5>
+                    <p>Le soir, privilégiez rétinol, acide hyaluronique ou peptides selon vos besoins.</p>
+                    <span class="product-tag">🌙 Sérum anti-âge rétinol</span>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-num">6</div>
+                <div class="tl-content">
+                    <h5>Contour des yeux</h5>
+                    <p>Appliquez délicatement en tapotant un soin contour des yeux adapté à cette zone fragile.</p>
+                    <span class="product-tag">👁️ Contour yeux anti-cernes</span>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-num">7</div>
+                <div class="tl-content">
+                    <h5>Crème de nuit</h5>
+                    <p>Terminez avec une crème de nuit plus riche pour régénérer pendant le sommeil.</p>
+                    <span class="product-tag">🌸 Crème de nuit régénérante</span>
+                </div>
+            </div>
+        {% endif %}
+        </div>
+        <button class="add-btn" onclick="addProduct('evening')">+ Ajouter un produit</button>
+    </div>
+
 </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    function animateTimeline() {
+        var $items = $('.tab-pane.active .tl-item');
+        $items.removeClass('show');
+        $items.each(function (i) {
+            var el = $(this);
+            setTimeout(function () { el.addClass('show'); }, i * 180);
+        });
+    }
+
+    function addProduct(tab) {
+        var name = prompt('Nom du produit à ajouter :');
+        if (!name || !name.trim()) return;
+        var n    = $('#' + tab + ' .tl-item').length + 1;
+        var html = '<div class="tl-item">'
+            + '<div class="tl-num">' + n + '</div>'
+            + '<div class="tl-content">'
+            + '<h5>' + name + '</h5>'
+            + '<p>Nouveau produit — notez vos observations.</p>'
+            + '<span class="product-tag">✨ ' + name + '</span>'
+            + '</div></div>';
+        $('#' + tab + ' .timeline').append(html);
+        $('#' + tab + ' .tl-item:last').addClass('show');
+        alert('Produit "' + name + '" ajouté !');
+    }
+
+    $(document).ready(function () {
+        animateTimeline();
+        $('.tab-btn').on('click', function () {
+            var tab = $(this).data('tab');
+            $('.tab-btn').removeClass('active');
+            $('.tab-pane').removeClass('active');
+            $(this).addClass('active');
+            $('#' + tab).addClass('active');
+            animateTimeline();
+        });
+    });
+    </script>
 {% endblock %}
