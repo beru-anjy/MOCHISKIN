@@ -1,20 +1,223 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ContactController!{% endblock %}
+{% block title %}Contact{% endblock %}
+{% block description %}Contactez l'équipe MOCHISKIN pour toute question ou collaboration.{% endblock %}
+{% block keywords %}contact, skincare, collaboration, question{% endblock %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .hero-contact {
+            background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
+            color: white; padding: 5rem 0; text-align: center;
+        }
+        .hero-contact h1 { color: white; font-size: 3rem; }
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+        .info-card {
+            display: flex; align-items: flex-start; gap: 1.2rem;
+            background: var(--rose-light); border-radius: 14px;
+            padding: 1.3rem; margin-bottom: 1rem;
+            transition: transform .25s;
+        }
+        .info-card:hover { transform: translateX(8px); }
+        .info-icon { font-size: 1.8rem; flex-shrink: 0; }
+        .info-card h6 { color: var(--peach-dark); margin-bottom: .2rem; }
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/wamp64/www/MOCHISKIN/src/Controller/ContactController.php</code></li>
-        <li>Your template at <code>C:/wamp64/www/MOCHISKIN/templates/contact/index.html.twig</code></li>
-    </ul>
-</div>
+        .contact-form-box {
+            background: white; border-radius: 18px; padding: 2.5rem;
+            box-shadow: 0 8px 28px rgba(255,182,193,.15);
+        }
+
+        .btn-send {
+            width: 100%; padding: 1rem;
+            background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
+            border: none; border-radius: 50px;
+            color: white; font-size: 1.05rem; font-weight: 600;
+            cursor: pointer; transition: transform .3s;
+        }
+        .btn-send:hover { transform: translateY(-3px); }
+
+        .consent-row {
+            display: flex; align-items: flex-start; gap: .8rem;
+            background: var(--rose-light); border-radius: 10px; padding: .9rem;
+        }
+
+        .form-control:focus { border-color: var(--peach-dark); box-shadow: none; }
+    </style>
+{% endblock %}
+
+{% block main %}
+
+    <div class="hero-contact">
+        <div class="container">
+            <h1>Contactez-moi</h1>
+            <p class="lead">Une question, une proposition de collaboration ? Écrivez-moi !</p>
+        </div>
+    </div>
+
+    <div class="container my-5">
+        <div class="row g-5">
+
+            {# INFOS (col gauche) #}
+            <div class="col-md-5">
+                <h2 class="mb-4" style="color:var(--peach-dark);">Informations de contact</h2>
+
+                <div class="info-card">
+                    <span class="info-icon">📞</span>
+                    <div>
+                        <h6>Téléphone</h6>
+                        <a href="tel:+33123456789" style="color:var(--peach-dark);">
+                            +33 1 23 45 67 89
+                        </a>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <span class="info-icon">📧</span>
+                    <div>
+                        <h6>Email</h6>
+                        <a href="mailto:contact@mochiskin.fr" style="color:var(--peach-dark);">
+                            contact@mochiskin.fr
+                        </a>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <span class="info-icon">📍</span>
+                    <div>
+                        <h6>Adresse</h6>
+                        <p class="mb-0">123 Rue de l'Exemple<br>75001 Paris, France</p>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <span class="info-icon">🕐</span>
+                    <div>
+                        <h6>Horaires de réponse</h6>
+                        <p class="mb-0">Lun – Ven · 9h00 – 18h00</p>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <span class="info-icon">🌐</span>
+                    <div>
+                        <h6>Réseaux sociaux</h6>
+                        <p class="mb-0">
+                            <a href="#" style="color:var(--peach-dark);margin-right:.8rem;">Instagram</a>
+                            <a href="#" style="color:var(--peach-dark);margin-right:.8rem;">Pinterest</a>
+                            <a href="#" style="color:var(--peach-dark);">YouTube</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {# FORMULAIRE (col droite) #}
+            <div class="col-md-7">
+                <div class="contact-form-box">
+                    <h3 class="mb-1" style="color:var(--peach-dark);">Envoyez-nous un message</h3>
+                    <p class="text-muted mb-4 small">Nous vous répondrons dans les 24–48 heures.</p>
+
+                    <form id="contactForm">
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Nom complet *</label>
+                            <input type="text" class="form-control" id="fullName"
+                                   required placeholder="Votre nom et prénom">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Adresse e-mail *</label>
+                            <input type="email" class="form-control" id="email"
+                                   required placeholder="votre.email@exemple.com">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Sujet *</label>
+                            <select class="form-select" id="subject" required>
+                                <option value="">Sélectionnez un sujet</option>
+                                <option value="question">Question générale</option>
+                                <option value="collaboration">Proposition de collaboration</option>
+                                <option value="produit">Question sur un produit</option>
+                                <option value="partenariat">Partenariat</option>
+                                <option value="technique">Problème technique</option>
+                                <option value="autre">Autre</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Votre message *</label>
+                            <textarea class="form-control" id="message" rows="5"
+                                      required placeholder="Écrivez votre message ici..."></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="consent-row">
+                                <input type="checkbox" id="consent" required
+                                       style="width:18px;height:18px;margin-top:2px;">
+                                <label for="consent">
+                                    J'ai lu et j'accepte la politique de confidentialité *
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-send">Envoyer le message</button>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    $(document).ready(function () {
+
+        // Animation entrée des cartes infos
+        $('.info-card').each(function (i) {
+            var el = $(this).css({ opacity: 0, transform: 'translateX(-20px)' });
+            setTimeout(function () {
+                el.css({ opacity: 1, transform: 'translateX(0)', transition: 'all .4s ease' });
+            }, i * 100);
+        });
+
+        // Validation formulaire contact
+        $('#contactForm').on('submit', function (e) {
+            e.preventDefault();
+            var name    = $('#fullName').val().trim();
+            var email   = $('#email').val().trim();
+            var subject = $('#subject').val();
+            var message = $('#message').val().trim();
+            var consent = $('#consent').is(':checked');
+            var regex   = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!name || !email || !subject || !message) {
+                alert('Veuillez remplir tous les champs obligatoires (*).');
+                return;
+            }
+            if (!regex.test(email)) {
+                alert('Email invalide.');
+                return;
+            }
+            if (message.length < 10) {
+                alert('Message trop court (min. 10 caractères).');
+                return;
+            }
+            if (!consent) {
+                alert('Acceptez la politique de confidentialité.');
+                return;
+            }
+
+            var firstName   = name.split(' ')[0];
+            var subjectText = $('#subject option:selected').text();
+            alert('Merci ' + firstName + ' !\nVotre message "' + subjectText + '" a bien été envoyé.\nRéponse sous 24-48h à : ' + email);
+            this.reset();
+            $('html,body').animate({ scrollTop: 0 }, 600);
+        });
+
+    });
+    </script>
 {% endblock %}
