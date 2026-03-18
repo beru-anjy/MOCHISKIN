@@ -1,0 +1,326 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Newsletter{% endblock %}
+{% block description %}Abonnez-vous à la newsletter MOCHISKIN — conseils skincare chaque dimanche.{% endblock %}
+{% block keywords %}newsletter, skincare, abonnement, conseils beauté{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .hero-newsletter {
+            background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
+            color: white; padding: 5rem 0; text-align: center;
+        }
+        .hero-newsletter h1 { color: white; font-size: 2.8rem; }
+
+        .benefit-card {
+            display: flex; gap: 1.2rem; align-items: flex-start;
+            background: var(--rose-light); border-radius: 14px;
+            padding: 1.4rem; margin-bottom: 1.2rem;
+            transition: transform .25s;
+        }
+        .benefit-card:hover { transform: translateX(8px); }
+        .benefit-icon { font-size: 2rem; flex-shrink: 0; }
+
+        .form-section {
+            background: white; border-radius: 20px; padding: 2.5rem;
+            box-shadow: 0 8px 28px rgba(255,182,193,.15);
+        }
+
+        .check-item {
+            display: flex; align-items: center; gap: .8rem;
+            background: var(--rose-light); border-radius: 10px;
+            padding: .7rem 1rem; margin-bottom: .5rem; cursor: pointer;
+        }
+        .check-item:hover { background: var(--peach-light); }
+        .check-item input { width: 18px; height: 18px; cursor: pointer; }
+
+        .btn-subscribe {
+            width: 100%; padding: 1rem;
+            background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
+            border: none; border-radius: 50px;
+            color: white; font-size: 1.1rem; font-weight: 600;
+            cursor: pointer; transition: transform .3s;
+        }
+        .btn-subscribe:hover { transform: translateY(-3px); }
+
+        .testimonial-card {
+            background: linear-gradient(135deg, var(--peach-light), var(--pink-light));
+            border-radius: 14px; padding: 1.8rem; text-align: center;
+        }
+
+        .stats-band {
+            background: linear-gradient(135deg, var(--peach-dark), var(--pink-main));
+            color: white; border-radius: 18px;
+            padding: 3rem; text-align: center; margin: 3rem 0;
+        }
+
+        .faq-q {
+            font-weight: 600; color: var(--peach-dark);
+            cursor: pointer; padding: 1rem 0;
+            border-bottom: 1px solid var(--peach-light);
+            display: flex; justify-content: space-between;
+        }
+        .faq-a {
+            display: none; padding: .8rem 0 1rem;
+            color: var(--gray-soft); line-height: 1.7;
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+
+    <div class="hero-newsletter">
+        <div class="container">
+            <h1>Rejoignez la communauté skincare</h1>
+            <p class="lead">Ne manquez plus aucun conseil beauté !</p>
+        </div>
+    </div>
+
+    <div class="container my-5">
+        <div class="row g-5">
+
+            {# AVANTAGES (col gauche) #}
+            <div class="col-md-5">
+                <h2 class="mb-4" style="color:var(--peach-dark);">Pourquoi s'abonner ?</h2>
+
+                <div class="benefit-card">
+                    <span class="benefit-icon">📧</span>
+                    <div>
+                        <h6>1 email par semaine</h6>
+                        <p class="mb-0 small">Chaque dimanche à 9h — condensé de mes meilleurs conseils.</p>
+                    </div>
+                </div>
+                <div class="benefit-card">
+                    <span class="benefit-icon">📚</span>
+                    <div>
+                        <h6>Contenus exclusifs</h6>
+                        <p class="mb-0 small">Guides PDF, recettes maison DIY, conseils réservés aux abonnés.</p>
+                    </div>
+                </div>
+                <div class="benefit-card">
+                    <span class="benefit-icon">💰</span>
+                    <div>
+                        <h6>Codes promo partenaires</h6>
+                        <p class="mb-0 small">15 à 30% de réduction sur vos marques préférées.</p>
+                    </div>
+                </div>
+                <div class="benefit-card">
+                    <span class="benefit-icon">🔔</span>
+                    <div>
+                        <h6>Alertes nouveautés</h6>
+                        <p class="mb-0 small">Soyez la première informée des dernières tendances skincare.</p>
+                    </div>
+                </div>
+                <div class="benefit-card">
+                    <span class="benefit-icon">🎯</span>
+                    <div>
+                        <h6>Conseils sur mesure</h6>
+                        <p class="mb-0 small">Recommandations adaptées à votre type de peau.</p>
+                    </div>
+                </div>
+            </div>
+
+            {# FORMULAIRE (col droite) #}
+            <div class="col-md-7">
+                <div class="form-section">
+                    <h3 class="mb-4" style="color:var(--peach-dark);">✍️ Formulaire d'inscription</h3>
+                    <form id="newsletterForm">
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                Votre prénom <span style="color:var(--peach-dark);">*</span>
+                            </label>
+                            <input type="text" class="form-control" id="firstName"
+                                   required placeholder="Marie">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                Email <span style="color:var(--peach-dark);">*</span>
+                            </label>
+                            <input type="email" class="form-control" id="email"
+                                   required placeholder="marie@exemple.com">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Type de peau</label>
+                            <select class="form-select" id="skinType">
+                                <option value="">Sélectionnez...</option>
+                                <option>Normale</option>
+                                <option>Sèche</option>
+                                <option>Grasse</option>
+                                <option>Mixte</option>
+                                <option>Sensible</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Préoccupations</label>
+                            <div class="check-item">
+                                <input type="checkbox" id="c1">
+                                <label for="c1">Acné et imperfections</label>
+                            </div>
+                            <div class="check-item">
+                                <input type="checkbox" id="c2">
+                                <label for="c2">Rides et anti-âge</label>
+                            </div>
+                            <div class="check-item">
+                                <input type="checkbox" id="c3">
+                                <label for="c3">Hydratation</label>
+                            </div>
+                            <div class="check-item">
+                                <input type="checkbox" id="c4">
+                                <label for="c4">Taches pigmentaires</label>
+                            </div>
+                            <div class="check-item">
+                                <input type="checkbox" id="c5">
+                                <label for="c5">Pores dilatés</label>
+                            </div>
+                            <div class="check-item">
+                                <input type="checkbox" id="c6">
+                                <label for="c6">Rougeurs / Sensibilité</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="check-item">
+                                <input type="checkbox" id="consent" required>
+                                <label for="consent">
+                                    J'accepte la politique de confidentialité
+                                    <span style="color:var(--peach-dark);">*</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-subscribe">
+                            S'inscrire à la newsletter
+                        </button>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        {# TÉMOIGNAGES #}
+        <h2 class="text-center mt-5 mb-4" style="color:var(--peach-dark);">
+            Ils nous font confiance
+        </h2>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="testimonial-card">
+                    <p class="fst-italic">"J'ai enfin trouvé la routine qui convient à ma peau sensible!"</p>
+                    <strong style="color:var(--peach-dark);">Sophie, 28 ans</strong>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="testimonial-card">
+                    <p class="fst-italic">"Des conseils concrets chaque semaine. J'adore!"</p>
+                    <strong style="color:var(--peach-dark);">Marie, 35 ans</strong>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="testimonial-card">
+                    <p class="fst-italic">"Je ne manque plus aucune nouveauté grâce aux alertes!"</p>
+                    <strong style="color:var(--peach-dark);">Julie, 31 ans</strong>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="testimonial-card">
+                    <p class="fst-italic">"Les guides PDF sont vraiment pratiques."</p>
+                    <strong style="color:var(--peach-dark);">Laura, 26 ans</strong>
+                </div>
+            </div>
+        </div>
+
+        {# STATS #}
+        <div class="stats-band">
+            <div class="row">
+                <div class="col-4">
+                    <h3 class="text-white">5K</h3>
+                    <p>Instagram</p>
+                </div>
+                <div class="col-4">
+                    <h3 class="text-white">2.5K</h3>
+                    <p>Abonnés Email</p>
+                </div>
+                <div class="col-4">
+                    <h3 class="text-white">1K</h3>
+                    <p>YouTube</p>
+                </div>
+            </div>
+        </div>
+
+        {# FAQ ACCORDION #}
+        <div class="mb-5">
+            <h2 class="mb-4" style="color:var(--peach-dark);">Questions fréquentes</h2>
+
+            <div class="faq-q">
+                <span>À quelle fréquence recevrai-je des emails ?</span>
+                <span>▼</span>
+            </div>
+            <div class="faq-a">1 email chaque dimanche à 9h. Pas de spam !</div>
+
+            <div class="faq-q">
+                <span>Puis-je me désinscrire facilement ?</span>
+                <span>▼</span>
+            </div>
+            <div class="faq-a">Oui ! Lien de désinscription en bas de chaque email.</div>
+
+            <div class="faq-q">
+                <span>Mes données sont-elles sécurisées ?</span>
+                <span>▼</span>
+            </div>
+            <div class="faq-a">Vos données sont 100% sécurisées — RGPD respecté.</div>
+
+            <div class="faq-q">
+                <span>Le contenu est-il vraiment gratuit ?</span>
+                <span>▼</span>
+            </div>
+            <div class="faq-a">Oui ! Newsletter et guides 100% gratuits, jamais de frais cachés.</div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    $(document).ready(function () {
+
+        // FAQ accordion
+        $('.faq-q').on('click', function () {
+            $(this).next('.faq-a').slideToggle(250);
+        });
+
+        // Validation newsletter
+        $('#newsletterForm').on('submit', function (e) {
+            e.preventDefault();
+            var name    = $('#firstName').val().trim();
+            var email   = $('#email').val().trim();
+            var consent = $('#consent').is(':checked');
+            var regex   = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!name || !email) {
+                alert('Veuillez remplir les champs obligatoires.');
+                return;
+            }
+            if (!regex.test(email)) {
+                alert('Email invalide.');
+                return;
+            }
+            if (!consent) {
+                alert('Acceptez la politique de confidentialité.');
+                return;
+            }
+
+            alert('Merci ' + name + ' ! Votre inscription est confirmée. Premier email dimanche à 9h.');
+            this.reset();
+            $('html,body').animate({ scrollTop: 0 }, 600);
+        });
+
+    });
+    </script>
+{% endblock %}

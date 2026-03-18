@@ -1,0 +1,143 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Articles{% endblock %}
+{% block description %}Tous nos articles skincare : routine, ingrédients, produits, DIY.{% endblock %}
+{% block keywords %}articles, skincare, routine, ingrédients, produits, DIY{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .page-header {
+            background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
+            color: white; padding: 4rem 0 3rem; text-align: center; margin-bottom: 2rem;
+        }
+        .page-header h1 { color: white; }
+
+        .filter-btn {
+            border: 2px solid var(--peach-light);
+            background: white; border-radius: 25px;
+            padding: .4rem 1.3rem; margin: .25rem;
+            font-weight: 500; cursor: pointer;
+            transition: all .25s ease;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--peach-main);
+            border-color: var(--peach-main); color: white;
+        }
+
+        .article-card {
+            background: white; border-radius: 15px;
+            overflow: hidden; height: 100%;
+            box-shadow: 0 4px 18px rgba(255,182,193,.12);
+            display: flex; flex-direction: column;
+            transition: transform .3s;
+        }
+        .article-card:hover { transform: translateY(-8px); }
+
+        .article-thumb { width: 100%; height: 220px; object-fit: cover; }
+        .article-thumb-placeholder {
+            width: 100%; height: 220px;
+            background: var(--peach-light);
+            display: flex; align-items: center;
+            justify-content: center; font-size: 3.5rem;
+        }
+
+        .category-badge {
+            display: inline-block;
+            background: var(--peach-light); color: var(--gray-soft);
+            border-radius: 20px; padding: .2rem .8rem;
+            font-size: .8rem; font-weight: 600;
+        }
+
+        .btn-read-more {
+            align-self: flex-start;
+            background: var(--peach-main); color: white;
+            border: none; border-radius: 12px;
+            padding: .5rem 1.2rem; font-weight: 600;
+            text-decoration: none; margin-top: auto;
+        }
+        .btn-read-more:hover { color: white; opacity: .85; }
+    </style>
+{% endblock %}
+
+{% block main %}
+
+    <div class="page-header">
+        <div class="container">
+            <h1>Articles récents</h1>
+            <p>Découvrez tous nos conseils pour une peau saine et éclatante</p>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+
+        {# FILTRES #}
+        <div class="text-center mb-4">
+            <button class="filter-btn active" data-filter="all">Tous</button>
+            <button class="filter-btn" data-filter="routine">Routine</button>
+            <button class="filter-btn" data-filter="ingredients">Ingrédients</button>
+            <button class="filter-btn" data-filter="produits">Produits</button>
+            <button class="filter-btn" data-filter="conseils">Conseils</button>
+            <button class="filter-btn" data-filter="diy">DIY</button>
+        </div>
+
+        {# GRILLE ARTICLES #}
+        <div class="row g-4" id="articlesGrid">
+
+        {% for article in articles %}
+            <div class="col-md-4 article-item" data-category="{{ article.category.slug }}">
+                <div class="article-card">
+                    {% if article.imageUrl %}
+                        <img class="article-thumb"
+                             src="/assets/images/{{ article.imageUrl }}"
+                             alt="{{ article.title }}">
+                    {% else %}
+                        <div class="article-thumb-placeholder">📰</div>
+                    {% endif %}
+                    <div class="p-3 d-flex flex-column flex-grow-1">
+                        <span class="category-badge mb-2">{{ article.category.name }}</span>
+                        <h5 class="mb-1">{{ article.title }}</h5>
+                        <small class="text-muted mb-2">
+                            {{ article.author.firstName }}
+                            — {{ article.publishedAt|date('d M Y') }}
+                            — {{ article.readingTime }} min
+                        </small>
+                        <p class="small flex-grow-1">{{ article.excerpt }}</p>
+                        <a href="{{ path('app_article_show', {slug: article.slug}) }}"
+                           class="btn-read-more">Lire l'article &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            {# Fallback statique — 6 cartes si DB vide #}
+            <div class="col-md-4 article-item" data-category="routine">
+                <div class="article-card">
+                    <div class="article-thumb-placeholder">☀️</div>
+                    <div class="p-3 d-flex flex-column flex-grow-1">
+                        <span class="category-badge mb-2">Routine</span>
+                        <h5>Les 5 étapes d'une routine matin</h5>
+                        <small class="text-muted mb-2">Ji-min Park — 15 jan. 2025 — 5 min</small>
+                        <p class="small flex-grow-1">Découvrez comment préparer votre peau chaque matin...</p>
+                        <a href="#" class="btn-read-more">Lire l'article &rarr;</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 article-item" data-category="produits">
+                <div class="article-card">
+                    <div class="article-thumb-placeholder">🧴</div>
+                    <div class="p-3 d-flex flex-column flex-grow-1">
+                        <span class="category-badge mb-2">Produits</span>
+                        <h5>Comment choisir son sérum</h5>
+                        <small class="text-muted mb-2">Ji-min Park — 12 jan. 2025 — 7 min</small>
+                        <p class="small flex-grow-1">Le sérum est l'étape clé de votre routine...</p>
+                        <a href="#" class="btn-read-more">Lire l'article &rarr;</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 article-item" data-category="conseils">
+                <div class="article-card">
+                    <div class="article-thumb-placeholder">✨</div>
+                    <div class="p-3 d-flex flex-column flex-grow-1">
+                        <span class="category-badge mb-2">Conseils</span>
+                        <h5>Les bienfaits du double nettoyage</h5>
+                        <small class="text-muted mb-2">Seok-jin Han — 8 jan. 2025

@@ -1,0 +1,142 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}À propos{% endblock %}
+{% block description %}Découvrez l'histoire de MOCHISKIN et la passion derrière le blog.{% endblock %}
+{% block keywords %}à propos, skincare, parcours, Anjy, blog beauté{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .hero-about {
+            background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
+            color: white; padding: 5rem 0; text-align: center;
+        }
+        .hero-about h1 { color: white; font-size: 3rem; }
+
+        .profile-img {
+            width: 200px; height: 200px; border-radius: 50%;
+            object-fit: cover; border: 5px solid var(--peach-light);
+            display: block; margin: 0 auto 1.5rem;
+        }
+
+        .card-objective {
+            background: linear-gradient(135deg, var(--peach-light), var(--pink-light));
+            border: none; border-radius: 15px; padding: 2rem;
+            text-align: center; transition: transform .3s;
+        }
+        .card-objective:hover { transform: translateY(-8px); }
+
+        .value-item {
+            border-left: 4px solid var(--peach-main);
+            background: var(--rose-light);
+            border-radius: 0 12px 12px 0;
+            padding: 1.5rem; margin-bottom: 1.5rem;
+        }
+
+        .quote-block {
+            background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
+            color: white; border-radius: 20px;
+            padding: 3rem; text-align: center; margin: 3rem 0;
+        }
+        .quote-block p { font-size: 1.5rem; font-style: italic; line-height: 1.6; }
+    </style>
+{% endblock %}
+
+{% block main %}
+
+    {# HERO #}
+    <div class="hero-about">
+        <div class="container">
+            <h1>À propos</h1>
+            <p class="lead">Passionnée de skincare et de partage</p>
+        </div>
+    </div>
+
+    <div class="container my-5">
+
+        {# PROFIL #}
+        <div class="row align-items-center mb-5">
+            <div class="col-md-4 text-center">
+                <img src="/assets/images/ceo_anjy.jpg" alt="Anjy" class="profile-img">
+            </div>
+            <div class="col-md-8">
+                <h2 style="color:var(--peach-dark);">Bonjour, moi c'est Anjy 🌸</h2>
+                <p class="mt-3" style="font-size:1.1rem; line-height:1.8;">
+                    Passionnée de skincare depuis 10 ans, j'ai créé ce blog pour partager
+                    mes découvertes et vous aider à prendre soin de votre peau naturellement.
+                </p>
+            </div>
+        </div>
+
+        {# OBJECTIFS #}
+        <h2 class="text-center mb-4" style="color:var(--peach-dark);">
+            Les objectifs du blog
+        </h2>
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="card-objective">
+                    <div class="fs-2 mb-2">📚</div>
+                    <h5>Démystifier le skincare</h5>
+                    <p>Rendre la routine beauté simple et accessible à tous.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-objective">
+                    <div class="fs-2 mb-2">✨</div>
+                    <h5>Partager des conseils</h5>
+                    <p>Découvertes produits et routines selon les types de peau.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-objective">
+                    <div class="fs-2 mb-2">🌿</div>
+                    <h5>Beauté naturelle</h5>
+                    <p>Favoriser les marques engagées et formules respectueuses.</p>
+                </div>
+            </div>
+        </div>
+
+        {# VALEURS #}
+        <h2 class="mb-4" style="color:var(--peach-dark);">Mes valeurs</h2>
+
+        <div class="value-item">
+            <h5>🔍 Transparence</h5>
+            <p>Tous les produits testés personnellement 4+ semaines. Avis sincères.</p>
+        </div>
+        <div class="value-item">
+            <h5>💫 Authenticité</h5>
+            <p>Pas de filtre, pas de promesses miracles. Le skincare est un voyage.</p>
+        </div>
+        <div class="value-item">
+            <h5>🤝 Inclusivité</h5>
+            <p>Tous types de peau, âges, budgets. Chaque peau mérite des conseils adaptés.</p>
+        </div>
+        <div class="value-item">
+            <h5>🌍 Éco-responsabilité</h5>
+            <p>Privilégier les marques engagées et formules clean.</p>
+        </div>
+
+        {# CITATION #}
+        <div class="quote-block">
+            <p>"Prendre soin de sa peau n'est pas une question de perfection,
+               mais de bien-être et de confiance en soi."</p>
+            <small class="fw-bold">— Anjy, CEO MOCHISKIN</small>
+        </div>
+
+        {# CTA #}
+        <div class="text-center mb-5">
+            <a href="{{ path('app_newsletter') }}"
+               class="btn btn-lg me-3"
+               style="background:var(--peach-main);color:white;border-radius:50px;">
+                📧 Newsletter
+            </a>
+            <a href="{{ path('app_contact') }}"
+               class="btn btn-lg btn-outline-secondary"
+               style="border-radius:50px;">
+                💬 Me contacter
+            </a>
+        </div>
+
+    </div>
+
+{% endblock %}
