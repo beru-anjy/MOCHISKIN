@@ -1,20 +1,178 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ArticleController!{% endblock %}
+{% block title %}{{ article.title }}{% endblock %}
+{% block description %}{{ article.excerpt }}{% endblock %}
+{% block keywords %}{{ article.tags|map(t => t.name)|join(', ') }}{% endblock %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .article-header {
+            background: white; padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 18px rgba(255,182,193,.1);
+            margin-bottom: 1.5rem;
+        }
+        .article-title { font-size: 2.2rem; margin-bottom: 1rem; }
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+        .meta-item {
+            display: inline-flex; align-items: center;
+            gap: .4rem; margin-right: 1.5rem;
+            font-size: .9rem; color: #999;
+        }
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/wamp64/www/MOCHISKIN/src/Controller/ArticleController.php</code></li>
-        <li>Your template at <code>C:/wamp64/www/MOCHISKIN/templates/article/index.html.twig</code></li>
-    </ul>
+        .tag-badge {
+            background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
+            color: white; border-radius: 20px;
+            padding: .25rem .9rem; font-size: .8rem; margin: .2rem;
+        }
+
+        .article-body {
+            background: white; padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 18px rgba(255,182,193,.1);
+            line-height: 1.9; margin-bottom: 1.5rem;
+        }
+        .article-body h2 { color: var(--peach-dark); margin: 2rem 0 1rem; }
+
+        .comments-section {
+            background: white; padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 18px rgba(255,182,193,.1);
+        }
+
+        .comment-item {
+            border-left: 3px solid var(--peach-main);
+            background: var(--rose-light);
+            border-radius: 0 12px 12px 0;
+            padding: 1.2rem; margin-bottom: 1.2rem;
+        }
+
+        .comment-form {
+            background: var(--rose-light);
+            border-radius: 14px; padding: 1.8rem; margin-top: 2rem;
+        }
+        .form-control:focus { border-color: var(--peach-dark); box-shadow: none; }
+    </style>
+{% endblock %}
+
+{% block main %}
+<div class="container my-5">
+
+    {# ENTÊTE ARTICLE #}
+    <div class="article-header">
+        <h1 class="article-title">{{ article.title }}</h1>
+        <div class="mb-2">
+            <span class="meta-item">👤 {{ article.author.firstName }} {{ article.author.lastName }}</span>
+            <span class="meta-item">📅 {{ article.publishedAt|date('d M Y') }}</span>
+            <span class="meta-item">⏱ {{ article.readingTime }} min</span>
+            <span class="meta-item">💬 {{ article.comments|length }} commentaires</span>
+        </div>
+        {% if article.tags|length > 0 %}
+            <div>
+                {% for tag in article.tags %}
+                    <span class="tag-badge">{{ tag.name }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    {# CORPS DE L'ARTICLE #}
+    <div class="article-body">
+        {{ article.content|raw }}
+    </div>
+
+    {# COMMENTAIRES #}
+    <div class="comments-section">
+        <h3 class="mb-4">💬 Commentaires ({{ article.comments|length }})</h3>
+
+        {% for comment in article.comments %}
+            {% if comment.isApproved %}
+                <div class="comment-item">
+                    <div class="d-flex justify-content-between mb-1">
+                        <strong style="color:var(--peach-dark);">
+                            {{ comment.author.firstName }} {{ comment.author.lastName }}
+                        </strong>
+                        <small class="text-muted">{{ comment.createdAt|date('d M Y') }}</small>
+                    </div>
+                    <p class="mb-0">{{ comment.content }}</p>
+                </div>
+            {% endif %}
+        {% else %}
+            {# Fallback statique #}
+            <div class="comment-item">
+                <div class="d-flex justify-content-between mb-1">
+                    <strong style="color:var(--peach-dark);">Sophie Martin</strong>
+                    <small class="text-muted">14 janvier 2025</small>
+                </div>
+                <p class="mb-0">Le sérum vitamine C fait vraiment la différence !</p>
+            </div>
+            <div class="comment-item">
+                <div class="d-flex justify-content-between mb-1">
+                    <strong style="color:var(--peach-dark);">Emma Dubois</strong>
+                    <small class="text-muted">13 janvier 2025</small>
+                </div>
+                <p class="mb-0">Super article ! Pourrais-tu recommander une crème solaire sans traces blanches ?</p>
+            </div>
+            <div class="comment-item">
+                <div class="d-flex justify-content-between mb-1">
+                    <strong style="color:var(--peach-dark);">Julie Bernard</strong>
+                    <small class="text-muted">12 janvier 2025</small>
+                </div>
+                <p class="mb-0">Excellent résumé ! J'ajouterais d'attendre quelques minutes entre chaque étape.</p>
+            </div>
+        {% endfor %}
+
+        {# FORMULAIRE COMMENTAIRE #}
+        <div class="comment-form">
+            <h5 class="mb-3">Laisser un commentaire</h5>
+            <form id="commentForm">
+                <div class="mb-3">
+                    <label class="form-label">Nom *</label>
+                    <input type="text" class="form-control" id="commentName" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email * <small>(non publié)</small></label>
+                    <input type="email" class="form-control" id="commentEmail" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Commentaire *</label>
+                    <textarea class="form-control" id="commentText" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn"
+                        style="background:var(--peach-main);color:white;border-radius:25px;">
+                    Publier
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="text-center mt-4 mb-5">
+        <a href="{{ path('app_articles') }}"
+           class="btn btn-outline-secondary" style="border-radius:25px;">
+            &larr; Retour aux articles
+        </a>
+    </div>
+
 </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    $(document).ready(function () {
+        $('#commentForm').on('submit', function (e) {
+            e.preventDefault();
+            var name  = $('#commentName').val().trim();
+            var email = $('#commentEmail').val().trim();
+            var text  = $('#commentText').val().trim();
+            if (!name || !email || !text) {
+                alert('Veuillez remplir tous les champs.');
+                return;
+            }
+            alert('Merci ' + name + ' ! Votre commentaire est en attente de modération.');
+            this.reset();
+        });
+    });
+    </script>
 {% endblock %}
