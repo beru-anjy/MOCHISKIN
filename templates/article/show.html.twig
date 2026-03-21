@@ -4,62 +4,114 @@
 {% block description %}{{ article.excerpt }}{% endblock %}
 {% block keywords %}{{ article.tags|map(t => t.name)|join(', ') }}{% endblock %}
 
-{# {% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .article-header {
-            background: white; padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 18px rgba(255,182,193,.1);
-            margin-bottom: 1.5rem;
-        }
-        .article-title { font-size: 2.2rem; margin-bottom: 1rem; }
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* ── ARTICLE HEADER ── */
+    .article-header {
+        background: white; padding: 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 18px rgba(255,182,193,.1);
+        margin-bottom: 1.5rem;
+    }
+    .article-title { font-size: 2.2rem; margin-bottom: 1rem; color: var(--gray-soft); }
 
-        .meta-item {
-            display: inline-flex; align-items: center;
-            gap: .4rem; margin-right: 1.5rem;
-            font-size: .9rem; color: #999;
-        }
+    .meta-item {
+        display: inline-flex; align-items: center;
+        gap: .4rem; margin-right: 1.5rem;
+        font-size: .9rem; color: #999;
+    }
 
-        .tag-badge {
-            background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
-            color: white; border-radius: 20px;
-            padding: .25rem .9rem; font-size: .8rem; margin: .2rem;
-        }
+    .tag-badge {
+        background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
+        color: white; border-radius: 20px;
+        padding: .25rem .9rem; font-size: .8rem; margin: .2rem;
+        display: inline-block;
+    }
 
-        .article-body {
-            background: white; padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 18px rgba(255,182,193,.1);
-            line-height: 1.9; margin-bottom: 1.5rem;
-        }
-        .article-body h2 { color: var(--peach-dark); margin: 2rem 0 1rem; }
+    /* ── CORPS ARTICLE ── */
+    .article-body {
+        background: white; padding: 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 18px rgba(255,182,193,.1);
+        line-height: 1.9; margin-bottom: 1.5rem;
+        font-size: 1.05rem;
+    }
+    .article-body h2 { color: var(--peach-dark); margin: 2rem 0 1rem; }
+    .article-body h3 { color: var(--gray-soft); margin: 1.5rem 0 .8rem; }
+    .article-body p  { margin-bottom: 1.2rem; }
+    .article-body img { max-width: 100%; border-radius: 12px; margin: 1rem 0; }
 
-        .comments-section {
-            background: white; padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 18px rgba(255,182,193,.1);
-        }
+    /* ── IMAGE HERO ── */
+    .article-hero-img {
+        width: 100%; max-height: 400px;
+        object-fit: cover; border-radius: 16px;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 18px rgba(255,182,193,.15);
+    }
 
-        .comment-item {
-            border-left: 3px solid var(--peach-main);
-            background: var(--rose-light);
-            border-radius: 0 12px 12px 0;
-            padding: 1.2rem; margin-bottom: 1.2rem;
-        }
+    /* ── COMMENTAIRES ── */
+    .comments-section {
+        background: white; padding: 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 18px rgba(255,182,193,.1);
+        margin-bottom: 2rem;
+    }
 
-        .comment-form {
-            background: var(--rose-light);
-            border-radius: 14px; padding: 1.8rem; margin-top: 2rem;
-        }
-        .form-control:focus { border-color: var(--peach-dark); box-shadow: none; }
-    </style>
-{% endblock %} #}
+    .comment-item {
+        border-left: 3px solid var(--peach-main);
+        background: var(--rose-light);
+        border-radius: 0 12px 12px 0;
+        padding: 1.2rem; margin-bottom: 1.2rem;
+        transition: transform .2s ease;
+    }
+    .comment-item:hover { transform: translateX(4px); }
+
+    /* ── FORMULAIRE COMMENTAIRE ── */
+    .comment-form {
+        background: var(--rose-light);
+        border-radius: 14px; padding: 1.8rem; margin-top: 2rem;
+    }
+    .comment-form .form-control {
+        border: 2px solid var(--peach-light);
+        border-radius: 10px;
+    }
+    .comment-form .form-control:focus {
+        border-color: var(--peach-dark);
+        box-shadow: none;
+    }
+    .btn-comment {
+        background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
+        color: white; border: none; border-radius: 25px;
+        padding: .6rem 2rem; font-weight: 600;
+        transition: all .3s ease;
+    }
+    .btn-comment:hover { transform: translateY(-2px); color: white; box-shadow: 0 5px 15px rgba(255,182,193,.4); }
+
+    /* ── RETOUR ── */
+    .btn-back {
+        color: var(--peach-dark);
+        border: 2px solid var(--peach-main);
+        border-radius: 25px; padding: .6rem 2rem;
+        font-weight: 600; text-decoration: none;
+        transition: all .3s ease;
+        display: inline-block;
+    }
+    .btn-back:hover { background: var(--peach-light); color: var(--peach-dark); }
+</style>
+{% endblock %}
 
 {% block body %}
 <div class="container my-5">
 
-    {# ENTÊTE ARTICLE #}
+    {# ══ IMAGE HERO ══ #}
+    {% if article.imageUrl %}
+        <img class="article-hero-img"
+             src="{{ asset('uploads/articles/' ~ article.imageUrl) }}"
+             alt="{{ article.title }}">
+    {% endif %}
+
+    {# ══ ENTÊTE ARTICLE ══ #}
     <div class="article-header">
         <h1 class="article-title">{{ article.title }}</h1>
         <div class="mb-2">
@@ -69,7 +121,7 @@
             <span class="meta-item">💬 {{ article.comments|length }} commentaires</span>
         </div>
         {% if article.tags|length > 0 %}
-            <div>
+            <div class="mt-2">
                 {% for tag in article.tags %}
                     <span class="tag-badge">{{ tag.name }}</span>
                 {% endfor %}
@@ -77,12 +129,12 @@
         {% endif %}
     </div>
 
-    {# CORPS DE L'ARTICLE #}
+    {# ══ CORPS DE L'ARTICLE ══ #}
     <div class="article-body">
         {{ article.content|raw }}
     </div>
 
-    {# COMMENTAIRES #}
+    {# ══ COMMENTAIRES ══ #}
     <div class="comments-section">
         <h3 class="mb-4">💬 Commentaires ({{ article.comments|length }})</h3>
 
@@ -99,7 +151,7 @@
                 </div>
             {% endif %}
         {% else %}
-            {# Fallback statique #}
+            {# Fallback statique si DB vide #}
             <div class="comment-item">
                 <div class="d-flex justify-content-between mb-1">
                     <strong style="color:var(--peach-dark);">Sophie Martin</strong>
@@ -123,56 +175,70 @@
             </div>
         {% endfor %}
 
-        {# FORMULAIRE COMMENTAIRE #}
+        {# ══ FORMULAIRE COMMENTAIRE ══ #}
         <div class="comment-form">
-            <h5 class="mb-3">Laisser un commentaire</h5>
+            <h5 class="mb-3">✍️ Laisser un commentaire</h5>
             <form id="commentForm">
                 <div class="mb-3">
-                    <label class="form-label">Nom *</label>
-                    <input type="text" class="form-control" id="commentName" required>
+                    <label class="form-label fw-semibold">Nom *</label>
+                    <input type="text" class="form-control" id="commentName" required placeholder="Votre nom">
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Email * <small>(non publié)</small></label>
-                    <input type="email" class="form-control" id="commentEmail" required>
+                    <label class="form-label fw-semibold">Email * <small class="text-muted">(non publié)</small></label>
+                    <input type="email" class="form-control" id="commentEmail" required placeholder="votre@email.com">
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Commentaire *</label>
-                    <textarea class="form-control" id="commentText" rows="4" required></textarea>
+                    <label class="form-label fw-semibold">Commentaire *</label>
+                    <textarea class="form-control" id="commentText" rows="4" required
+                              placeholder="Partagez votre avis..."></textarea>
                 </div>
-                <button type="submit" class="btn"
-                        style="background:var(--peach-main);color:white;border-radius:25px;">
-                    Publier
-                </button>
+                <button type="submit" class="btn-comment">Publier le commentaire</button>
             </form>
         </div>
     </div>
 
-    <div class="text-center mt-4 mb-5">
-        <a href="{{ path('app_articles') }}"
-           class="btn btn-outline-secondary" style="border-radius:25px;">
-            &larr; Retour aux articles
-        </a>
+    <div class="text-center mb-5">
+        <a href="{{ path('app_articles') }}" class="btn-back">← Retour aux articles</a>
     </div>
 
 </div>
 {% endblock %}
 
 {% block javascripts %}
-    {{ parent() }}
-    <script>
-    $(document).ready(function () {
-        $('#commentForm').on('submit', function (e) {
-            e.preventDefault();
-            var name  = $('#commentName').val().trim();
-            var email = $('#commentEmail').val().trim();
-            var text  = $('#commentText').val().trim();
-            if (!name || !email || !text) {
-                alert('Veuillez remplir tous les champs.');
-                return;
-            }
-            alert('Merci ' + name + ' ! Votre commentaire est en attente de modération.');
-            this.reset();
-        });
+{{ parent() }}
+<script>
+$(document).ready(function () {
+    $('#commentForm').on('submit', function (e) {
+        e.preventDefault();
+        var name  = $('#commentName').val().trim();
+        var email = $('#commentEmail').val().trim();
+        var text  = $('#commentText').val().trim();
+        var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!name || !email || !text) {
+            alert('Veuillez remplir tous les champs obligatoires.');
+            return;
+        }
+        if (!regex.test(email)) {
+            alert('Email invalide.');
+            return;
+        }
+
+        // Ajouter le commentaire dynamiquement
+        var html = '<div class="comment-item" style="display:none;">'
+            + '<div class="d-flex justify-content-between mb-1">'
+            + '<strong style="color:var(--peach-dark);">' + name + '</strong>'
+            + '<small class="text-muted">Aujourd\'hui</small>'
+            + '</div>'
+            + '<p class="mb-0">' + text + '</p>'
+            + '</div>';
+        $('.comment-form').before(html);
+        $('.comment-item:last').fadeIn(400);
+
+        alert('Merci ' + name + ' ! Votre commentaire est en attente de modération.');
+        this.reset();
+        $('html,body').animate({ scrollTop: $('.comment-item:last').offset().top - 100 }, 500);
     });
-    </script>
+});
+</script>
 {% endblock %}
