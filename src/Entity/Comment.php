@@ -43,7 +43,8 @@ class Comment
     #[ORM\JoinColumn(nullable: false)]
     private ?User $author = null;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->createdAt = new \DateTimeImmutable();
         $this->isApproved = false;
     }
@@ -61,6 +62,7 @@ class Comment
     public function setContent(string $content): static
     {
         $this->content = $content;
+
         return $this;
     }
 
@@ -72,6 +74,7 @@ class Comment
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -83,6 +86,7 @@ class Comment
     public function setIsApproved(bool $isApproved): static
     {
         $this->isApproved = $isApproved;
+
         return $this;
     }
 
@@ -94,6 +98,7 @@ class Comment
     public function setArticle(?Article $article): static
     {
         $this->article = $article;
+
         return $this;
     }
 
@@ -106,6 +111,7 @@ class Comment
     public function setAuthor(?User $author): static
     {
         $this->author = $author;
+
         return $this;
     }
 }

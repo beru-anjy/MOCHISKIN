@@ -18,30 +18,30 @@ final class NewsletterController extends AbstractController
     public function index(
         Request $request,
         SkinTypeRepository $skinTypeRepository,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
     ): Response {
-
         // ── Récupérer les types de peau pour le <select> ──
         $skinTypes = $skinTypeRepository->findAll();
 
         // ── Traitement du formulaire POST ──
         if ($request->isMethod('POST')) {
-
             // Vérification CSRF
             if (!$this->isCsrfTokenValid('newsletter', $request->request->get('_token'))) {
                 $this->addFlash('danger', 'Token de sécurité invalide. Veuillez réessayer.');
+
                 return $this->redirectToRoute('app_newsletter');
             }
 
-            $firstName  = trim($request->request->get('firstName', ''));
-            $email      = trim($request->request->get('email', ''));
+            $firstName = trim($request->request->get('firstName', ''));
+            $email = trim($request->request->get('email', ''));
             $skinTypeId = $request->request->get('skinTypeId');
-            $concerns   = $request->request->all('concerns');   // tableau []
-            $interests  = $request->request->all('interests');  // tableau []
+            $concerns = $request->request->all('concerns');   // tableau []
+            $interests = $request->request->all('interests');  // tableau []
 
             // Validation basique
             if (!$firstName || !$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $this->addFlash('warning', 'Veuillez remplir correctement les champs obligatoires.');
+
                 return $this->redirectToRoute('app_newsletter');
             }
 
@@ -49,6 +49,7 @@ final class NewsletterController extends AbstractController
             $existing = $em->getRepository(Newsletter::class)->findOneBy(['email' => $email]);
             if ($existing) {
                 $this->addFlash('warning', 'Cet email est déjà inscrit à la newsletter.');
+
                 return $this->redirectToRoute('app_newsletter');
             }
 
@@ -56,7 +57,7 @@ final class NewsletterController extends AbstractController
             $newsletter = new Newsletter();
             $newsletter->setFirstName($firstName);
             $newsletter->setEmail($email);
-            $newsletter->setSubscribedAt(new \DateTimeInterface());
+            $newsletter->setSubscribedAt(new \DateTimeImmutable());
             $newsletter->setIsActive(true);
 
             // Lier le type de peau si sélectionné
@@ -87,7 +88,8 @@ final class NewsletterController extends AbstractController
 
             $em->flush();
 
-            $this->addFlash('success', 'Merci ' . $firstName . ' ! Votre inscription est confirmée. Premier email dimanche à 9h 🌸');
+            $this->addFlash('success', 'Merci '.$firstName.' ! Votre inscription est confirmée. Premier email dimanche à 9h 🌸');
+
             return $this->redirectToRoute('app_newsletter');
         }
 

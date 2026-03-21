@@ -45,7 +45,7 @@ class Routine
     public function __construct()
     {
         $this->routineSteps = new ArrayCollection();
-        $this->stepCount    = 0;
+        $this->stepCount = 0;
     }
 
     public function getId(): ?int
@@ -61,6 +61,7 @@ class Routine
     public function setType(string $type): static
     {
         $this->type = $type;
+
         return $this;
     }
 
@@ -72,6 +73,7 @@ class Routine
     public function setName(string $name): static
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -83,6 +85,7 @@ class Routine
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -94,6 +97,7 @@ class Routine
     public function setDurationMinutes(int $durationMinutes): static
     {
         $this->durationMinutes = $durationMinutes;
+
         return $this;
     }
 
@@ -105,6 +109,7 @@ class Routine
     public function setStepCount(int $stepCount): static
     {
         $this->stepCount = $stepCount;
+
         return $this;
     }
 
@@ -124,6 +129,7 @@ class Routine
             $this->routineSteps->add($routineStep);
             $routineStep->setRoutine($this);
         }
+
         return $this;
     }
 
@@ -136,6 +142,7 @@ class Routine
                 $routineStep->setRoutine(null);
             }
         }
+
         return $this;
     }
 }

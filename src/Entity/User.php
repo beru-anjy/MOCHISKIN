@@ -3,9 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -53,6 +53,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * Un utilisateur peut rédiger plusieurs articles.
      * mappedBy: 'author' → Article possède la clé étrangère $author.
      */
+
+    /** @var Collection<int, Article> */
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'author')]
     private Collection $articles;
 
@@ -61,16 +63,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * Un utilisateur peut écrire plusieurs commentaires.
      * mappedBy: 'author' → Comment possède la clé étrangère $author.
      */
+
+    /** @var Collection<int, Comment> */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'author')]
     private Collection $comments;
 
     public function __construct()
     {
         $this->registrationDate = new \DateTimeImmutable();
-        $this->isActive         = true;
-        $this->roles            = [];
-        $this->articles         = new ArrayCollection();
-        $this->comments         = new ArrayCollection();
+        $this->isActive = true;
+        $this->roles = [];
+        $this->articles = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -86,6 +90,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -98,12 +103,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
         $roles[] = 'ROLE_USER';
+
         return array_unique($roles);
     }
-
+    /**
+    * @param array<string> $roles
+    */
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
+
         return $this;
     }
 
@@ -115,6 +124,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
+
         return $this;
     }
 
@@ -122,6 +132,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $data = (array) $this;
         $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
+
         return $data;
     }
 
@@ -139,6 +150,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFirstName(string $firstName): static
     {
         $this->firstName = $firstName;
+
         return $this;
     }
 
@@ -150,10 +162,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
+
         return $this;
     }
 
-   public function getRegistrationDate(): ?\DateTimeImmutable
+    public function getRegistrationDate(): ?\DateTimeImmutable
     {
         return $this->registrationDate;
     }
@@ -161,6 +174,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRegistrationDate(\DateTimeImmutable $registrationDate): static
     {
         $this->registrationDate = $registrationDate;
+
         return $this;
     }
 
@@ -172,6 +186,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
+
         return $this;
     }
 
@@ -183,6 +198,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setSkinType(?SkinType $skinType): static
     {
         $this->skinType = $skinType;
+
         return $this;
     }
 
@@ -202,6 +218,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $this->articles->add($article);
             $article->setAuthor($this);
         }
+
         return $this;
     }
 
@@ -212,6 +229,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $article->setAuthor(null);
             }
         }
+
         return $this;
     }
 
@@ -231,6 +249,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $this->comments->add($comment);
             $comment->setAuthor($this);
         }
+
         return $this;
     }
 
@@ -241,6 +260,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $comment->setAuthor(null);
             }
         }
+
         return $this;
     }
 }

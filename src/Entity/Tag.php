@@ -45,6 +45,7 @@ class Tag
     public function setName(string $name): static
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -56,6 +57,7 @@ class Tag
     public function setSlug(string $slug): static
     {
         $this->slug = $slug;
+
         return $this;
     }
 
@@ -73,6 +75,7 @@ class Tag
             $this->articles->add($article);
             $article->addTag($this);
         }
+
         return $this;
     }
 
@@ -81,6 +84,7 @@ class Tag
         if ($this->articles->removeElement($article)) {
             $article->removeTag($this);
         }
+
         return $this;
     }
 }

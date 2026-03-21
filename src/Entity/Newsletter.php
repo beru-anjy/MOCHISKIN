@@ -2,8 +2,6 @@
 
 namespace App\Entity;
 
-use App\Entity\NewsletterConcern;
-use App\Entity\SkinType;
 use App\Repository\NewsletterRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -60,9 +58,9 @@ class Newsletter
 
     public function __construct()
     {
-        $this->subscribedAt        = new \DateTimeImmutable(); // 🐛 BUGFIX : subscribetAt → subscribedAt
-        $this->isActive            = true;
-        $this->newsletterConcerns  = new ArrayCollection();
+        $this->subscribedAt = new \DateTimeImmutable(); // 🐛 BUGFIX : subscribetAt → subscribedAt
+        $this->isActive = true;
+        $this->newsletterConcerns = new ArrayCollection();
         $this->newsletterInterests = new ArrayCollection();
     }
 
@@ -79,6 +77,7 @@ class Newsletter
     public function setFirstName(string $firstName): static
     {
         $this->firstName = $firstName;
+
         return $this;
     }
 
@@ -90,6 +89,7 @@ class Newsletter
     public function setEmail(string $email): static
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -103,6 +103,7 @@ class Newsletter
     public function setSubscribedAt(\DateTimeImmutable $subscribedAt): static
     {
         $this->subscribedAt = $subscribedAt;
+
         return $this;
     }
 
@@ -114,6 +115,7 @@ class Newsletter
     public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
+
         return $this;
     }
 
@@ -125,6 +127,7 @@ class Newsletter
     public function setSkinType(?SkinType $skinType): static
     {
         $this->skinType = $skinType;
+
         return $this;
     }
 
@@ -144,6 +147,7 @@ class Newsletter
             $this->newsletterConcerns->add($newsletterConcern);
             $newsletterConcern->setNewsletter($this);
         }
+
         return $this;
     }
 
@@ -154,6 +158,7 @@ class Newsletter
                 $newsletterConcern->setNewsletter(null);
             }
         }
+
         return $this;
     }
 
@@ -173,6 +178,7 @@ class Newsletter
             $this->newsletterInterests->add($newsletterInterest);
             $newsletterInterest->setNewsletter($this);
         }
+
         return $this;
     }
 
@@ -183,6 +189,7 @@ class Newsletter
                 $newsletterInterest->setNewsletter(null);
             }
         }
+
         return $this;
     }
 }

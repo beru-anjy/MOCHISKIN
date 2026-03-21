@@ -87,10 +87,10 @@ class Article
     public function __construct()
     {
         $this->publishedAt = new \DateTimeImmutable();
-        $this->updatedAt   = new \DateTimeImmutable();
-        $this->viewCount   = 0;
-        $this->tags        = new ArrayCollection();
-        $this->comments    = new ArrayCollection();
+        $this->updatedAt = new \DateTimeImmutable();
+        $this->viewCount = 0;
+        $this->tags = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -106,6 +106,7 @@ class Article
     public function setTitle(string $title): static
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -117,6 +118,7 @@ class Article
     public function setSlug(string $slug): static
     {
         $this->slug = $slug;
+
         return $this;
     }
 
@@ -128,6 +130,7 @@ class Article
     public function setContent(string $content): static
     {
         $this->content = $content;
+
         return $this;
     }
 
@@ -139,6 +142,7 @@ class Article
     public function setExcerpt(string $excerpt): static
     {
         $this->excerpt = $excerpt;
+
         return $this;
     }
 
@@ -150,6 +154,7 @@ class Article
     public function setImageUrl(?string $imageUrl): static
     {
         $this->imageUrl = $imageUrl;
+
         return $this;
     }
 
@@ -161,6 +166,7 @@ class Article
     public function setPublishedAt(\DateTimeImmutable $publishedAt): static
     {
         $this->publishedAt = $publishedAt;
+
         return $this;
     }
 
@@ -172,6 +178,7 @@ class Article
     public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
         return $this;
     }
 
@@ -183,6 +190,7 @@ class Article
     public function setViewCount(int $viewCount): static
     {
         $this->viewCount = $viewCount;
+
         return $this;
     }
 
@@ -194,6 +202,7 @@ class Article
     public function setReadingTime(int $readingTime): static
     {
         $this->readingTime = $readingTime;
+
         return $this;
     }
 
@@ -213,6 +222,7 @@ class Article
             $this->comments->add($comment);
             $comment->setArticle($this);
         }
+
         return $this;
     }
 
@@ -223,6 +233,7 @@ class Article
                 $comment->setArticle(null);
             }
         }
+
         return $this;
     }
 
@@ -236,6 +247,7 @@ class Article
     public function setAuthor(?User $author): static
     {
         $this->author = $author;
+
         return $this;
     }
 
@@ -249,6 +261,7 @@ class Article
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
         return $this;
     }
 
@@ -267,12 +280,14 @@ class Article
         if (!$this->tags->contains($tag)) {
             $this->tags->add($tag);
         }
+
         return $this;
     }
 
     public function removeTag(Tag $tag): static
     {
         $this->tags->removeElement($tag);
+
         return $this;
     }
 }
