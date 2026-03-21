@@ -1,0 +1,341 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ma Routine Skincare{% endblock %}
+{% block description %}Découvrez ma routine beauté complète : Matin et Soir.{% endblock %}
+{% block keywords %}routine skincare, matin, soir, étapes beauté{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* ── PAGE HEADER ── */
+    .page-header {
+        background: linear-gradient(135deg, var(--peach-main) 0%, var(--pink-main) 100%);
+        color: white; padding: 5rem 0 3rem;
+        text-align: center; margin-bottom: 3rem;
+    }
+    .page-header h1 { font-size: 3rem; color: white; margin-bottom: .5rem; }
+    .page-header p  { opacity: .9; color: white; font-size: 1.1rem; }
+
+    /* ── TABS ── */
+    .routine-tabs {
+        background: white; padding: 1rem;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(255,182,193,.1);
+        display: flex; gap: 1rem;
+        margin-bottom: 3rem;
+    }
+    .tab-button {
+        flex: 1; padding: 1rem 2rem;
+        border: none; background: transparent;
+        color: var(--gray-soft); font-weight: 600;
+        font-size: 1.1rem; border-radius: 10px;
+        cursor: pointer; transition: all .3s ease;
+        display: flex; align-items: center;
+        justify-content: center; gap: .5rem;
+    }
+    .tab-button.active {
+        background: linear-gradient(135deg, var(--peach-main) 0%, var(--pink-main) 100%);
+        color: white;
+    }
+    .tab-button:hover:not(.active) { background: var(--rose-light); }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ── TIMELINE CONTAINER ── */
+    .timeline-container {
+        background: white; padding: 3rem;
+        border-radius: 20px;
+        box-shadow: 0 5px 20px rgba(255,182,193,.1);
+        margin-bottom: 2rem;
+    }
+
+    /* ── TIMELINE ── */
+    .timeline { position: relative; padding: 2rem 0; }
+    .timeline::before {
+        content: ''; position: absolute;
+        left: 30px; top: 0; bottom: 0; width: 3px;
+        background: linear-gradient(180deg, var(--peach-main) 0%, var(--pink-main) 100%);
+    }
+
+    .timeline-item {
+        position: relative; padding-left: 80px;
+        margin-bottom: 3rem;
+        opacity: 0; transform: translateX(-30px);
+        transition: all .5s ease;
+    }
+    .timeline-item.show { opacity: 1; transform: translateX(0); }
+
+    .timeline-number {
+        position: absolute; left: 0; top: 0;
+        width: 60px; height: 60px;
+        background: linear-gradient(135deg, var(--peach-main) 0%, var(--pink-main) 100%);
+        color: white; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.5rem; font-weight: 700;
+        box-shadow: 0 5px 15px rgba(255,182,193,.3);
+    }
+
+    .timeline-content {
+        background: var(--rose-light); padding: 1.5rem;
+        border-radius: 15px;
+        border-left: 4px solid var(--peach-main);
+    }
+    .timeline-title       { font-size: 1.4rem; margin-bottom: .5rem; color: var(--gray-soft); }
+    .timeline-description { color: var(--gray-soft); line-height: 1.6; margin-bottom: 1rem; }
+
+    /* ── PRODUCT TAG ── */
+    .product-tag {
+        display: inline-block; background: white;
+        padding: .4rem 1rem; border-radius: 20px;
+        font-size: .9rem; color: var(--peach-dark);
+        font-weight: 500; margin: .2rem;
+        box-shadow: 0 2px 10px rgba(255,182,193,.1);
+    }
+
+    /* ── BOUTON AJOUTER ── */
+    .add-product-btn {
+        background: linear-gradient(135deg, var(--peach-main) 0%, var(--pink-main) 100%);
+        border: none; padding: 1rem 2.5rem;
+        border-radius: 25px; color: white;
+        font-weight: 600; cursor: pointer;
+        transition: all .3s ease;
+        display: block; margin: 2rem auto 0;
+    }
+    .add-product-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255,182,193,.3); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+        .timeline-item  { padding-left: 60px; }
+        .timeline-number { width: 45px; height: 45px; font-size: 1.1rem; }
+        .timeline::before { left: 22px; }
+        .timeline-container { padding: 1.5rem; }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+
+    {# ══ HEADER ══ #}
+    <div class="page-header">
+        <div class="container">
+            <h1>Ma routine skincare</h1>
+            <p>Découvrez ma routine beauté complète pour une peau éclatante</p>
+        </div>
+    </div>
+
+    <div class="container my-5">
+
+        {# ══ TABS ══ #}
+        <div class="routine-tabs">
+            <button class="tab-button active" data-tab="morning">
+                <span>🌅</span><span>Routine Matin</span>
+            </button>
+            <button class="tab-button" data-tab="evening">
+                <span>🌙</span><span>Routine Soir</span>
+            </button>
+        </div>
+
+        {# ══ TAB MATIN ══ #}
+        <div id="morning" class="tab-content active">
+            <div class="timeline-container">
+                <h2 class="text-center mb-4" style="color:var(--peach-dark);">
+                    {% if morningRoutine %}
+                        {{ morningRoutine.name }}
+                    {% else %}
+                        Timeline Matin — 5 étapes (10 min)
+                    {% endif %}
+                </h2>
+                <div class="timeline">
+                {% if morningRoutine %}
+                    {% for step in morningRoutine.routineSteps %}
+                        <div class="timeline-item">
+                            <div class="timeline-number">{{ loop.index }}</div>
+                            <div class="timeline-content">
+                                <h3 class="timeline-title">{{ step.name }}</h3>
+                                <p class="timeline-description">{{ step.description }}</p>
+                                {% for product in step.productRecommendations %}
+                                    <span class="product-tag">✨ {{ product.name }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    {# Fallback 5 étapes statiques #}
+                    <div class="timeline-item">
+                        <div class="timeline-number">1</div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Nettoyant doux</h3>
+                            <p class="timeline-description">Nettoyez votre visage avec un gel ou une mousse nettoyante douce pour éliminer les impuretés accumulées pendant la nuit.</p>
+                            <span class="product-tag">🧴 Gel nettoyant purifiant</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-number">2</div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Tonique hydratant</h3>
+                            <p class="timeline-description">Appliquez un tonique pour rééquilibrer le pH de votre peau et préparer l'absorption des soins suivants.</p>
+                            <span class="product-tag">💧 Tonique sans alcool</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-number">3</div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Sérum vitamine C</h3>
+                            <p class="timeline-description">Le sérum à la vitamine C illumine le teint et protège contre les radicaux libres. Appliquez quelques gouttes sur le visage et le cou.</p>
+                            <span class="product-tag">✨ Sérum éclat vitamine C 20%</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-number">4</div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Crème hydratante</h3>
+                            <p class="timeline-description">Appliquez une crème hydratante adaptée à votre type de peau pour maintenir l'hydratation toute la journée.</p>
+                            <span class="product-tag">🌸 Crème hydratante légère</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-number">5</div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Crème solaire SPF50</h3>
+                            <p class="timeline-description">L'étape la plus importante ! Appliquez généreusement une crème solaire SPF50, même en hiver. Renouvelez toutes les 2h en extérieur.</p>
+                            <span class="product-tag">☀️ Protection solaire SPF50+</span>
+                        </div>
+                    </div>
+                {% endif %}
+                </div>
+                <button class="add-product-btn" onclick="addProduct('morning')">+ Ajouter un produit</button>
+            </div>
+        </div>
+
+        {# ══ TAB SOIR ══ #}
+        <div id="evening" class="tab-content">
+            <div class="timeline-container">
+                <h2 class="text-center mb-4" style="color:var(--peach-dark);">
+                    {% if eveningRoutine %}
+                        {{ eveningRoutine.name }}
+                    {% else %}
+                        Timeline Soir — 7 étapes (15 min)
+                    {% endif %}
+                </h2>
+                <div class="timeline">
+                {% if eveningRoutine %}
+                    {% for step in eveningRoutine.routineSteps %}
+                        <div class="timeline-item">
+                            <div class="timeline-number">{{ loop.index }}</div>
+                            <div class="timeline-content">
+                                <h3 class="timeline-title">{{ step.name }}</h3>
+                                <p class="timeline-description">{{ step.description }}</p>
+                                {% for product in step.productRecommendations %}
+                                    <span class="product-tag">✨ {{ product.name }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    {# Fallback 7 étapes statiques #}
+                    <div class="timeline-item">
+                        <div class="timeline-number">1</div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Démaquillant huile</h3>
+                            <p class="timeline-description">Première étape du double nettoyage. L'huile démaquillante dissout le maquillage, la crème solaire et les impuretés liposolubles.</p>
+                            <span class="product-tag">🌟 Huile démaquillante douce</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-number">2</div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Nettoyant moussant</h3>
+                            <p class="timeline-description">Deuxième étape du double nettoyage. Élimine les résidus et nettoie la peau en profondeur.</p>
+                            <span class="product-tag">🧴 Mousse nettoyante purifiante</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-number">3</div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Exfoliant doux (2x/semaine)</h3>
+                            <p class="timeline-description">Deux fois par semaine, utilisez un exfoliant doux pour éliminer les cellules mortes et affiner le grain de peau.</p>
+                            <span class="product-tag">✨ Exfoliant enzymatique</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-number">4</div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Tonique</h3>
+                            <p class="timeline-description">Rééquilibrez le pH avec un tonique apaisant pour préparer la peau à recevoir les actifs des soins suivants.</p>
+                            <span class="product-tag">💧 Tonique hydratant et apaisant</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-number">5</div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Sérum réparateur</h3>
+                            <p class="timeline-description">Le soir, privilégiez rétinol, acide hyaluronique ou peptides selon vos besoins spécifiques.</p>
+                            <span class="product-tag">🌙 Sérum anti-âge rétinol</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-number">6</div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Contour des yeux</h3>
+                            <p class="timeline-description">Appliquez délicatement en tapotant un soin contour des yeux adapté à cette zone fragile.</p>
+                            <span class="product-tag">👁️ Contour yeux anti-cernes</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-number">7</div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Crème de nuit</h3>
+                            <p class="timeline-description">Terminez avec une crème de nuit nourrissante, plus riche que la crème de jour, pour régénérer pendant le sommeil.</p>
+                            <span class="product-tag">🌸 Crème de nuit régénérante</span>
+                        </div>
+                    </div>
+                {% endif %}
+                </div>
+                <button class="add-product-btn" onclick="addProduct('evening')">+ Ajouter un produit</button>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+function animateTimeline() {
+    $('.timeline-item').removeClass('show');
+    $('.tab-content.active .timeline-item').each(function (i) {
+        var el = $(this);
+        setTimeout(function () { el.addClass('show'); }, i * 200);
+    });
+}
+
+function addProduct(tab) {
+    var name = prompt('Entrez le nom du produit à ajouter :');
+    if (!name || !name.trim()) return;
+    var n = $('#' + tab + ' .timeline-item').length + 1;
+    var html = '<div class="timeline-item show">'
+        + '<div class="timeline-number">' + n + '</div>'
+        + '<div class="timeline-content">'
+        + '<h3 class="timeline-title">' + name + '</h3>'
+        + '<p class="timeline-description">Nouveau produit ajouté. Notez vos observations !</p>'
+        + '<span class="product-tag">✨ ' + name + '</span>'
+        + '</div></div>';
+    $('#' + tab + ' .timeline').append(html);
+    alert('✅ Produit "' + name + '" ajouté avec succès !');
+}
+
+$(document).ready(function () {
+    animateTimeline();
+    $('.tab-button').on('click', function () {
+        var tab = $(this).data('tab');
+        $('.tab-button').removeClass('active');
+        $('.tab-content').removeClass('active');
+        $(this).addClass('active');
+        $('#' + tab).addClass('active');
+        animateTimeline();
+    });
+});
+</script>
+{% endblock %}

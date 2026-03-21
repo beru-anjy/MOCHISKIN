@@ -1,0 +1,300 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}À propos{% endblock %}
+{% block description %}Découvrez l'histoire de MOCHISKIN et la passion derrière le blog.{% endblock %}
+{% block keywords %}à propos, skincare, parcours, Angelina, blog beauté{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* ── HERO ── */
+    .hero-about {
+        background: linear-gradient(135deg, var(--peach-main) 0%, var(--pink-main) 100%);
+        color: white;
+        padding: 6rem 0;
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+    .hero-about h1 { font-size: 3.5rem; margin-bottom: 1rem; color: white; }
+    .hero-about p  { font-size: 1.3rem; opacity: 0.95; color: white; }
+
+    /* ── INTRO ── */
+    .intro-section {
+        background: white;
+        padding: 4rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(255,182,193,.15);
+        margin-bottom: 3rem;
+        text-align: center;
+    }
+    .profile-image {
+        width: 220px; height: 220px;
+        border-radius: 50%; overflow: hidden;
+        margin: 30px auto;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .profile-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .intro-text { font-size: 1.2rem; line-height: 1.8; max-width: 800px; margin: 0 auto; }
+
+    /* ── STORY / OBJECTIFS ── */
+    .story-section {
+        background: white;
+        padding: 4rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(255,182,193,.15);
+        margin-bottom: 3rem;
+    }
+    .section-title {
+        font-size: 2.5rem;
+        text-align: center;
+        margin-bottom: 3rem;
+        color: var(--peach-dark);
+        position: relative;
+        display: inline-block;
+        width: 100%;
+    }
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px; left: 50%;
+        transform: translateX(-50%);
+        width: 100px; height: 3px;
+        background: linear-gradient(90deg, var(--peach-main), var(--pink-main));
+        border-radius: 5px;
+    }
+
+    /* ── OBJECTIFS ── */
+    .objectives-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem; margin-top: 2rem;
+    }
+    .objective-card {
+        background: linear-gradient(135deg, var(--peach-light) 0%, var(--pink-light) 100%);
+        padding: 2.5rem; border-radius: 15px;
+        text-align: center; transition: all .3s ease;
+    }
+    .objective-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(255,182,193,.3); }
+    .objective-icon  { font-size: 3rem; margin-bottom: 1rem; }
+    .objective-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 1rem; }
+    .objective-description { font-size: .95rem; line-height: 1.6; }
+
+    /* ── VALEURS ── */
+    .values-section {
+        background: white;
+        padding: 4rem; border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(255,182,193,.15);
+        margin-bottom: 3rem;
+    }
+    .value-item {
+        margin-bottom: 2rem; padding: 2rem;
+        background: var(--rose-light); border-radius: 15px;
+        border-left: 5px solid var(--peach-main);
+    }
+    .value-item:last-child { margin-bottom: 0; }
+    .value-title       { font-size: 1.5rem; color: var(--peach-dark); margin-bottom: .8rem; }
+    .value-description { line-height: 1.8; font-size: 1rem; }
+
+    /* ── QUOTE ── */
+    .quote-section {
+        background: linear-gradient(135deg, var(--peach-main) 0%, var(--pink-main) 100%);
+        color: white; padding: 4rem; border-radius: 20px;
+        text-align: center; margin-bottom: 3rem;
+    }
+    .quote-text   { font-size: 1.8rem; font-style: italic; margin-bottom: 1rem; line-height: 1.6; }
+    .quote-author { font-size: 1.1rem; opacity: .9; }
+
+    /* ── CTA ── */
+    .cta-section {
+        background: white; padding: 4rem; border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(255,182,193,.15);
+        text-align: center; margin-bottom: 3rem;
+    }
+    .cta-buttons { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; }
+    .cta-btn {
+        padding: 1rem 2.5rem; border-radius: 50px; font-weight: 600;
+        text-decoration: none; transition: all .3s ease;
+        display: inline-flex; align-items: center; gap: .5rem;
+    }
+    .cta-btn-primary {
+        background: linear-gradient(135deg, var(--peach-main) 0%, var(--pink-main) 100%);
+        color: white; box-shadow: 0 5px 15px rgba(255,182,193,.3);
+    }
+    .cta-btn-primary:hover  { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255,182,193,.5); color: white; }
+    .cta-btn-secondary      { background: white; color: var(--peach-dark); border: 2px solid var(--peach-main); }
+    .cta-btn-secondary:hover { background: var(--peach-light); color: var(--peach-dark); }
+
+    /* ── ICÔNES SOCIALES ── */
+    .social-icons { display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; }
+    .social-icon {
+        width: 50px; height: 50px;
+        background: var(--peach-light); border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.5rem; text-decoration: none; transition: all .3s ease;
+    }
+    .social-icon:hover {
+        background: linear-gradient(135deg, var(--peach-main) 0%, var(--pink-main) 100%);
+        transform: translateY(-5px);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+        .hero-about h1   { font-size: 2.2rem; }
+        .intro-section,
+        .story-section,
+        .values-section,
+        .quote-section,
+        .cta-section     { padding: 2rem; }
+        .quote-text      { font-size: 1.3rem; }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+
+    {# ══ HERO ══ #}
+    <div class="hero-about">
+        <div class="container">
+            <h1>Qui suis-je ?</h1>
+            <p>Passionnée de skincare et de partage</p>
+        </div>
+    </div>
+
+    <div class="container my-5">
+
+        {# ══ INTRODUCTION ══ #}
+        <div class="intro-section">
+            <div class="profile-image">
+                <img src="{{ asset('images/ceo_anjy.jpg') }}" alt="Angelina, CEO MOCHISKIN">
+            </div>
+            <h2 style="color: var(--peach-dark); margin-bottom: 1.5rem;">Bonjour, moi c'est Angelina 🌸</h2>
+            <p class="intro-text">
+                Passionnée de skincare depuis 10 ans, j'ai créé ce blog pour partager mes découvertes
+                et vous aider à prendre soin de votre peau naturellement. Mon objectif est de rendre
+                le skincare accessible à tous, sans jargon compliqué ni promesses marketing mensongères.
+            </p>
+        </div>
+
+        {# ══ MON PARCOURS ══ #}
+        <div class="story-section">
+            <h2 class="section-title">Mon parcours</h2>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                Tout a commencé à l'adolescence, lorsque j'ai fait face à de sérieux problèmes de peau.
+                Entre les traitements agressifs et les produits inadaptés, j'ai longtemps cherché des solutions.
+            </p>
+            <p style="font-size: 1.1rem; line-height: 1.8; margin-top: 1.5rem;">
+                Cette quête personnelle m'a poussée à me former auprès de dermatologues coréens, à étudier
+                la composition des produits et à tester des centaines de références. Aujourd'hui, je souhaite
+                partager tout ce que j'ai appris pour vous éviter des années d'essais et d'erreurs.
+            </p>
+        </div>
+
+        {# ══ OBJECTIFS DU BLOG ══ #}
+        <div class="story-section">
+            <h2 class="section-title">Les objectifs du blog</h2>
+            <p style="text-align: center; font-size: 1.1rem; margin-bottom: 3rem;">
+                Ce blog est né d'une volonté simple : rendre le skincare accessible à tous,
+                sans jargon compliqué ni promesses marketing mensongères.
+            </p>
+            <div class="objectives-grid">
+                <div class="objective-card">
+                    <div class="objective-icon">📚</div>
+                    <h3 class="objective-title">Démystifier le skincare</h3>
+                    <p class="objective-description">Rendre la routine beauté simple et accessible à tous, quel que soit le niveau de connaissance.</p>
+                </div>
+                <div class="objective-card">
+                    <div class="objective-icon">✨</div>
+                    <h3 class="objective-title">Partager des conseils pratiques</h3>
+                    <p class="objective-description">Partager mes découvertes produits et mes routines selon les types de peau.</p>
+                </div>
+                <div class="objective-card">
+                    <div class="objective-icon">🌿</div>
+                    <h3 class="objective-title">Promouvoir une beauté naturelle</h3>
+                    <p class="objective-description">Favoriser les marques engagées et les formules respectueuses de la peau.</p>
+                </div>
+            </div>
+        </div>
+
+        {# ══ MES VALEURS ══ #}
+        <div class="values-section">
+            <h2 class="section-title">Mes valeurs</h2>
+            <p style="text-align: center; font-size: 1.1rem; margin-bottom: 3rem;">
+                Ces valeurs guident chaque article, chaque recommandation et chaque conseil que je partage.
+            </p>
+            <div class="value-item">
+                <h3 class="value-title">🔍 Transparence</h3>
+                <p class="value-description">Tous les produits présentés sont testés personnellement pendant au moins 4 semaines.
+                Je partage mes avis sincères, qu'ils soient positifs ou négatifs. Aucun article sponsorisé sans mention claire.</p>
+            </div>
+            <div class="value-item">
+                <h3 class="value-title">💫 Authenticité</h3>
+                <p class="value-description">Pas de filtre, pas de promesses miracles. Je partage mes vraies expériences,
+                y compris les échecs. Le skincare est un voyage, pas une destination.</p>
+            </div>
+            <div class="value-item">
+                <h3 class="value-title">🤝 Inclusivité</h3>
+                <p class="value-description">Le skincare est pour tout le monde : tous types de peau, tous âges, tous budgets.
+                Chaque peau est unique et mérite des conseils adaptés, sans jugement.</p>
+            </div>
+            <div class="value-item">
+                <h3 class="value-title">🌍 Éco-responsabilité</h3>
+                <p class="value-description">Privilégier les marques engagées, les formules clean et les packagings durables.
+                Prendre soin de sa peau, c'est aussi prendre soin de la planète.</p>
+            </div>
+        </div>
+
+        {# ══ CITATION ══ #}
+        <div class="quote-section">
+            <p class="quote-text">
+                "Prendre soin de sa peau n'est pas une question de perfection,
+                mais de bien-être et de confiance en soi."
+            </p>
+            <p class="quote-author">— Angelina, CEO MOCHISKIN</p>
+        </div>
+
+        {# ══ CTA ══ #}
+        <div class="cta-section">
+            <h2 style="color: var(--peach-dark); margin-bottom: 1rem;">Envie d'en savoir plus ?</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+                Rejoignez la communauté MOCHISKIN et recevez mes meilleurs conseils chaque semaine.
+            </p>
+            <div class="cta-buttons">
+                <a href="{{ path('app_newsletter') }}" class="cta-btn cta-btn-primary">📧 Newsletter</a>
+                <a href="{{ path('app_contact') }}"    class="cta-btn cta-btn-secondary">💬 Me contacter</a>
+            </div>
+            <div class="social-icons">
+                <a href="#" class="social-icon" title="Instagram">📷</a>
+                <a href="#" class="social-icon" title="Pinterest">📌</a>
+                <a href="#" class="social-icon" title="YouTube">🎥</a>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+$(document).ready(function () {
+
+    // Animations scroll sur les cards et valeurs
+    function animateOnScroll() {
+        $('.objective-card, .value-item').each(function () {
+            if ($(this)[0].getBoundingClientRect().top < window.innerHeight - 80) {
+                $(this).css({ opacity: 1, transform: 'translateY(0)' });
+            }
+        });
+    }
+
+    $('.objective-card, .value-item').css({
+        opacity: 0,
+        transform: 'translateY(30px)',
+        transition: 'all 0.6s ease'
+    });
+
+    $(window).on('scroll', animateOnScroll);
+    animateOnScroll();
+});
+</script>
+{% endblock %}

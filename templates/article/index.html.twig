@@ -1,0 +1,247 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Articles{% endblock %}
+{% block description %}Tous nos articles skincare : routine, ingrédients, produits, DIY.{% endblock %}
+{% block keywords %}articles, skincare, routine, ingrédients, produits, DIY{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* ── PAGE HEADER ── */
+    .page-header {
+        background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
+        color: white; padding: 4rem 0 3rem;
+        text-align: center; margin-bottom: 2rem;
+    }
+    .page-header h1 { color: white; }
+    .page-header p  { opacity: .9; color: white; }
+
+    /* ── FILTRES ── */
+    .filter-btn {
+        border: 2px solid var(--peach-light);
+        background: white; border-radius: 25px;
+        padding: .4rem 1.3rem; margin: .25rem;
+        font-weight: 500; cursor: pointer;
+        transition: all .25s ease;
+    }
+    .filter-btn:hover, .filter-btn.active {
+        background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
+        border-color: var(--peach-main); color: white;
+    }
+
+    /* ── ARTICLE CARDS ── */
+    .article-card {
+        background: white; border-radius: 15px;
+        overflow: hidden; height: 100%;
+        box-shadow: 0 4px 18px rgba(255,182,193,.12);
+        display: flex; flex-direction: column;
+        transition: transform .3s ease;
+    }
+    .article-card:hover { transform: translateY(-8px); box-shadow: 0 10px 30px rgba(255,182,193,.2); }
+
+    .article-thumb {
+        width: 100%; height: 220px;
+        object-fit: cover; display: block;
+    }
+    .article-thumb-placeholder {
+        width: 100%; height: 220px;
+        background: var(--peach-light);
+        display: flex; align-items: center;
+        justify-content: center; font-size: 3.5rem;
+    }
+
+    .category-badge {
+        display: inline-block;
+        background: var(--peach-light); color: var(--peach-dark);
+        border-radius: 20px; padding: .2rem .9rem;
+        font-size: .8rem; font-weight: 600;
+    }
+
+    .btn-read-more {
+        align-self: flex-start;
+        background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
+        color: white; border: none; border-radius: 25px;
+        padding: .5rem 1.4rem; font-weight: 600;
+        text-decoration: none; margin-top: auto;
+        transition: all .3s ease;
+    }
+    .btn-read-more:hover { color: white; transform: translateX(4px); }
+
+    /* ── SEARCH ── */
+    #searchInput {
+        border: 2px solid var(--peach-light);
+        border-radius: 25px; padding: .5rem 1.2rem;
+        max-width: 320px; width: 100%;
+        transition: border-color .3s;
+    }
+    #searchInput:focus { border-color: var(--peach-dark); outline: none; box-shadow: none; }
+</style>
+{% endblock %}
+
+{% block body %}
+
+    {# ══ PAGE HEADER ══ #}
+    <div class="page-header">
+        <div class="container">
+            <h1>Articles récents</h1>
+            <p>Découvrez tous nos conseils pour une peau saine et éclatante</p>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+
+        {# ══ FILTRES + RECHERCHE ══ #}
+        <div class="text-center mb-4">
+            <button class="filter-btn active" data-filter="all">Tous</button>
+            <button class="filter-btn" data-filter="routine">Routine</button>
+            <button class="filter-btn" data-filter="ingredients">Ingrédients</button>
+            <button class="filter-btn" data-filter="produits">Produits</button>
+            <button class="filter-btn" data-filter="conseils">Conseils</button>
+            <button class="filter-btn" data-filter="diy">DIY</button>
+        </div>
+
+        <div class="text-center mb-4">
+            <input type="text" id="searchInput"
+                   class="form-control mx-auto"
+                   placeholder="Rechercher un article...">
+        </div>
+
+        {# ══ GRILLE ARTICLES ══ #}
+        <div class="row g-4" id="articlesGrid">
+
+        {% for article in articles %}
+            <div class="col-md-4 article-item" data-category="{{ article.category.slug }}">
+                <div class="article-card">
+                    {% if article.imageUrl %}
+                        <img class="article-thumb"
+                             src="{{ asset('uploads/articles/' ~ article.imageUrl) }}"
+                             alt="{{ article.title }}">
+                    {% else %}
+                        <div class="article-thumb-placeholder">📰</div>
+                    {% endif %}
+                    <div class="p-3 d-flex flex-column flex-grow-1">
+                        <span class="category-badge mb-2">{{ article.category.name }}</span>
+                        <h5 class="mb-1">{{ article.title }}</h5>
+                        <small class="text-muted mb-2">
+                            📅 {{ article.publishedAt|date('d M Y') }}
+                            &nbsp;·&nbsp; ⏱ {{ article.readingTime }} min
+                            &nbsp;·&nbsp; ✍️ {{ article.author.firstName }}
+                        </small>
+                        <p class="small flex-grow-1">{{ article.excerpt|slice(0, 120) }}...</p>
+                        <a href="{{ path('app_article_show', {slug: article.slug}) }}"
+                           class="btn-read-more">Lire l'article &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            {# ── Fallback statique si DB vide ── #}
+            <div class="col-md-4 article-item" data-category="routine">
+                <div class="article-card">
+                    <div class="article-thumb-placeholder">☀️</div>
+                    <div class="p-3 d-flex flex-column flex-grow-1">
+                        <span class="category-badge mb-2">Routine</span>
+                        <h5>Les 5 étapes d'une routine matin</h5>
+                        <small class="text-muted mb-2">📅 15 jan. 2025 · ⏱ 5 min · ✍️ Ji-min Park</small>
+                        <p class="small flex-grow-1">Découvrez comment préparer votre peau chaque matin pour une journée éclatante...</p>
+                        <a href="#" class="btn-read-more">Lire l'article &rarr;</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 article-item" data-category="produits">
+                <div class="article-card">
+                    <div class="article-thumb-placeholder">🧴</div>
+                    <div class="p-3 d-flex flex-column flex-grow-1">
+                        <span class="category-badge mb-2">Produits</span>
+                        <h5>Comment choisir son sérum</h5>
+                        <small class="text-muted mb-2">📅 12 jan. 2025 · ⏱ 7 min · ✍️ Ji-min Park</small>
+                        <p class="small flex-grow-1">Le sérum est l'étape clé de votre routine. Voici comment le choisir selon votre type de peau...</p>
+                        <a href="#" class="btn-read-more">Lire l'article &rarr;</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 article-item" data-category="conseils">
+                <div class="article-card">
+                    <div class="article-thumb-placeholder">✨</div>
+                    <div class="p-3 d-flex flex-column flex-grow-1">
+                        <span class="category-badge mb-2">Conseils</span>
+                        <h5>Les bienfaits du double nettoyage</h5>
+                        <small class="text-muted mb-2">📅 8 jan. 2025 · ⏱ 6 min · ✍️ Seok-jin Han</small>
+                        <p class="small flex-grow-1">Le double nettoyage est une technique coréenne incontournable pour une peau nette et éclatante...</p>
+                        <a href="#" class="btn-read-more">Lire l'article &rarr;</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 article-item" data-category="ingredients">
+                <div class="article-card">
+                    <div class="article-thumb-placeholder">🔬</div>
+                    <div class="p-3 d-flex flex-column flex-grow-1">
+                        <span class="category-badge mb-2">Ingrédients</span>
+                        <h5>L'acide hyaluronique expliqué</h5>
+                        <small class="text-muted mb-2">📅 5 jan. 2025 · ⏱ 8 min · ✍️ Aminata Diop</small>
+                        <p class="small flex-grow-1">Tout ce que vous devez savoir sur cet ingrédient star de l'hydratation cutanée...</p>
+                        <a href="#" class="btn-read-more">Lire l'article &rarr;</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 article-item" data-category="diy">
+                <div class="article-card">
+                    <div class="article-thumb-placeholder">🌿</div>
+                    <div class="p-3 d-flex flex-column flex-grow-1">
+                        <span class="category-badge mb-2">DIY</span>
+                        <h5>3 masques maison faciles</h5>
+                        <small class="text-muted mb-2">📅 2 jan. 2026 · ⏱ 5 min · ✍️ Léa Roche</small>
+                        <p class="small flex-grow-1">Réalisez vos propres masques avec des ingrédients naturels du quotidien...</p>
+                        <a href="#" class="btn-read-more">Lire l'article &rarr;</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 article-item" data-category="routine">
+                <div class="article-card">
+                    <div class="article-thumb-placeholder">🌙</div>
+                    <div class="p-3 d-flex flex-column flex-grow-1">
+                        <span class="category-badge mb-2">Routine</span>
+                        <h5>Routine du soir : les essentiels</h5>
+                        <small class="text-muted mb-2">📅 18 jan. 2026 · ⏱ 6 min · ✍️ Ji-min Park</small>
+                        <p class="small flex-grow-1">Le soir, votre peau a besoin d'une attention particulière pour se régénérer...</p>
+                        <a href="#" class="btn-read-more">Lire l'article &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        </div>{# fin #articlesGrid #}
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+$(document).ready(function () {
+
+    // ── Filtres par catégorie ──
+    $('.filter-btn').on('click', function () {
+        $('.filter-btn').removeClass('active');
+        $(this).addClass('active');
+        var f = $(this).data('filter');
+        if (f === 'all') {
+            $('.article-item').fadeIn(300);
+        } else {
+            $('.article-item').fadeOut(300);
+            $('.article-item[data-category="' + f + '"]').fadeIn(300);
+        }
+    });
+
+    // ── Recherche live ──
+    $('#searchInput').on('keyup', function () {
+        var s = $(this).val().toLowerCase();
+        $('.article-item').each(function () {
+            var title   = $(this).find('h5').text().toLowerCase();
+            var excerpt = $(this).find('p').text().toLowerCase();
+            $(this).toggle(title.includes(s) || excerpt.includes(s));
+        });
+    });
+
+});
+</script>
+{% endblock %}

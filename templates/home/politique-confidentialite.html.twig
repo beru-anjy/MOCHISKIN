@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Politique de confidentialité — MOCHISKIN{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .page-header {
+        background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
+        color: white; padding: 4rem 0 3rem;
+        text-align: center; margin-bottom: 3rem;
+    }
+    .page-header h1 { color: white; font-size: 2.5rem; }
+
+    .legal-section {
+        background: white; border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 5px 20px rgba(255,182,193,.12);
+        margin-bottom: 2rem;
+    }
+    .legal-section h2 {
+        color: var(--peach-dark);
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        padding-bottom: .5rem;
+        border-bottom: 2px solid var(--peach-light);
+    }
+    .legal-section p, .legal-section li {
+        line-height: 1.8; color: var(--gray-soft);
+    }
+    .legal-section ul { padding-left: 1.5rem; }
+    .legal-section a  { color: var(--peach-dark); }
+</style>
+{% endblock %}
+
+{% block body %}
+
+    <div class="page-header">
+        <div class="container">
+            <h1>Politique de confidentialité</h1>
+            <p>Comment nous collectons et utilisons vos données</p>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+
+        <div class="legal-section">
+            <h2>1. Données collectées</h2>
+            <p>MOCHISKIN collecte les données suivantes :</p>
+            <ul>
+                <li><strong>Newsletter :</strong> prénom, adresse email, type de peau, préoccupations et centres d'intérêt</li>
+                <li><strong>Formulaire de contact :</strong> nom complet, adresse email, sujet et message</li>
+                <li><strong>Commentaires :</strong> nom et email (si vous commentez un article)</li>
+                <li><strong>Données de navigation :</strong> cookies techniques nécessaires au bon fonctionnement du site</li>
+            </ul>
+        </div>
+
+        <div class="legal-section">
+            <h2>2. Finalité des données</h2>
+            <p>Vos données sont utilisées uniquement pour :</p>
+            <ul>
+                <li>L'envoi de la newsletter hebdomadaire (si vous y êtes abonné)</li>
+                <li>La réponse à vos messages via le formulaire de contact</li>
+                <li>L'amélioration de l'expérience utilisateur sur le site</li>
+            </ul>
+            <p>Vos données ne sont <strong>jamais vendues ni partagées</strong> avec des tiers à des fins commerciales.</p>
+        </div>
+
+        <div class="legal-section">
+            <h2>3. Durée de conservation</h2>
+            <ul>
+                <li><strong>Abonnés newsletter :</strong> jusqu'à désinscription</li>
+                <li><strong>Messages de contact :</strong> 3 ans maximum</li>
+                <li><strong>Commentaires :</strong> durée de vie de l'article</li>
+            </ul>
+        </div>
+
+        <div class="legal-section">
+            <h2>4. Vos droits (RGPD)</h2>
+            <p>Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez des droits suivants :</p>
+            <ul>
+                <li><strong>Droit d'accès :</strong> consulter les données vous concernant</li>
+                <li><strong>Droit de rectification :</strong> corriger des données inexactes</li>
+                <li><strong>Droit à l'effacement :</strong> demander la suppression de vos données</li>
+                <li><strong>Droit d'opposition :</strong> vous opposer au traitement de vos données</li>
+                <li><strong>Droit à la portabilité :</strong> recevoir vos données dans un format lisible</li>
+            </ul>
+            <p>
+                Pour exercer ces droits, contactez-nous à :
+                <a href="mailto:contact@mochiskin.fr">contact@mochiskin.fr</a>
+            </p>
+        </div>
+
+        <div class="legal-section">
+            <h2>5. Cookies</h2>
+            <p>
+                Ce site utilise uniquement des cookies techniques nécessaires à son bon fonctionnement 
+                (session Symfony, sécurité CSRF). Aucun cookie publicitaire ou de tracking n'est utilisé.
+            </p>
+        </div>
+
+        <div class="legal-section">
+            <h2>6. Contact</h2>
+            <p>
+                Pour toute question relative à vos données personnelles, vous pouvez nous contacter :
+            </p>
+            <ul>
+                <li><strong>Email :</strong> <a href="mailto:contact@mochiskin.fr">contact@mochiskin.fr</a></li>
+                <li><strong>Formulaire :</strong> <a href="{{ path('app_contact') }}">page de contact</a></li>
+            </ul>
+            <p>
+                Vous avez également le droit d'introduire une réclamation auprès de la 
+                <a href="https://www.cnil.fr" target="_blank" rel="noopener">CNIL</a>.
+            </p>
+        </div>
+
+        <p class="text-muted text-center small">Dernière mise à jour : {{ 'now'|date('d/m/Y') }}</p>
+
+        <div class="text-center mt-4">
+            <a href="{{ path('app_home') }}" class="btn-primary-custom">← Retour à l'accueil</a>
+        </div>
+
+    </div>
+
+{% endblock %}

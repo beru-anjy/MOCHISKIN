@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mentions légales — MOCHISKIN{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .page-header {
+        background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
+        color: white; padding: 4rem 0 3rem;
+        text-align: center; margin-bottom: 3rem;
+    }
+    .page-header h1 { color: white; }
+
+    .legal-section {
+        background: white; border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 5px 20px rgba(255,182,193,.12);
+        margin-bottom: 2rem;
+    }
+    .legal-section h2 {
+        color: var(--peach-dark);
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        padding-bottom: .5rem;
+        border-bottom: 2px solid var(--peach-light);
+    }
+    .legal-section p, .legal-section li {
+        line-height: 1.8; color: var(--gray-soft);
+    }
+    .legal-section ul { padding-left: 1.5rem; }
+</style>
+{% endblock %}
+
+{% block body %}
+
+    <div class="page-header">
+        <div class="container">
+            <h1>Mentions légales</h1>
+            <p>Informations légales relatives au site MOCHISKIN</p>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+
+        <div class="legal-section">
+            <h2>1. Éditeur du site</h2>
+            <p>Le site <strong>MOCHISKIN</strong> est édité par :</p>
+            <ul>
+                <li><strong>Nom :</strong> Angelina PINTO</li>
+                <li><strong>Email :</strong> <a href="mailto:contact@mochiskin.fr" style="color:var(--peach-dark);">contact@mochiskin.fr</a></li>
+                <li><strong>Adresse :</strong> 123 Rue de l'Exemple, 75001 Paris, France</li>
+            </ul>
+        </div>
+
+        <div class="legal-section">
+            <h2>2. Hébergement</h2>
+            <p>Ce site est hébergé par :</p>
+            <ul>
+                <li><strong>Hébergeur :</strong> À compléter</li>
+                <li><strong>Adresse :</strong> À compléter</li>
+                <li><strong>Site web :</strong> À compléter</li>
+            </ul>
+        </div>
+
+        <div class="legal-section">
+            <h2>3. Propriété intellectuelle</h2>
+            <p>
+                L'ensemble du contenu de ce site (textes, images, vidéos, logos) est protégé par le droit d'auteur.
+                Toute reproduction, même partielle, est interdite sans autorisation préalable écrite de l'éditeur.
+            </p>
+        </div>
+
+        <div class="legal-section">
+            <h2>4. Responsabilité</h2>
+            <p>
+                Les informations présentes sur ce site sont fournies à titre indicatif. MOCHISKIN ne saurait être tenu 
+                responsable de l'utilisation faite de ces informations. Les conseils skincare publiés ne remplacent 
+                pas l'avis d'un dermatologue.
+            </p>
+        </div>
+
+        <div class="legal-section">
+            <h2>5. Liens hypertextes</h2>
+            <p>
+                Ce site peut contenir des liens vers des sites tiers. MOCHISKIN n'est pas responsable 
+                du contenu de ces sites externes.
+            </p>
+        </div>
+
+        <div class="legal-section">
+            <h2>6. Droit applicable</h2>
+            <p>
+                Les présentes mentions légales sont soumises au droit français. 
+                En cas de litige, les tribunaux français seront seuls compétents.
+            </p>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ path('app_home') }}" class="btn-primary-custom">← Retour à l'accueil</a>
+        </div>
+
+    </div>
+
+{% endblock %}

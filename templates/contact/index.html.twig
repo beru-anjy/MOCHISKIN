@@ -5,48 +5,78 @@
 {% block keywords %}contact, skincare, collaboration, question{% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .hero-contact {
-            background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
-            color: white; padding: 5rem 0; text-align: center;
-        }
-        .hero-contact h1 { color: white; font-size: 3rem; }
+{{ parent() }}
+<style>
+    /* ── HERO ── */
+    .hero-contact {
+        background: linear-gradient(135deg, var(--peach-main) 0%, var(--pink-main) 100%);
+        color: white;
+        padding: 5rem 0 3rem;
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    .hero-contact h1 { font-size: 3rem; color: white; }
+    .hero-contact p  { opacity: 0.9; color: white; }
 
-        .info-card {
-            display: flex; align-items: flex-start; gap: 1.2rem;
-            background: var(--rose-light); border-radius: 14px;
-            padding: 1.3rem; margin-bottom: 1rem;
-            transition: transform .25s;
-        }
-        .info-card:hover { transform: translateX(8px); }
-        .info-icon { font-size: 1.8rem; flex-shrink: 0; }
-        .info-card h6 { color: var(--peach-dark); margin-bottom: .2rem; }
+    /* ── INFO CARDS ── */
+    .info-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 1.2rem;
+        background: var(--rose-light);
+        border-radius: 15px;
+        padding: 1.2rem 1.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+    .info-card:hover { transform: translateX(8px); box-shadow: 0 5px 15px rgba(255,182,193,.2); }
+    .info-icon { font-size: 1.8rem; flex-shrink: 0; }
+    .info-card h6 { color: var(--peach-dark); font-weight: 600; margin-bottom: .2rem; }
+    .info-card p, .info-card a { color: var(--gray-soft); font-size: .95rem; }
 
-        .contact-form-box {
-            background: white; border-radius: 18px; padding: 2.5rem;
-            box-shadow: 0 8px 28px rgba(255,182,193,.15);
-        }
-
-        .btn-send {
-            width: 100%; padding: 1rem;
-            background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
-            border: none; border-radius: 50px;
-            color: white; font-size: 1.05rem; font-weight: 600;
-            cursor: pointer; transition: transform .3s;
-        }
-        .btn-send:hover { transform: translateY(-3px); }
-
-        .consent-row {
-            display: flex; align-items: flex-start; gap: .8rem;
-            background: var(--rose-light); border-radius: 10px; padding: .9rem;
-        }
-
-        .form-control:focus { border-color: var(--peach-dark); box-shadow: none; }
-    </style>
+    /* ── FORMULAIRE ── */
+    .contact-form-box {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 30px rgba(255,182,193,.15);
+    }
+    .form-control, .form-select {
+        border: 2px solid var(--peach-light);
+        border-radius: 10px;
+        padding: .75rem 1rem;
+        transition: border-color .3s ease;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: var(--peach-dark);
+        box-shadow: none;
+    }
+    .consent-row {
+        display: flex;
+        align-items: flex-start;
+        gap: .8rem;
+        background: var(--rose-light);
+        border-radius: 10px;
+        padding: 1rem;
+    }
+    .btn-send {
+        background: linear-gradient(135deg, var(--peach-main) 0%, var(--pink-main) 100%);
+        border: none;
+        padding: .9rem 3rem;
+        border-radius: 50px;
+        color: white;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        width: 100%;
+        transition: all .3s ease;
+        box-shadow: 0 5px 15px rgba(255,182,193,.3);
+    }
+    .btn-send:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255,182,193,.5); }
+</style>
 {% endblock %}
 
-{% block main %}
+{% block body %}
 
     <div class="hero-contact">
         <div class="container">
@@ -58,7 +88,7 @@
     <div class="container my-5">
         <div class="row g-5">
 
-            {# INFOS (col gauche) #}
+            {# ── INFOS (col gauche) ── #}
             <div class="col-md-5">
                 <h2 class="mb-4" style="color:var(--peach-dark);">Informations de contact</h2>
 
@@ -66,9 +96,7 @@
                     <span class="info-icon">📞</span>
                     <div>
                         <h6>Téléphone</h6>
-                        <a href="tel:+33123456789" style="color:var(--peach-dark);">
-                            +33 1 23 45 67 89
-                        </a>
+                        <a href="tel:+33123456789">+33 1 23 45 67 89</a>
                     </div>
                 </div>
 
@@ -76,9 +104,7 @@
                     <span class="info-icon">📧</span>
                     <div>
                         <h6>Email</h6>
-                        <a href="mailto:contact@mochiskin.fr" style="color:var(--peach-dark);">
-                            contact@mochiskin.fr
-                        </a>
+                        <a href="mailto:contact@mochiskin.fr">contact@mochiskin.fr</a>
                     </div>
                 </div>
 
@@ -103,15 +129,15 @@
                     <div>
                         <h6>Réseaux sociaux</h6>
                         <p class="mb-0">
-                            <a href="#" style="color:var(--peach-dark);margin-right:.8rem;">Instagram</a>
-                            <a href="#" style="color:var(--peach-dark);margin-right:.8rem;">Pinterest</a>
-                            <a href="#" style="color:var(--peach-dark);">YouTube</a>
+                            <a href="#" style="margin-right:.8rem;">Instagram</a>
+                            <a href="#" style="margin-right:.8rem;">Pinterest</a>
+                            <a href="#">YouTube</a>
                         </p>
                     </div>
                 </div>
             </div>
 
-            {# FORMULAIRE (col droite) #}
+            {# ── FORMULAIRE (col droite) ── #}
             <div class="col-md-7">
                 <div class="contact-form-box">
                     <h3 class="mb-1" style="color:var(--peach-dark);">Envoyez-nous un message</h3>
@@ -172,52 +198,52 @@
 {% endblock %}
 
 {% block javascripts %}
-    {{ parent() }}
-    <script>
-    $(document).ready(function () {
+{{ parent() }}
+<script>
+$(document).ready(function () {
 
-        // Animation entrée des cartes infos
-        $('.info-card').each(function (i) {
-            var el = $(this).css({ opacity: 0, transform: 'translateX(-20px)' });
-            setTimeout(function () {
-                el.css({ opacity: 1, transform: 'translateX(0)', transition: 'all .4s ease' });
-            }, i * 100);
-        });
-
-        // Validation formulaire contact
-        $('#contactForm').on('submit', function (e) {
-            e.preventDefault();
-            var name    = $('#fullName').val().trim();
-            var email   = $('#email').val().trim();
-            var subject = $('#subject').val();
-            var message = $('#message').val().trim();
-            var consent = $('#consent').is(':checked');
-            var regex   = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-            if (!name || !email || !subject || !message) {
-                alert('Veuillez remplir tous les champs obligatoires (*).');
-                return;
-            }
-            if (!regex.test(email)) {
-                alert('Email invalide.');
-                return;
-            }
-            if (message.length < 10) {
-                alert('Message trop court (min. 10 caractères).');
-                return;
-            }
-            if (!consent) {
-                alert('Acceptez la politique de confidentialité.');
-                return;"z,n a& nh
-            }
-
-            var firstName   = name.split(' ')[0];
-            var subjectText = $('#subject option:selected').text();
-            alert('Merci ' + firstName + ' !\nVotre message "' + subjectText + '" a bien été envoyé.\nRéponse sous 24-48h à : ' + email);
-            this.reset();
-            $('html,body').animate({ scrollTop: 0 }, 600);
-        });
-
+    // Animation entrée des cartes infos
+    $('.info-card').each(function (i) {
+        var el = $(this).css({ opacity: 0, transform: 'translateX(-20px)' });
+        setTimeout(function () {
+            el.css({ opacity: 1, transform: 'translateX(0)', transition: 'all .4s ease' });
+        }, i * 100);
     });
-    </script>
+
+    // Validation formulaire contact
+    $('#contactForm').on('submit', function (e) {
+        e.preventDefault();
+        var name    = $('#fullName').val().trim();
+        var email   = $('#email').val().trim();
+        var subject = $('#subject').val();
+        var message = $('#message').val().trim();
+        var consent = $('#consent').is(':checked');
+        var regex   = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!name || !email || !subject || !message) {
+            alert('Veuillez remplir tous les champs obligatoires (*).');
+            return;
+        }
+        if (!regex.test(email)) {
+            alert('Email invalide.');
+            return;
+        }
+        if (message.length < 10) {
+            alert('Message trop court (min. 10 caractères).');
+            return;
+        }
+        if (!consent) {
+            alert('Acceptez la politique de confidentialité.');
+            return;
+        }
+
+        var firstName   = name.split(' ')[0];
+        var subjectText = $('#subject option:selected').text();
+        alert('Merci ' + firstName + ' !\nVotre message "' + subjectText + '" a bien été envoyé.\nRéponse sous 24-48h à : ' + email);
+        this.reset();
+        $('html,body').animate({ scrollTop: 0 }, 600);
+    });
+
+});
+</script>
 {% endblock %}

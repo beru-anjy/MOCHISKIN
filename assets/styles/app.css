@@ -1,3 +1,65 @@
-body {
-    background-color: lightgray;
+/* Bootstrap en premier */
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+/* Puis ton app.css global */
+@import "../../public/css/app.css";
+
+
+/* CSS Globales */
+:root {
+    --peach-light : #FFE5D9;
+    --peach-main  : #FFCDB2;
+    --peach-dark  : #FFB4A2;
+    --pink-light  : #FFD7E4;
+    --pink-main   : #FFC2D1;
+    --rose-light  : #FFF0F5;
+    --gray-soft   : #6B6B6B;
+    --white       : #FFFFFF;
 }
+
+/* Reset */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* Typographie globale */
+
+body {
+font-family: 'Abel', sans-serif;
+color: var(--gray-soft);
+background: linear-gradient(135deg, var(--rose-light) 0%, var(--peach-light) 100%);
+overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+font-family: 'Savate', sans-serif;
+color: var(--gray-soft);
+}
+
+/* NAVBAR */
+.navbar-brand {
+font-family: 'Savate', serif;
+color: var(--peach-dark) !important;
+font-weight: 700;
+letter-spacing: 2px;
+}
+
+.nav-link { color: var(--gray-soft) !important; font-weight: 500; }
+.nav-link:hover { color: var(--peach-dark) !important; }
+
+/* Bouton global */
+.btn-custom {
+background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
+border: none; border-radius: 50px;
+color: white; font-weight: 600;
+transition: transform .3s ease;
+}
+.btn-custom:hover { transform: translateY(-3px); color: white; }
+
+/* Footer */
+footer {
+background: linear-gradient(135deg, var(--peach-dark), var(--pink-main));
+color: white; padding: 3rem 0 1.5rem;
+}
+footer a { color: rgba(255,255,255,0.85); text-decoration: none; }
+footer a:hover { color: white; padding-left: 4px; }
+footer h5 { color: white; margin-bottom: 1.2rem; }
