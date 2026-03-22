@@ -1,0 +1,542 @@
+{% extends 'base.html.twig' %}
+{% block title %}Inscription — MOCHISKIN{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+  .auth-wrapper {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .auth-wrapper::before {
+    content: '';
+    position: fixed;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, var(--pink-light) 0%, transparent 70%);
+    top: -200px; right: -150px;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  .auth-wrapper::after {
+    content: '';
+    position: fixed;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, var(--peach-light) 0%, transparent 70%);
+    bottom: -150px; left: -100px;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .auth-card {
+    background: white;
+    border-radius: 28px;
+    box-shadow: 0 20px 60px rgba(255, 182, 193, 0.25);
+    width: 100%;
+    max-width: 500px;
+    padding: 3rem 3rem 2.5rem;
+    position: relative;
+    z-index: 2;
+    animation: slideUp 0.5s ease both;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .auth-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--peach-main), var(--pink-main), var(--peach-dark));
+    border-radius: 28px 28px 0 0;
+  }
+
+  .auth-logo {
+    text-align: center;
+    margin-bottom: 1.8rem;
+  }
+
+  .auth-logo .brand {
+    font-family: 'Savate', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--peach-dark), var(--pink-main));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 3px;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .auth-logo .tagline {
+    font-size: 0.85rem;
+    color: #bbb;
+    letter-spacing: 1px;
+  }
+
+  .auth-title {
+    font-family: 'Savate', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #444;
+    margin-bottom: 0.3rem;
+    text-align: center;
+  }
+
+  .auth-subtitle {
+    text-align: center;
+    color: #aaa;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+  }
+
+  /* 2-col grid for first/last name */
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .field-group {
+    margin-bottom: 1.3rem;
+  }
+
+  .field-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 7px;
+  }
+
+  .field-wrapper {
+    position: relative;
+  }
+
+  .field-wrapper .field-icon {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.95rem;
+    color: #ccc;
+    pointer-events: none;
+    transition: color 0.3s;
+  }
+
+  .field-wrapper input,
+  .field-wrapper select {
+    width: 100%;
+    padding: 0.82rem 1rem 0.82rem 2.7rem;
+    border: 2px solid #f0e8e8;
+    border-radius: 14px;
+    font-family: 'Abel', sans-serif;
+    font-size: 0.93rem;
+    color: #555;
+    background: #fdfafa;
+    transition: all 0.25s ease;
+    outline: none;
+    appearance: none;
+  }
+
+  .field-wrapper input:focus,
+  .field-wrapper select:focus {
+    border-color: var(--peach-main);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(255, 176, 132, 0.12);
+  }
+
+  .field-wrapper:focus-within .field-icon {
+    color: var(--peach-dark);
+  }
+
+  /* Password strength bar */
+  .strength-bar {
+    display: flex;
+    gap: 4px;
+    margin-top: 7px;
+  }
+
+  .strength-segment {
+    flex: 1;
+    height: 4px;
+    border-radius: 4px;
+    background: #f0e8e8;
+    transition: background 0.3s;
+  }
+
+  .strength-label {
+    font-size: 0.75rem;
+    margin-top: 4px;
+    color: #bbb;
+    height: 14px;
+  }
+
+  /* Password toggle */
+  .toggle-pw {
+    position: absolute;
+    right: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 1rem;
+    color: #ccc;
+    background: none;
+    border: none;
+    padding: 0;
+    transition: color 0.2s;
+  }
+  .toggle-pw:hover { color: var(--peach-dark); }
+
+  /* Consent checkbox */
+  .consent-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--rose-light);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.6rem;
+    font-size: 0.88rem;
+    color: #777;
+    cursor: pointer;
+  }
+
+  .consent-box input[type="checkbox"] {
+    width: 18px; height: 18px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    accent-color: var(--peach-dark);
+    cursor: pointer;
+  }
+
+  .consent-box a {
+    color: var(--peach-dark);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  /* Submit */
+  .btn-auth {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--peach-main) 0%, var(--pink-main) 100%);
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-family: 'Savate', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(255, 182, 193, 0.4);
+  }
+
+  .btn-auth:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(255, 182, 193, 0.55);
+  }
+
+  .btn-auth:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Benefits strip */
+  .benefits-strip {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+    font-size: 0.8rem;
+    color: #bbb;
+  }
+
+  .benefit-chip {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--rose-light);
+    padding: 5px 12px;
+    border-radius: 20px;
+  }
+
+  /* Footer */
+  .auth-footer {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #aaa;
+    margin-top: 1.5rem;
+  }
+
+  .auth-footer a {
+    color: var(--peach-dark);
+    font-weight: 700;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .auth-footer a:hover { opacity: 0.7; }
+
+  /* Error / success alerts */
+  .alert-auth-error {
+    background: #fff1f3;
+    border: 1.5px solid #ffc2d1;
+    border-radius: 12px;
+    padding: 0.9rem 1.1rem;
+    font-size: 0.88rem;
+    color: #c0394b;
+    margin-bottom: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: shake 0.4s ease;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  /* Step indicator */
+  .step-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 2rem;
+  }
+
+  .step-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #f0e8e8;
+    transition: all 0.3s;
+  }
+
+  .step-dot.active {
+    background: var(--peach-main);
+    width: 24px;
+    border-radius: 4px;
+  }
+
+  /* Petal decorations */
+  .petal {
+    position: absolute;
+    opacity: 0.15;
+    pointer-events: none;
+    animation: float 6s ease-in-out infinite;
+  }
+  .petal:nth-child(1) { top: 14px; right: 26px; font-size: 1.4rem; animation-delay: 0s; }
+  .petal:nth-child(2) { bottom: 50px; left: 18px; font-size: 1rem; animation-delay: 2s; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(12deg); }
+  }
+
+  @media (max-width: 480px) {
+    .auth-card { padding: 2rem 1.5rem; }
+    .field-row { grid-template-columns: 1fr; }
+    .benefits-strip { gap: 0.6rem; }
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="auth-wrapper">
+  <div class="auth-card">
+
+    <span class="petal">🌸</span>
+    <span class="petal">🌿</span>
+
+    {# Logo #}
+    <div class="auth-logo">
+      <span class="brand">MOCHISKIN</span>
+      <span class="tagline">Prendre soin de sa peau naturellement</span>
+    </div>
+
+    {# Step dots #}
+    <div class="step-dots">
+      <div class="step-dot active"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+    </div>
+
+    <h1 class="auth-title">Rejoindre la communauté 🌸</h1>
+    <p class="auth-subtitle">Créez votre compte en moins d'une minute</p>
+
+    {# Benefits chips #}
+    <div class="benefits-strip">
+      <span class="benefit-chip">✨ Contenu exclusif</span>
+      <span class="benefit-chip">💬 Commenter les articles</span>
+      <span class="benefit-chip">🎁 Offres membres</span>
+    </div>
+
+    {# Error messages from RegistrationFormType #}
+    {% for flashError in app.flashes('verify_email_error') %}
+      <div class="alert-auth-error">⚠️ {{ flashError }}</div>
+    {% endfor %}
+
+    {# Registration form — generated by make:registration-form #}
+    {{ form_start(registrationForm, {'attr': {'novalidate': 'novalidate', 'id': 'registerForm'}}) }}
+
+      {# First + Last name row #}
+      <div class="field-row">
+        <div class="field-group">
+          <label>Prénom *</label>
+          <div class="field-wrapper">
+            {{ form_widget(registrationForm.firstName, {
+              'attr': {'placeholder': 'Marie', 'class': 'bare-input'}
+            }) }}
+            <span class="field-icon">👤</span>
+          </div>
+          {{ form_errors(registrationForm.firstName) }}
+        </div>
+
+        <div class="field-group">
+          <label>Nom *</label>
+          <div class="field-wrapper">
+            {{ form_widget(registrationForm.lastName, {
+              'attr': {'placeholder': 'Dupont', 'class': 'bare-input'}
+            }) }}
+            <span class="field-icon">👤</span>
+          </div>
+          {{ form_errors(registrationForm.lastName) }}
+        </div>
+      </div>
+
+      {# Email #}
+      <div class="field-group">
+        <label>Adresse email *</label>
+        <div class="field-wrapper">
+          {{ form_widget(registrationForm.email, {
+            'attr': {'placeholder': 'marie@exemple.com', 'class': 'bare-input'}
+          }) }}
+          <span class="field-icon">✉</span>
+        </div>
+        {{ form_errors(registrationForm.email) }}
+      </div>
+
+      {# Password #}
+      <div class="field-group">
+        <label>Mot de passe *</label>
+        <div class="field-wrapper">
+          {{ form_widget(registrationForm.plainPassword, {
+            'attr': {'placeholder': '••••••••', 'class': 'bare-input', 'id': 'regPassword'}
+          }) }}
+          <span class="field-icon">🔒</span>
+          <button type="button" class="toggle-pw" onclick="toggleRegPassword()" title="Afficher">👁</button>
+        </div>
+        {# Password strength bar #}
+        <div class="strength-bar">
+          <div class="strength-segment" id="seg1"></div>
+          <div class="strength-segment" id="seg2"></div>
+          <div class="strength-segment" id="seg3"></div>
+          <div class="strength-segment" id="seg4"></div>
+        </div>
+        <div class="strength-label" id="strengthLabel"></div>
+        {{ form_errors(registrationForm.plainPassword) }}
+      </div>
+
+      {# Consent checkbox #}
+      <label class="consent-box">
+        {{ form_widget(registrationForm.agreeTerms) }}
+        <span>
+          J'accepte les
+          <a href="#">conditions d'utilisation</a>
+          et la
+          <a href="#">politique de confidentialité</a> *
+        </span>
+      </label>
+      {{ form_errors(registrationForm.agreeTerms) }}
+
+      {# Submit #}
+      <button type="submit" class="btn-auth" id="submitBtn">
+        Créer mon compte →
+      </button>
+
+    {{ form_end(registrationForm) }}
+
+    <div class="auth-footer">
+      Déjà membre ?
+      <a href="{{ path('app_login') }}">Se connecter</a>
+    </div>
+
+    <div class="auth-footer" style="margin-top: 0.8rem;">
+      <a href="{{ path('app_home') }}" style="color:#bbb; font-weight:400;">
+        ← Retour au blog
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+// Toggle password visibility
+function toggleRegPassword() {
+  var input = document.getElementById('regPassword');
+  var btn   = document.querySelector('.toggle-pw');
+  input.type = input.type === 'password' ? 'text' : 'password';
+  btn.textContent = input.type === 'password' ? '👁' : '🙈';
+}
+
+// Password strength meter
+document.addEventListener('DOMContentLoaded', function () {
+  var pwInput = document.getElementById('regPassword');
+  if (!pwInput) return;
+
+  var segs   = [1,2,3,4].map(function(i){ return document.getElementById('seg'+i); });
+  var label  = document.getElementById('strengthLabel');
+  var colors = ['#ffb4b4', '#ffcba4', '#ffe08a', '#86efac'];
+  var labels = ['Très faible', 'Faible', 'Moyen', 'Fort 💪'];
+
+  pwInput.addEventListener('input', function() {
+    var v = this.value;
+    var score = 0;
+    if (v.length >= 8) score++;
+    if (/[A-Z]/.test(v)) score++;
+    if (/[0-9]/.test(v)) score++;
+    if (/[^A-Za-z0-9]/.test(v)) score++;
+
+    segs.forEach(function(s, i) {
+      s.style.background = i < score ? colors[score - 1] : '#f0e8e8';
+    });
+
+    label.textContent = v.length > 0 ? labels[score - 1] || '' : '';
+    label.style.color = score >= 3 ? '#86efac' : score === 2 ? '#ffb4b4' : '#aaa';
+  });
+
+  // Animate step dots on form interaction
+  var fields = document.querySelectorAll('#registerForm input');
+  var dots   = document.querySelectorAll('.step-dot');
+  var filled = 0;
+
+  fields.forEach(function(f) {
+    f.addEventListener('blur', function() {
+      var count = Array.from(fields).filter(function(fi){ return fi.value.trim() !== ''; }).length;
+      var step  = Math.min(Math.floor(count / 2), 2);
+      dots.forEach(function(d, i) {
+        d.classList.toggle('active', i <= step);
+      });
+    });
+  });
+});
+</script>
+{% endblock %}

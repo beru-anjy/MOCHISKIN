@@ -1,38 +1,410 @@
 {% extends 'base.html.twig' %}
+{% block title %}Connexion — MOCHISKIN{% endblock %}
 
-{% block title %}Log in!{% endblock %}
+{% block stylesheets %}
+{{ parent() }}
+<style>
+  .auth-wrapper {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Floating blobs background */
+  .auth-wrapper::before {
+    content: '';
+    position: fixed;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, var(--pink-light) 0%, transparent 70%);
+    top: -200px; right: -150px;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  .auth-wrapper::after {
+    content: '';
+    position: fixed;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, var(--peach-light) 0%, transparent 70%);
+    bottom: -150px; left: -100px;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .auth-card {
+    background: white;
+    border-radius: 28px;
+    box-shadow: 0 20px 60px rgba(255, 182, 193, 0.25);
+    width: 100%;
+    max-width: 460px;
+    padding: 3rem 3rem 2.5rem;
+    position: relative;
+    z-index: 2;
+    animation: slideUp 0.5s ease both;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Top accent bar */
+  .auth-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--peach-main), var(--pink-main), var(--peach-dark));
+    border-radius: 28px 28px 0 0;
+  }
+
+  .auth-logo {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .auth-logo .brand {
+    font-family: 'Savate', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--peach-dark), var(--pink-main));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 3px;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .auth-logo .tagline {
+    font-size: 0.85rem;
+    color: #bbb;
+    letter-spacing: 1px;
+  }
+
+  .auth-title {
+    font-family: 'Savate', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #444;
+    margin-bottom: 0.3rem;
+    text-align: center;
+  }
+
+  .auth-subtitle {
+    text-align: center;
+    color: #aaa;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Form fields */
+  .field-group {
+    margin-bottom: 1.4rem;
+  }
+
+  .field-group label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 8px;
+  }
+
+  .field-wrapper {
+    position: relative;
+  }
+
+  .field-wrapper .field-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+    color: #ccc;
+    pointer-events: none;
+    transition: color 0.3s;
+  }
+
+  .field-wrapper input {
+    width: 100%;
+    padding: 0.85rem 1rem 0.85rem 2.8rem;
+    border: 2px solid #f0e8e8;
+    border-radius: 14px;
+    font-family: 'Abel', sans-serif;
+    font-size: 0.95rem;
+    color: #555;
+    background: #fdfafa;
+    transition: all 0.25s ease;
+    outline: none;
+  }
+
+  .field-wrapper input:focus {
+    border-color: var(--peach-main);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(255, 176, 132, 0.12);
+  }
+
+  .field-wrapper:focus-within .field-icon {
+    color: var(--peach-dark);
+  }
+
+  /* Password toggle */
+  .toggle-pw {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 1rem;
+    color: #ccc;
+    background: none;
+    border: none;
+    padding: 0;
+    transition: color 0.2s;
+  }
+  .toggle-pw:hover { color: var(--peach-dark); }
+
+  /* Remember + forgot */
+  .form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.8rem;
+    font-size: 0.88rem;
+  }
+
+  .remember-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #888;
+  }
+
+  .remember-label input[type="checkbox"] {
+    width: 16px; height: 16px;
+    accent-color: var(--peach-dark);
+    cursor: pointer;
+  }
+
+  {# "Mot de passe oublié" est désactivé car pas de système de reset dans ce projet #}
+  {# Tu pourras l'activer plus tard avec symfony/reset-password-bundle #}
+  .forgot-link {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 0.85rem;
+    cursor: default;
+  }
+
+  /* Submit button */
+  .btn-auth {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--peach-main) 0%, var(--pink-main) 100%);
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-family: 'Savate', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(255, 182, 193, 0.4);
+  }
+
+  .btn-auth:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(255, 182, 193, 0.55);
+  }
+
+  .btn-auth:active { transform: translateY(0); }
+
+  /* Error alert */
+  {# Animation "shake" pour attirer l'attention sur l'erreur #}
+  .alert-auth {
+    background: #fff1f3;
+    border: 1.5px solid #ffc2d1;
+    border-radius: 12px;
+    padding: 0.9rem 1.1rem;
+    font-size: 0.88rem;
+    color: #c0394b;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: shake 0.4s ease;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  /* Decorative petals */
+  .petal {
+    position: absolute;
+    font-size: 1.4rem;
+    opacity: 0.18;
+    pointer-events: none;
+    animation: float 6s ease-in-out infinite;
+  }
+  .petal:nth-child(1) { top: 12px; right: 24px; animation-delay: 0s; }
+  .petal:nth-child(2) { bottom: 40px; left: 20px; animation-delay: 2s; font-size: 1rem; }
+  .petal:nth-child(3) { top: 50%; right: 16px; animation-delay: 4s; font-size: 0.9rem; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(15deg); }
+  }
+
+  /* Footer links */
+  .auth-footer {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #aaa;
+    margin-top: 1.5rem;
+  }
+
+  .auth-footer a {
+    color: var(--peach-dark);
+    font-weight: 700;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .auth-footer a:hover { opacity: 0.7; }
+</style>
+{% endblock %}
 
 {% block body %}
-    <form method="post">
-        {% if error %}
-            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
+<div class="auth-wrapper">
+  <div class="auth-card">
 
-        {% if app.user %}
-            <div class="mb-3">
-                You are logged in as {{ app.user.userIdentifier }}, <a href="{{ logout_path() }}">Logout</a>
-            </div>
-        {% endif %}
+    {# Décorations flottantes #}
+    <span class="petal">🌸</span>
+    <span class="petal">✿</span>
+    <span class="petal">🌿</span>
 
-        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-        <label for="username">Email</label>
-        <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="email" required autofocus>
-        <label for="password">Password</label>
-        <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
-        <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+    {# Logo #}
+    <div class="auth-logo">
+      <span class="brand">MOCHISKIN</span>
+      <span class="tagline">Prendre soin de sa peau naturellement</span>
+    </div>
 
-        {#
-            Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-            See https://symfony.com/doc/current/security/remember_me.html
+    <h1 class="auth-title">Bon retour 👋</h1>
+    <p class="auth-subtitle">Espace réservé aux auteurs du blog</p>
 
-            <div class="checkbox mb-3">
-                <input type="checkbox" name="_remember_me" id="_remember_me">
-                <label for="_remember_me">Remember me</label>
-            </div>
-        #}
+    {# ── ERREUR DE CONNEXION ──────────────────────────────────────────────── #}
+    {# Affiché si mauvais email ou mauvais mot de passe #}
+    {# error.messageKey est traduit automatiquement par Symfony via security.yaml #}
+    {% if error %}
+      <div class="alert-auth">
+        ⚠️ {{ error.messageKey|trans(error.messageData, 'security') }}
+      </div>
+    {% endif %}
 
-        <button class="btn btn-lg btn-primary" type="submit">
-            Sign in
-        </button>
+    {# ── FORMULAIRE DE CONNEXION ──────────────────────────────────────────── #}
+    {# action="app_login" = route check_path définie dans security.yaml #}
+    <form method="post" action="{{ path('app_login') }}">
+
+      {# Token CSRF : protège contre les attaques Cross-Site Request Forgery #}
+      {# Symfony vérifie ce token automatiquement grâce à enable_csrf: true #}
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+      {# ── CHAMP EMAIL ────────────────────────────────────────────────────── #}
+      {# name="_username" = nom de champ attendu par Symfony Security #}
+      {# last_username = pré-remplit le champ si erreur de connexion précédente #}
+      <div class="field-group">
+        <label for="inputEmail">Email</label>
+        <div class="field-wrapper">
+          <input type="email"
+                 id="inputEmail"
+                 name="_username"
+                 value="{{ last_username }}"
+                 autocomplete="email"
+                 placeholder="marie@exemple.com"
+                 required
+                 autofocus>
+          <span class="field-icon">✉</span>
+        </div>
+      </div>
+
+      {# ── CHAMP MOT DE PASSE ─────────────────────────────────────────────── #}
+      {# name="_password" = nom de champ attendu par Symfony Security #}
+      {# Le bouton 👁 permet d'afficher/masquer le mot de passe (JS en bas) #}
+      <div class="field-group">
+        <label for="inputPassword">Mot de passe</label>
+        <div class="field-wrapper">
+          <input type="password"
+                 id="inputPassword"
+                 name="_password"
+                 autocomplete="current-password"
+                 placeholder="••••••••"
+                 required>
+          <span class="field-icon">🔒</span>
+          <button type="button" class="toggle-pw"
+                  onclick="togglePassword()"
+                  title="Afficher/masquer le mot de passe">👁</button>
+        </div>
+      </div>
+
+      {# ── OPTIONS ────────────────────────────────────────────────────────── #}
+      <div class="form-options">
+        {# Se souvenir de moi : Symfony gère le cookie de session longue durée #}
+        <label class="remember-label">
+          <input type="checkbox" name="_remember_me">
+          Se souvenir de moi
+        </label>
+
+        {# "Mot de passe oublié" désactivé : pas de système de reset dans ce projet #}
+        {# Pour l'activer plus tard : composer require symfonycasts/reset-password-bundle #}
+        <span class="forgot-link" title="Fonctionnalité non disponible">
+          Mot de passe oublié ?
+        </span>
+      </div>
+
+      {# ── BOUTON CONNEXION ───────────────────────────────────────────────── #}
+      <button type="submit" class="btn-auth">
+        Se connecter →
+      </button>
+
     </form>
+
+    {# ── FOOTER ─────────────────────────────────────────────────────────── #}
+    {# Pas de lien "Créer un compte" : les comptes sont créés par l'admin #}
+    {# dans EasyAdmin (Users → Nouveau) ou via les Fixtures #}
+    <div class="auth-footer" style="margin-top: 1.5rem;">
+      <a href="{{ path('app_home') }}" style="color:#bbb; font-weight:400;">
+        ← Retour au blog
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+// Afficher / masquer le mot de passe
+// Bascule entre type="password" et type="text"
+function togglePassword() {
+  var input = document.getElementById('inputPassword');
+  var btn   = document.querySelector('.toggle-pw');
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.textContent = '🙈'; // Masqué → œil barré
+  } else {
+    input.type = 'password';
+    btn.textContent = '👁';  // Affiché → œil normal
+  }
+}
+</script>
 {% endblock %}
