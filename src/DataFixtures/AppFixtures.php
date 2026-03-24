@@ -20,8 +20,9 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class AppFixtures extends Fixture
 {
     public function __construct(
-        private UserPasswordHasherInterface $hasher
-    ) {}
+        private UserPasswordHasherInterface $hasher,
+    ) {
+    }
 
     public function load(ObjectManager $manager): void
     {
@@ -106,7 +107,7 @@ class AppFixtures extends Fixture
         $tags = [];
         $tagData = [
             ['Vitamine C',        'vitamine-c'],
-            ['Acide hyaluronique','acide-hyaluronique'],
+            ['Acide hyaluronique', 'acide-hyaluronique'],
             ['SPF',               'spf'],
             ['Double nettoyage',  'double-nettoyage'],
             ['Rétinol',           'retinol'],
@@ -129,10 +130,10 @@ class AppFixtures extends Fixture
         // ══════════════════════════════════════════
         $articlesData = [
             [
-                'title'    => 'Les 5 étapes d\'une routine matin parfaite',
-                'slug'     => 'les-5-etapes-routine-matin-parfaite',
-                'excerpt'  => 'Découvrez comment préparer votre peau chaque matin pour une journée éclatante.',
-                'content'  => '<h2>Pourquoi une routine matin ?</h2>
+                'title' => 'Les 5 étapes d\'une routine matin parfaite',
+                'slug' => 'les-5-etapes-routine-matin-parfaite',
+                'excerpt' => 'Découvrez comment préparer votre peau chaque matin pour une journée éclatante.',
+                'content' => '<h2>Pourquoi une routine matin ?</h2>
 <p>La routine matin prépare votre peau aux agressions de la journée : pollution, UV, stress. Une peau bien protégée reste saine plus longtemps.</p>
 <h2>Étape 1 : Le nettoyant doux</h2>
 <p>Commencez par un gel nettoyant doux pour éliminer les impuretés accumulées pendant la nuit. Massez en mouvements circulaires pendant 60 secondes, puis rincez à l\'eau tiède.</p>
@@ -145,17 +146,17 @@ class AppFixtures extends Fixture
 <h2>Étape 5 : La protection solaire SPF50</h2>
 <p>L\'étape la plus importante ! Même en hiver, les UV abîment la peau. Appliquez généreusement et renouvelez toutes les 2 heures en extérieur.</p>',
                 'category' => 'routine',
-                'author'   => $jimin,
-                'tags'     => ['vitamine-c', 'spf', 'k-beauty'],
-                'reading'  => 5,
-                'views'    => 342,
-                'date'     => '2025-01-15',
+                'author' => $jimin,
+                'tags' => ['vitamine-c', 'spf', 'k-beauty'],
+                'reading' => 5,
+                'views' => 342,
+                'date' => '2025-01-15',
             ],
             [
-                'title'    => 'Comment choisir son sérum selon son type de peau',
-                'slug'     => 'comment-choisir-serum-type-peau',
-                'excerpt'  => 'Le sérum est l\'étape clé de votre routine. Voici comment le choisir selon votre type de peau.',
-                'content'  => '<h2>Qu\'est-ce qu\'un sérum ?</h2>
+                'title' => 'Comment choisir son sérum selon son type de peau',
+                'slug' => 'comment-choisir-serum-type-peau',
+                'excerpt' => 'Le sérum est l\'étape clé de votre routine. Voici comment le choisir selon votre type de peau.',
+                'content' => '<h2>Qu\'est-ce qu\'un sérum ?</h2>
 <p>Un sérum est un soin concentré en actifs qui cible des problématiques précises. Sa texture légère permet une pénétration rapide dans les couches profondes de la peau.</p>
 <h2>Pour les peaux sèches</h2>
 <p>Optez pour un sérum à l\'acide hyaluronique. Il attire et retient l\'eau dans les tissus cutanés, offrant une hydratation intense et durable.</p>
@@ -166,17 +167,17 @@ class AppFixtures extends Fixture
 <h2>Pour les peaux matures</h2>
 <p>Le rétinol accélère le renouvellement cellulaire et stimule la production de collagène. Commencez avec une faible concentration et augmentez progressivement.</p>',
                 'category' => 'produits',
-                'author'   => $jimin,
-                'tags'     => ['acide-hyaluronique', 'vitamine-c', 'retinol'],
-                'reading'  => 7,
-                'views'    => 218,
-                'date'     => '2025-01-12',
+                'author' => $jimin,
+                'tags' => ['acide-hyaluronique', 'vitamine-c', 'retinol'],
+                'reading' => 7,
+                'views' => 218,
+                'date' => '2025-01-12',
             ],
             [
-                'title'    => 'Les bienfaits du double nettoyage coréen',
-                'slug'     => 'bienfaits-double-nettoyage-coreen',
-                'excerpt'  => 'Le double nettoyage est une technique coréenne incontournable pour une peau nette et éclatante.',
-                'content'  => '<h2>Qu\'est-ce que le double nettoyage ?</h2>
+                'title' => 'Les bienfaits du double nettoyage coréen',
+                'slug' => 'bienfaits-double-nettoyage-coreen',
+                'excerpt' => 'Le double nettoyage est une technique coréenne incontournable pour une peau nette et éclatante.',
+                'content' => '<h2>Qu\'est-ce que le double nettoyage ?</h2>
 <p>Originaire de Corée du Sud, le double nettoyage consiste à utiliser deux produits successifs : d\'abord une huile ou un baume, puis un nettoyant moussant à base d\'eau.</p>
 <h2>Pourquoi deux étapes ?</h2>
 <p>La règle est simple : "like dissolves like". L\'huile dissout les impuretés liposolubles (maquillage, crème solaire, sébum), tandis que le nettoyant aqueux élimine les résidus hydrosolubles (sueur, pollution).</p>
@@ -185,51 +186,51 @@ class AppFixtures extends Fixture
 <h2>Étape 2 : Le nettoyant moussant</h2>
 <p>Appliquez le second nettoyant et massez pendant 30 secondes supplémentaires. Rincez à l\'eau tiède. Votre peau est maintenant parfaitement propre et prête à recevoir vos soins.</p>',
                 'category' => 'conseils',
-                'author'   => $admin,
-                'tags'     => ['double-nettoyage', 'k-beauty'],
-                'reading'  => 6,
-                'views'    => 189,
-                'date'     => '2025-01-08',
+                'author' => $admin,
+                'tags' => ['double-nettoyage', 'k-beauty'],
+                'reading' => 6,
+                'views' => 189,
+                'date' => '2025-01-08',
             ],
             [
-                'title'    => 'L\'acide hyaluronique : tout ce que vous devez savoir',
-                'slug'     => 'acide-hyaluronique-tout-savoir',
-                'excerpt'  => 'Tout ce que vous devez savoir sur cet ingrédient star de l\'hydratation cutanée.',
-                'content'  => '<h2>Qu\'est-ce que l\'acide hyaluronique ?</h2>
+                'title' => 'L\'acide hyaluronique : tout ce que vous devez savoir',
+                'slug' => 'acide-hyaluronique-tout-savoir',
+                'excerpt' => 'Tout ce que vous devez savoir sur cet ingrédient star de l\'hydratation cutanée.',
+                'content' => '<h2>Qu\'est-ce que l\'acide hyaluronique ?</h2>
 <p>L\'acide hyaluronique est une molécule naturellement présente dans notre organisme. Sa particularité ? Elle peut retenir jusqu\'à 1000 fois son poids en eau, ce qui en fait un hydratant exceptionnel.</p>
 <h2>Les différents poids moléculaires</h2>
 <p>Il existe plusieurs types d\'acide hyaluronique selon leur taille moléculaire. Les molécules légères pénètrent plus profondément dans la peau, tandis que les molécules lourdes forment un film protecteur en surface.</p>
 <h2>Comment l\'utiliser ?</h2>
 <p>Appliquez le sérum sur peau légèrement humide pour maximiser son effet. Superposez ensuite une crème hydratante pour sceller l\'humidité. Utilisez matin et soir pour des résultats optimaux.</p>',
                 'category' => 'ingredients',
-                'author'   => $aminata,
-                'tags'     => ['acide-hyaluronique', 'hydratation'],
-                'reading'  => 8,
-                'views'    => 275,
-                'date'     => '2025-01-05',
+                'author' => $aminata,
+                'tags' => ['acide-hyaluronique', 'hydratation'],
+                'reading' => 8,
+                'views' => 275,
+                'date' => '2025-01-05',
             ],
             [
-                'title'    => '3 masques maison faciles à faire soi-même',
-                'slug'     => '3-masques-maison-faciles',
-                'excerpt'  => 'Réalisez vos propres masques avec des ingrédients naturels du quotidien.',
-                'content'  => '<h2>Masque à l\'avocat pour peau sèche</h2>
+                'title' => '3 masques maison faciles à faire soi-même',
+                'slug' => '3-masques-maison-faciles',
+                'excerpt' => 'Réalisez vos propres masques avec des ingrédients naturels du quotidien.',
+                'content' => '<h2>Masque à l\'avocat pour peau sèche</h2>
 <p>Écrasez la moitié d\'un avocat mûr et mélangez avec une cuillère à soupe de miel. Appliquez sur le visage et laissez poser 15 minutes. L\'avocat nourrit intensément la peau grâce à ses acides gras.</p>
 <h2>Masque à l\'argile pour peau grasse</h2>
 <p>Mélangez 2 cuillères d\'argile verte avec de l\'eau florale de lavande jusqu\'à obtenir une pâte lisse. Appliquez en couche fine et laissez sécher 10 minutes. Rincez avant que l\'argile soit complètement sèche.</p>
 <h2>Masque au miel et curcuma pour l\'éclat</h2>
 <p>Mélangez une cuillère de miel avec une pincée de curcuma et quelques gouttes de jus de citron. Le miel hydrate, le curcuma illumine et le citron resserre les pores. Attention aux taches sur les vêtements !</p>',
                 'category' => 'diy',
-                'author'   => $aminata,
-                'tags'     => ['diy', 'hydratation'],
-                'reading'  => 5,
-                'views'    => 156,
-                'date'     => '2026-01-02',
+                'author' => $aminata,
+                'tags' => ['diy', 'hydratation'],
+                'reading' => 5,
+                'views' => 156,
+                'date' => '2026-01-02',
             ],
             [
-                'title'    => 'Routine du soir : les essentiels pour une peau régénérée',
-                'slug'     => 'routine-soir-essentiels-peau-regeneree',
-                'excerpt'  => 'Le soir, votre peau a besoin d\'une attention particulière pour se régénérer.',
-                'content'  => '<h2>Pourquoi la routine soir est cruciale ?</h2>
+                'title' => 'Routine du soir : les essentiels pour une peau régénérée',
+                'slug' => 'routine-soir-essentiels-peau-regeneree',
+                'excerpt' => 'Le soir, votre peau a besoin d\'une attention particulière pour se régénérer.',
+                'content' => '<h2>Pourquoi la routine soir est cruciale ?</h2>
 <p>La nuit, votre peau entre en mode réparation. Elle se régénère, élimine les toxines et absorbe mieux les actifs. C\'est le moment idéal pour appliquer vos soins les plus concentrés.</p>
 <h2>Le double nettoyage</h2>
 <p>Commencez toujours par démaquiller avec une huile, puis nettoyez avec un gel moussant. Une peau propre absorbe mieux les soins qui suivent.</p>
@@ -238,11 +239,11 @@ class AppFixtures extends Fixture
 <h2>La crème de nuit</h2>
 <p>Plus riche que la crème de jour, elle nourrit en profondeur et soutient le processus de régénération cellulaire nocturne. Appliquez en dernier, sur peau légèrement humide.</p>',
                 'category' => 'routine',
-                'author'   => $jimin,
-                'tags'     => ['retinol', 'anti-age', 'k-beauty'],
-                'reading'  => 6,
-                'views'    => 201,
-                'date'     => '2026-01-18',
+                'author' => $jimin,
+                'tags' => ['retinol', 'anti-age', 'k-beauty'],
+                'reading' => 6,
+                'views' => 201,
+                'date' => '2026-01-18',
             ],
         ];
 

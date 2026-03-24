@@ -38,7 +38,7 @@ class Comment
      * Relation ManyToOne vers User
      * ✅ CORRIGÉ : nullable: true (pas nullable: false !)
      * Pourquoi ? Un visiteur anonyme n'a PAS de compte User.
-     * null = commentaire anonyme | renseigné = User connecté
+     * null = commentaire anonyme | renseigné = User connecté.
      */
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: true)] // ← WAS false, MUST be true
@@ -46,7 +46,7 @@ class Comment
 
     /**
      * Relation ManyToOne vers Article
-     * nullable: false → un commentaire DOIT être lié à un article
+     * nullable: false → un commentaire DOIT être lié à un article.
      */
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
@@ -74,6 +74,7 @@ class Comment
     public function setContent(string $content): static
     {
         $this->content = $content;
+
         return $this;
     }
 
@@ -85,6 +86,7 @@ class Comment
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -96,6 +98,7 @@ class Comment
     public function setIsApproved(bool $isApproved): static
     {
         $this->isApproved = $isApproved;
+
         return $this;
     }
 
@@ -107,6 +110,7 @@ class Comment
     public function setAuthorName(?string $authorName): static
     {
         $this->authorName = $authorName;
+
         return $this;
     }
 
@@ -118,6 +122,7 @@ class Comment
     public function setAuthorEmail(?string $authorEmail): static
     {
         $this->authorEmail = $authorEmail;
+
         return $this;
     }
 
@@ -129,6 +134,7 @@ class Comment
     public function setArticle(?Article $article): static
     {
         $this->article = $article;
+
         return $this;
     }
 
@@ -140,6 +146,7 @@ class Comment
     public function setAuthor(?User $author): static
     {
         $this->author = $author;
+
         return $this;
     }
 
@@ -152,13 +159,12 @@ class Comment
      *                               (authorName renseigné par le contrôleur)
      * Cas 3 : Visiteur anonyme   → nom saisi dans le formulaire
      * Cas 4 : Aucun nom          → "Anonyme" par défaut
-     *
      */
     public function getDisplayName(): string
     {
         // Cas 1 : User connecté avec un vrai compte
-        if ($this->author !== null) {
-            return $this->author->getFirstName() . ' ' . $this->author->getLastName();
+        if (null !== $this->author) {
+            return $this->author->getFirstName().' '.$this->author->getLastName();
         }
 
         // Cas 2 & 3 : authorName contient soit le prénom Newsletter,

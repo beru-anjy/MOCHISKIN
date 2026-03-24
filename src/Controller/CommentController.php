@@ -16,8 +16,9 @@ class CommentController extends AbstractController
     // On injecte NewsletterRepository pour l'Option B
     // (vérifier si l'email du commentateur est un abonné newsletter)
     public function __construct(
-        private readonly NewsletterRepository $newsletterRepository
-    ) {}
+        private readonly NewsletterRepository $newsletterRepository,
+    ) {
+    }
 
     // ── ROUTE : Traitement du formulaire de commentaire ───────────────────────
     // methods: ['POST'] → uniquement les soumissions de formulaire
@@ -29,7 +30,6 @@ class CommentController extends AbstractController
         ArticleRepository $articleRepository,
         EntityManagerInterface $em,
     ): Response {
-
         // ── ÉTAPE 1 : Trouver l'article par son slug ──────────────────────────
         $article = $articleRepository->findOneBy(['slug' => $slug]);
 
@@ -42,6 +42,7 @@ class CommentController extends AbstractController
         // Le token est généré dans le template Twig via csrf_token('comment')
         if (!$this->isCsrfTokenValid('comment', $request->request->get('_token'))) {
             $this->addFlash('error', 'Formulaire invalide. Réessayez.');
+
             return $this->redirectToRoute('app_article_show', ['slug' => $slug]);
         }
 
@@ -58,33 +59,31 @@ class CommentController extends AbstractController
 
         $user = $this->getUser(); // null si visiteur non connecté
 
-        if ($user !== null) {
+        if (null !== $user) {
             // ── CAS 1 : User connecté (auteur / admin) ────────────────────────
             // On associe directement son compte User au commentaire
             // authorName + authorEmail restent null (inutiles)
             // getDisplayName() retournera : user->firstName + user->lastName
             $comment->setAuthor($user);
-
         } else {
             // ── CAS 2 & 3 : Visiteur anonyme ─────────────────────────────────
             $emailSaisi = $request->request->get('authorEmail');
-            $nomSaisi   = $request->request->get('authorName');
+            $nomSaisi = $request->request->get('authorName');
 
             // ★ OPTION B : Vérifier si l'email est connu dans Newsletter ★
             // findOneBy cherche un abonné actif avec exactement cet email
             $abonne = $this->newsletterRepository->findOneBy([
-                'email'    => $emailSaisi,
+                'email' => $emailSaisi,
                 'isActive' => true, // Seulement les abonnés ayant confirmé leur email
             ]);
 
-            if ($abonne !== null) {
+            if (null !== $abonne) {
                 // ── CAS 2 : Email reconnu dans Newsletter ─────────────────────
                 // On utilise automatiquement le prénom de l'abonné newsletter
                 // L'utilisateur ne voit aucune différence dans le formulaire
                 // Mais son vrai prénom apparaît sur le commentaire publié
                 $comment->setAuthorName($abonne->getFirstName()); // ← prénom Newsletter
                 $comment->setAuthorEmail($emailSaisi);
-
             } else {
                 // ── CAS 3 : Email inconnu = vraiment anonyme ──────────────────
                 // On utilise le nom et l'email saisis dans le formulaire tels quels
