@@ -23,29 +23,41 @@ class Comment
     #[ORM\Column]
     private ?bool $isApproved = null;
 
+    // Nom du visiteur anonyme
+    // nullable: true car si User connecté, on utilise author->getFirstName()
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $authorName = null;
+
+    // Email du visiteur anonyme
+    // nullable: true pour la même raison que authorName
+    // Utilisé par l'Option B pour vérifier si l'email est dans Newsletter
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $authorEmail = null;
+
     /**
-     * Relation ManyToOne vers Article :
-     * Plusieurs commentaires peuvent appartenir à un seul article.
-     * inversedBy: 'comments' signifie que Article possède une collection $comments.
+     * Relation ManyToOne vers User
+     * ✅ CORRIGÉ : nullable: true (pas nullable: false !)
+     * Pourquoi ? Un visiteur anonyme n'a PAS de compte User.
+     * null = commentaire anonyme | renseigné = User connecté.
+     */
+    #[ORM\ManyToOne(inversedBy: 'comments')]
+    #[ORM\JoinColumn(nullable: true)] // ← WAS false, MUST be true
+    private ?User $author = null;
+
+    /**
+     * Relation ManyToOne vers Article
      * nullable: false → un commentaire DOIT être lié à un article.
      */
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Article $article = null;
 
-    /**
-     * Relation ManyToOne vers User :
-     * Plusieurs commentaires peuvent être écrits par un seul utilisateur.
-     * inversedBy: 'comments' signifie que User possédera une collection $comments.
-     * nullable: false → un commentaire DOIT avoir un auteur.
-     */
-    #[ORM\ManyToOne(inversedBy: 'comments')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $author = null;
-
     public function __construct()
     {
+        // Date de soumission enregistrée automatiquement
         $this->createdAt = new \DateTimeImmutable();
+        // false = commentaire EN ATTENTE de validation admin
+        // Sans ça, les commentaires seraient visibles immédiatement
         $this->isApproved = false;
     }
 
@@ -90,6 +102,30 @@ class Comment
         return $this;
     }
 
+    public function getAuthorName(): ?string
+    {
+        return $this->authorName;
+    }
+
+    public function setAuthorName(?string $authorName): static
+    {
+        $this->authorName = $authorName;
+
+        return $this;
+    }
+
+    public function getAuthorEmail(): ?string
+    {
+        return $this->authorEmail;
+    }
+
+    public function setAuthorEmail(?string $authorEmail): static
+    {
+        $this->authorEmail = $authorEmail;
+
+        return $this;
+    }
+
     public function getArticle(): ?Article
     {
         return $this->article;
@@ -102,7 +138,6 @@ class Comment
         return $this;
     }
 
-    // Getter et Setter pour l'auteur du commentaire
     public function getAuthor(): ?User
     {
         return $this->author;
@@ -113,5 +148,28 @@ class Comment
         $this->author = $author;
 
         return $this;
+    }
+
+    /**
+     * ✅ AJOUT : Méthode clé pour l'Option B
+     * Retourne LE BON NOM à afficher dans Twig selon le cas :
+     *
+     * Cas 1 : User connecté      → prénom + nom du compte User
+     * Cas 2 : Abonné newsletter  → prénom récupéré depuis Newsletter
+     *                               (authorName renseigné par le contrôleur)
+     * Cas 3 : Visiteur anonyme   → nom saisi dans le formulaire
+     * Cas 4 : Aucun nom          → "Anonyme" par défaut
+     */
+    public function getDisplayName(): string
+    {
+        // Cas 1 : User connecté avec un vrai compte
+        if (null !== $this->author) {
+            return $this->author->getFirstName().' '.$this->author->getLastName();
+        }
+
+        // Cas 2 & 3 : authorName contient soit le prénom Newsletter,
+        // soit le nom saisi manuellement dans le formulaire
+        // ?? 'Anonyme' = valeur par défaut si authorName est null
+        return $this->authorName ?? 'Anonyme';
     }
 }

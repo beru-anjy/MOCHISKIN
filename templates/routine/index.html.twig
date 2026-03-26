@@ -152,11 +152,13 @@
                         <div class="timeline-item">
                             <div class="timeline-number">{{ loop.index }}</div>
                             <div class="timeline-content">
-                                <h3 class="timeline-title">{{ step.name }}</h3>
+                                <h3 class="timeline-title">{{ step.title }}</h3>
                                 <p class="timeline-description">{{ step.description }}</p>
-                                {% for product in step.productRecommendations %}
-                                    <span class="product-tag">✨ {{ product.name }}</span>
-                                {% endfor %}
+                                {# ✅ CORRIGÉ : productRecommendation est un string, pas une collection #}
+                                {# On utilise {% if %} et non {% for %} #}
+                                {% if step.productRecommendation %}
+                                    <span class="product-tag">✨ {{ step.productRecommendation }}</span>
+                                {% endif %}
                             </div>
                         </div>
                     {% endfor %}
@@ -224,11 +226,12 @@
                         <div class="timeline-item">
                             <div class="timeline-number">{{ loop.index }}</div>
                             <div class="timeline-content">
-                                <h3 class="timeline-title">{{ step.name }}</h3>
+                                <h3 class="timeline-title">{{ step.title }}</h3>
                                 <p class="timeline-description">{{ step.description }}</p>
-                                {% for product in step.productRecommendations %}
-                                    <span class="product-tag">✨ {{ product.name }}</span>
-                                {% endfor %}
+                                {# ✅ productRecommendation = string simple, pas une collection #}
+                                {% if step.productRecommendation %}
+                                    <span class="product-tag">✨ {{ step.productRecommendation }}</span>
+                                {% endif %}
                             </div>
                         </div>
                     {% endfor %}
