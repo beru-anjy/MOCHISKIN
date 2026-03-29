@@ -1,8 +1,76 @@
 {% extends '@EasyAdmin/page/content.html.twig' %}
 
-{% block page_title %}Tableau de bord MOCHISKIN{% endblock %}
+{# Titre affiché dans l'onglet du navigateur #}
+{% block page_title %}Dashboard — MochiSkin Admin{% endblock %}
+
+{% block content_title %}
+    <h1 class="h3">Tableau de bord</h1>
+    <p class="text-muted">Bienvenue dans l'administration MochiSkin</p>
+{% endblock %}
 
 {% block main %}
-    <h1>Bienvenue sur l'admin MOCHISKIN 🌸</h1>
-    <p>Utilisez le menu à gauche pour gérer le contenu.</p>
+    <div class="row g-4 mt-2">
+
+        {# ── Carte Articles ──────────────────────────────────────────── #}
+        {# ea_url() génère l'URL EasyAdmin vers le CrudController donné  #}
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <i class="fa fa-newspaper fa-2x text-primary mb-3"></i>
+                    <h5 class="card-title">Articles</h5>
+                    <p class="text-muted small">Gérer les articles du blog</p>
+                    <a href="{{ ea_url().setController(constant('App\\Controller\\Admin\\ArticleCrudController::class')) }}"
+                       class="btn btn-sm btn-primary">
+                        Gérer les articles
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {# ── Carte Commentaires ──────────────────────────────────────── #}
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <i class="fa fa-comment fa-2x text-warning mb-3"></i>
+                    <h5 class="card-title">Commentaires</h5>
+                    <p class="text-muted small">Modérer les commentaires</p>
+                    <a href="{{ ea_url().setController(constant('App\\Controller\\Admin\\CommentCrudController::class')) }}"
+                       class="btn btn-sm btn-warning">
+                        Modérer
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {# ── Carte Newsletter ─────────────────────────────────────────── #}
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <i class="fa fa-envelope fa-2x text-success mb-3"></i>
+                    <h5 class="card-title">Newsletter</h5>
+                    <p class="text-muted small">Gérer les abonnés</p>
+                    <a href="{{ ea_url().setController(constant('App\\Controller\\Admin\\NewsletterCrudController::class')) }}"
+                       class="btn btn-sm btn-success">
+                        Voir les abonnés
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {# ── Carte Contacts ───────────────────────────────────────────── #}
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <i class="fa fa-phone fa-2x text-danger mb-3"></i>
+                    <h5 class="card-title">Messages</h5>
+                    <p class="text-muted small">Lire les messages reçus</p>
+                    <a href="{{ ea_url().setController(constant('App\\Controller\\Admin\\ContactCrudController::class')) }}"
+                       class="btn btn-sm btn-danger">
+                        Voir les messages
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
 {% endblock %}
