@@ -29,7 +29,7 @@ class DashboardController extends AbstractDashboardController
 * En EasyAdmin 4.x on utilise l'attribut PHP #[Route]
 * Note : #[AdminDashboard] est disponible en EA 4.9+
 */
-#[AdminDashboard('/admin', name: 'admin')]
+#[AdminDashboard(routePath: '/admin', routeName: 'admin')]
 public function index(): Response
 {
 // Rend notre template de dashboard personnalisé
