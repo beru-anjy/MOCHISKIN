@@ -1,5 +1,7 @@
 <?php
 
+// src/DataFixtures/AppFixtures.php
+
 namespace App\DataFixtures;
 
 use App\Entity\Article;
@@ -19,22 +21,35 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+    /**
+     * Injection du service de hashage des mots de passe.
+     * Symfony 6+ utilise UserPasswordHasherInterface.
+     */
     public function __construct(
         private UserPasswordHasherInterface $hasher
     ) {}
 
+    /**
+     * load() — Point d'entrée principal des fixtures
+     *
+     * L'ordre des sections est important car il respecte les dépendances :
+     * SkinTypes → Users → Categories → Tags → Articles → Comments
+     * → Routines → RoutineSteps → Newsletter
+     */
     public function load(ObjectManager $manager): void
     {
-        // ══════════════════════════════════════════
+        // ══════════════════════════════════════════════════════════════
         // 1. SKIN TYPES
-        // ══════════════════════════════════════════
-        $skinTypes = [];
+        // Créés en premier car Users et Newsletter en dépendent
+        // ══════════════════════════════════════════════════════════════
+
+        $skinTypes    = [];
         $skinTypeData = [
-            ['Normale',   'Peau équilibrée, ni trop grasse ni trop sèche.'],
-            ['Sèche',     'Peau qui manque de lipides et d\'hydratation.'],
-            ['Grasse',    'Peau avec excès de sébum, pores dilatés.'],
-            ['Mixte',     'Zone T grasse, joues normales à sèches.'],
-            ['Sensible',  'Peau réactive, sujette aux rougeurs et irritations.'],
+            ['Normale',  'Peau équilibrée, ni trop grasse ni trop sèche.'],
+            ['Sèche',    'Peau qui manque de lipides et d\'hydratation.'],
+            ['Grasse',   'Peau avec excès de sébum, pores dilatés.'],
+            ['Mixte',    'Zone T grasse, joues normales à sèches.'],
+            ['Sensible', 'Peau réactive, sujette aux rougeurs et irritations.'],
         ];
 
         foreach ($skinTypeData as [$name, $desc]) {
@@ -44,11 +59,13 @@ class AppFixtures extends Fixture
             $skinTypes[$name] = $st;
         }
 
-        // ══════════════════════════════════════════
+        // ══════════════════════════════════════════════════════════════
         // 2. USERS
-        // ══════════════════════════════════════════
+        // Un admin + deux auteures pour varier les articles
+        // Les mots de passe sont hashés via UserPasswordHasherInterface
+        // ══════════════════════════════════════════════════════════════
 
-        // Admin
+        // Compte administrateur — accès complet à l'interface EasyAdmin
         $admin = new User();
         $admin->setEmail('admin@mochiskin.com')
               ->setFirstName('Anjy')
@@ -59,7 +76,7 @@ class AppFixtures extends Fixture
               ->setPassword($this->hasher->hashPassword($admin, 'admin123'));
         $manager->persist($admin);
 
-        // Auteure 2
+        // Auteure 2 — rédactrice principale
         $jimin = new User();
         $jimin->setEmail('jimin@mochiskin.com')
               ->setFirstName('Ji-min')
@@ -70,7 +87,7 @@ class AppFixtures extends Fixture
               ->setPassword($this->hasher->hashPassword($jimin, 'password123'));
         $manager->persist($jimin);
 
-        // Auteure 3
+        // Auteure 3 — rédactrice secondaire
         $aminata = new User();
         $aminata->setEmail('aminata@mochiskin.com')
                 ->setFirstName('Aminata')
@@ -81,16 +98,18 @@ class AppFixtures extends Fixture
                 ->setPassword($this->hasher->hashPassword($aminata, 'password123'));
         $manager->persist($aminata);
 
-        // ══════════════════════════════════════════
+        // ══════════════════════════════════════════════════════════════
         // 3. CATEGORIES
-        // ══════════════════════════════════════════
-        $categories = [];
+        // Indexées par slug pour être réutilisées dans les articles
+        // ══════════════════════════════════════════════════════════════
+
+        $categories   = [];
         $categoryData = [
-            ['Routine',      'routine',      'Tout sur les routines skincare'],
-            ['Ingrédients',  'ingredients',  'Décryptage des ingrédients cosmétiques'],
-            ['Produits',     'produits',     'Tests et avis produits'],
-            ['Conseils',     'conseils',     'Conseils pratiques pour prendre soin de sa peau'],
-            ['DIY',          'diy',          'Recettes et soins maison'],
+            ['Routine',     'routine',     'Tout sur les routines skincare'],
+            ['Ingrédients', 'ingredients', 'Décryptage des ingrédients cosmétiques'],
+            ['Produits',    'produits',    'Tests et avis produits'],
+            ['Conseils',    'conseils',    'Conseils pratiques pour prendre soin de sa peau'],
+            ['DIY',         'diy',         'Recettes et soins maison'],
         ];
 
         foreach ($categoryData as [$name, $slug, $desc]) {
@@ -100,21 +119,23 @@ class AppFixtures extends Fixture
             $categories[$slug] = $cat;
         }
 
-        // ══════════════════════════════════════════
+        // ══════════════════════════════════════════════════════════════
         // 4. TAGS
-        // ══════════════════════════════════════════
-        $tags = [];
+        // Indexés par slug pour être réutilisés dans les articles
+        // ══════════════════════════════════════════════════════════════
+
+        $tags    = [];
         $tagData = [
-            ['Vitamine C',        'vitamine-c'],
-            ['Acide hyaluronique','acide-hyaluronique'],
-            ['SPF',               'spf'],
-            ['Double nettoyage',  'double-nettoyage'],
-            ['Rétinol',           'retinol'],
-            ['K-Beauty',          'k-beauty'],
-            ['Hydratation',       'hydratation'],
-            ['Anti-âge',          'anti-age'],
-            ['Peaux sensibles',   'peaux-sensibles'],
-            ['DIY',               'diy'],
+            ['Vitamine C',         'vitamine-c'],
+            ['Acide hyaluronique', 'acide-hyaluronique'],
+            ['SPF',                'spf'],
+            ['Double nettoyage',   'double-nettoyage'],
+            ['Rétinol',            'retinol'],
+            ['K-Beauty',           'k-beauty'],
+            ['Hydratation',        'hydratation'],
+            ['Anti-âge',           'anti-age'],
+            ['Peaux sensibles',    'peaux-sensibles'],
+            ['DIY',                'diy'],
         ];
 
         foreach ($tagData as [$name, $slug]) {
@@ -124,26 +145,28 @@ class AppFixtures extends Fixture
             $tags[$slug] = $tag;
         }
 
-        // ══════════════════════════════════════════
+        // ══════════════════════════════════════════════════════════════
         // 5. ARTICLES
-        // ══════════════════════════════════════════
+        // Chaque article référence une catégorie, un auteur et des tags
+        // ══════════════════════════════════════════════════════════════
+
         $articlesData = [
             [
                 'title'    => 'Les 5 étapes d\'une routine matin parfaite',
                 'slug'     => 'les-5-etapes-routine-matin-parfaite',
                 'excerpt'  => 'Découvrez comment préparer votre peau chaque matin pour une journée éclatante.',
                 'content'  => '<h2>Pourquoi une routine matin ?</h2>
-<p>La routine matin prépare votre peau aux agressions de la journée : pollution, UV, stress. Une peau bien protégée reste saine plus longtemps.</p>
+<p>La routine matin prépare votre peau aux agressions de la journée : pollution, UV, stress.</p>
 <h2>Étape 1 : Le nettoyant doux</h2>
-<p>Commencez par un gel nettoyant doux pour éliminer les impuretés accumulées pendant la nuit. Massez en mouvements circulaires pendant 60 secondes, puis rincez à l\'eau tiède.</p>
+<p>Commencez par un gel nettoyant doux. Massez 60 secondes, rincez à l\'eau tiède.</p>
 <h2>Étape 2 : Le tonique</h2>
-<p>Le tonique rééquilibre le pH de votre peau et prépare l\'absorption des soins suivants. Appliquez avec un coton ou directement avec les mains.</p>
+<p>Le tonique rééquilibre le pH et prépare l\'absorption des soins suivants.</p>
 <h2>Étape 3 : Le sérum vitamine C</h2>
-<p>Indispensable le matin ! La vitamine C illumine le teint et protège contre les radicaux libres. Quelques gouttes suffisent.</p>
+<p>Indispensable le matin ! La vitamine C illumine et protège contre les radicaux libres.</p>
 <h2>Étape 4 : La crème hydratante</h2>
-<p>Choisissez une crème légère adaptée à votre type de peau pour maintenir l\'hydratation toute la journée.</p>
+<p>Choisissez une crème légère adaptée à votre type de peau.</p>
 <h2>Étape 5 : La protection solaire SPF50</h2>
-<p>L\'étape la plus importante ! Même en hiver, les UV abîment la peau. Appliquez généreusement et renouvelez toutes les 2 heures en extérieur.</p>',
+<p>L\'étape la plus importante ! Renouvelez toutes les 2 heures en extérieur.</p>',
                 'category' => 'routine',
                 'author'   => $jimin,
                 'tags'     => ['vitamine-c', 'spf', 'k-beauty'],
@@ -156,15 +179,15 @@ class AppFixtures extends Fixture
                 'slug'     => 'comment-choisir-serum-type-peau',
                 'excerpt'  => 'Le sérum est l\'étape clé de votre routine. Voici comment le choisir selon votre type de peau.',
                 'content'  => '<h2>Qu\'est-ce qu\'un sérum ?</h2>
-<p>Un sérum est un soin concentré en actifs qui cible des problématiques précises. Sa texture légère permet une pénétration rapide dans les couches profondes de la peau.</p>
+<p>Un sérum est un soin concentré en actifs qui cible des problématiques précises.</p>
 <h2>Pour les peaux sèches</h2>
-<p>Optez pour un sérum à l\'acide hyaluronique. Il attire et retient l\'eau dans les tissus cutanés, offrant une hydratation intense et durable.</p>
+<p>Optez pour un sérum à l\'acide hyaluronique pour une hydratation intense.</p>
 <h2>Pour les peaux grasses</h2>
-<p>Choisissez un sérum à la niacinamide qui régule le sébum, resserre les pores et uniformise le teint sans alourdir la peau.</p>
+<p>Choisissez un sérum à la niacinamide qui régule le sébum et resserre les pores.</p>
 <h2>Pour les peaux ternes</h2>
-<p>La vitamine C est votre alliée. Elle stimule la synthèse du collagène, illumine le teint et efface les taches pigmentaires progressivement.</p>
+<p>La vitamine C illumine le teint et efface les taches pigmentaires.</p>
 <h2>Pour les peaux matures</h2>
-<p>Le rétinol accélère le renouvellement cellulaire et stimule la production de collagène. Commencez avec une faible concentration et augmentez progressivement.</p>',
+<p>Le rétinol accélère le renouvellement cellulaire. Commencez avec une faible concentration.</p>',
                 'category' => 'produits',
                 'author'   => $jimin,
                 'tags'     => ['acide-hyaluronique', 'vitamine-c', 'retinol'],
@@ -175,15 +198,15 @@ class AppFixtures extends Fixture
             [
                 'title'    => 'Les bienfaits du double nettoyage coréen',
                 'slug'     => 'bienfaits-double-nettoyage-coreen',
-                'excerpt'  => 'Le double nettoyage est une technique coréenne incontournable pour une peau nette et éclatante.',
+                'excerpt'  => 'Le double nettoyage est une technique coréenne incontournable pour une peau nette.',
                 'content'  => '<h2>Qu\'est-ce que le double nettoyage ?</h2>
-<p>Originaire de Corée du Sud, le double nettoyage consiste à utiliser deux produits successifs : d\'abord une huile ou un baume, puis un nettoyant moussant à base d\'eau.</p>
+<p>Originaire de Corée du Sud : d\'abord une huile, puis un nettoyant moussant.</p>
 <h2>Pourquoi deux étapes ?</h2>
-<p>La règle est simple : "like dissolves like". L\'huile dissout les impuretés liposolubles (maquillage, crème solaire, sébum), tandis que le nettoyant aqueux élimine les résidus hydrosolubles (sueur, pollution).</p>
+<p>L\'huile dissout les impuretés liposolubles, le nettoyant aqueux élimine les résidus hydrosolubles.</p>
 <h2>Étape 1 : L\'huile démaquillante</h2>
-<p>Appliquez l\'huile sur peau sèche et massez délicatement pendant 60 secondes. Ajoutez un peu d\'eau pour émulsionner, puis rincez. La peau doit être propre mais pas tiraillante.</p>
+<p>Appliquez sur peau sèche, massez 60 secondes, émulsionnez avec de l\'eau, rincez.</p>
 <h2>Étape 2 : Le nettoyant moussant</h2>
-<p>Appliquez le second nettoyant et massez pendant 30 secondes supplémentaires. Rincez à l\'eau tiède. Votre peau est maintenant parfaitement propre et prête à recevoir vos soins.</p>',
+<p>Massez 30 secondes supplémentaires. Rincez à l\'eau tiède.</p>',
                 'category' => 'conseils',
                 'author'   => $admin,
                 'tags'     => ['double-nettoyage', 'k-beauty'],
@@ -196,11 +219,11 @@ class AppFixtures extends Fixture
                 'slug'     => 'acide-hyaluronique-tout-savoir',
                 'excerpt'  => 'Tout ce que vous devez savoir sur cet ingrédient star de l\'hydratation cutanée.',
                 'content'  => '<h2>Qu\'est-ce que l\'acide hyaluronique ?</h2>
-<p>L\'acide hyaluronique est une molécule naturellement présente dans notre organisme. Sa particularité ? Elle peut retenir jusqu\'à 1000 fois son poids en eau, ce qui en fait un hydratant exceptionnel.</p>
+<p>Une molécule naturelle qui peut retenir jusqu\'à 1000 fois son poids en eau.</p>
 <h2>Les différents poids moléculaires</h2>
-<p>Il existe plusieurs types d\'acide hyaluronique selon leur taille moléculaire. Les molécules légères pénètrent plus profondément dans la peau, tandis que les molécules lourdes forment un film protecteur en surface.</p>
+<p>Les molécules légères pénètrent plus profondément, les lourdes forment un film protecteur.</p>
 <h2>Comment l\'utiliser ?</h2>
-<p>Appliquez le sérum sur peau légèrement humide pour maximiser son effet. Superposez ensuite une crème hydratante pour sceller l\'humidité. Utilisez matin et soir pour des résultats optimaux.</p>',
+<p>Appliquez sur peau légèrement humide, puis scellez avec une crème hydratante.</p>',
                 'category' => 'ingredients',
                 'author'   => $aminata,
                 'tags'     => ['acide-hyaluronique', 'hydratation'],
@@ -213,11 +236,11 @@ class AppFixtures extends Fixture
                 'slug'     => '3-masques-maison-faciles',
                 'excerpt'  => 'Réalisez vos propres masques avec des ingrédients naturels du quotidien.',
                 'content'  => '<h2>Masque à l\'avocat pour peau sèche</h2>
-<p>Écrasez la moitié d\'un avocat mûr et mélangez avec une cuillère à soupe de miel. Appliquez sur le visage et laissez poser 15 minutes. L\'avocat nourrit intensément la peau grâce à ses acides gras.</p>
+<p>Écrasez un avocat mûr avec du miel. Laissez poser 15 minutes.</p>
 <h2>Masque à l\'argile pour peau grasse</h2>
-<p>Mélangez 2 cuillères d\'argile verte avec de l\'eau florale de lavande jusqu\'à obtenir une pâte lisse. Appliquez en couche fine et laissez sécher 10 minutes. Rincez avant que l\'argile soit complètement sèche.</p>
+<p>Argile verte + eau florale de lavande. Rincez avant séchage complet.</p>
 <h2>Masque au miel et curcuma pour l\'éclat</h2>
-<p>Mélangez une cuillère de miel avec une pincée de curcuma et quelques gouttes de jus de citron. Le miel hydrate, le curcuma illumine et le citron resserre les pores. Attention aux taches sur les vêtements !</p>',
+<p>Miel + curcuma + citron. Attention aux taches sur les vêtements !</p>',
                 'category' => 'diy',
                 'author'   => $aminata,
                 'tags'     => ['diy', 'hydratation'],
@@ -230,13 +253,13 @@ class AppFixtures extends Fixture
                 'slug'     => 'routine-soir-essentiels-peau-regeneree',
                 'excerpt'  => 'Le soir, votre peau a besoin d\'une attention particulière pour se régénérer.',
                 'content'  => '<h2>Pourquoi la routine soir est cruciale ?</h2>
-<p>La nuit, votre peau entre en mode réparation. Elle se régénère, élimine les toxines et absorbe mieux les actifs. C\'est le moment idéal pour appliquer vos soins les plus concentrés.</p>
+<p>La nuit, votre peau se régénère et absorbe mieux les actifs.</p>
 <h2>Le double nettoyage</h2>
-<p>Commencez toujours par démaquiller avec une huile, puis nettoyez avec un gel moussant. Une peau propre absorbe mieux les soins qui suivent.</p>
+<p>Huile démaquillante puis gel moussant. Une peau propre absorbe mieux les soins.</p>
 <h2>Le sérum réparateur</h2>
-<p>Le soir, vous pouvez utiliser des actifs plus puissants comme le rétinol ou les acides AHA/BHA. Commencez par une application 2 fois par semaine pour habituer votre peau.</p>
+<p>Rétinol ou acides AHA/BHA : commencez 2 fois par semaine.</p>
 <h2>La crème de nuit</h2>
-<p>Plus riche que la crème de jour, elle nourrit en profondeur et soutient le processus de régénération cellulaire nocturne. Appliquez en dernier, sur peau légèrement humide.</p>',
+<p>Plus riche que la crème de jour, elle nourrit en profondeur pendant le sommeil.</p>',
                 'category' => 'routine',
                 'author'   => $jimin,
                 'tags'     => ['retinol', 'anti-age', 'k-beauty'],
@@ -246,6 +269,8 @@ class AppFixtures extends Fixture
             ],
         ];
 
+        // Boucle de création des articles
+        // Les tags sont ajoutés via addTag() (relation ManyToMany)
         $articles = [];
         foreach ($articlesData as $data) {
             $article = new Article();
@@ -268,17 +293,20 @@ class AppFixtures extends Fixture
             $articles[] = $article;
         }
 
-        // ══════════════════════════════════════════
+        // ══════════════════════════════════════════════════════════════
         // 6. COMMENTAIRES
-        // ══════════════════════════════════════════
+        // Liés aux articles et aux auteurs créés plus haut
+        // isApproved = false → commentaire en attente de modération
+        // ══════════════════════════════════════════════════════════════
+
         $commentsData = [
-            [$articles[0], $jimin,   'Super article ! J\'ai adopté cette routine depuis 2 semaines et ma peau est transformée.', true],
-            [$articles[0], $aminata, 'Merci pour ces conseils ! Je ne savais pas que le SPF était aussi important en hiver.', true],
-            [$articles[1], $admin,   'Très utile pour choisir le bon sérum. Je recommande le sérum à la niacinamide pour les peaux mixtes.', true],
-            [$articles[2], $jimin,   'Le double nettoyage a changé ma vie ! Ma peau n\'a jamais été aussi propre.', true],
-            [$articles[3], $aminata, 'Article très complet sur l\'acide hyaluronique. J\'aurais aimé connaître ça plus tôt !', true],
-            [$articles[4], $admin,   'Le masque à l\'avocat est devenu mon rituel du dimanche soir. Merci !', true],
-            [$articles[5], $jimin,   'La routine soir fait vraiment la différence. Mon rétinol est enfin bien intégré.', false],
+            [$articles[0], $jimin,   'Super article ! Ma peau est transformée depuis 2 semaines.',                              true],
+            [$articles[0], $aminata, 'Je ne savais pas que le SPF était aussi important en hiver. Merci !',                    true],
+            [$articles[1], $admin,   'Je recommande le sérum à la niacinamide pour les peaux mixtes.',                         true],
+            [$articles[2], $jimin,   'Le double nettoyage a changé ma vie ! Ma peau n\'a jamais été aussi propre.',            true],
+            [$articles[3], $aminata, 'Article très complet. J\'aurais aimé connaître l\'acide hyaluronique plus tôt !',        true],
+            [$articles[4], $admin,   'Le masque à l\'avocat est devenu mon rituel du dimanche soir. Merci !',                  true],
+            [$articles[5], $jimin,   'La routine soir fait vraiment la différence. Mon rétinol est enfin bien intégré.',       false],
         ];
 
         foreach ($commentsData as [$article, $author, $content, $approved]) {
@@ -290,11 +318,13 @@ class AppFixtures extends Fixture
             $manager->persist($comment);
         }
 
-        // ══════════════════════════════════════════
-        // 7. ROUTINES
-        // ══════════════════════════════════════════
+        // ══════════════════════════════════════════════════════════════
+        // 7. ROUTINES & ROUTINE STEPS
+        // Deux routines : matin (morning) et soir (evening)
+        // Chaque routine contient plusieurs étapes ordonnées
+        // ══════════════════════════════════════════════════════════════
 
-        // Routine Matin
+        // ── Routine Matin ─────────────────────────────────────────────
         $morningRoutine = new Routine();
         $morningRoutine->setType('morning')
                        ->setName('Routine Matin MOCHISKIN')
@@ -303,12 +333,13 @@ class AppFixtures extends Fixture
                        ->setStepCount(5);
         $manager->persist($morningRoutine);
 
+        // Étapes : [ordre, titre, description, produit recommandé]
         $morningSteps = [
-            [1, 'Nettoyant doux',      'Nettoyez votre visage avec un gel nettoyant doux pour éliminer les impuretés de la nuit.',          'Gel nettoyant purifiant'],
-            [2, 'Tonique hydratant',   'Rééquilibrez le pH de votre peau et préparez l\'absorption des soins suivants.',                    'Tonique sans alcool'],
-            [3, 'Sérum vitamine C',    'Illuminez votre teint et protégez votre peau des radicaux libres avec quelques gouttes.',            'Sérum éclat vitamine C 20%'],
-            [4, 'Crème hydratante',    'Maintenez l\'hydratation toute la journée avec une crème légère adaptée à votre type de peau.',      'Crème hydratante légère'],
-            [5, 'Protection solaire',  'L\'étape la plus importante ! SPF50 obligatoire même en hiver, renouvelez toutes les 2h en extérieur.', 'Protection solaire SPF50+'],
+            [1, 'Nettoyant doux',     'Éliminez les impuretés de la nuit en massant 60 secondes.',                             'Gel nettoyant purifiant'],
+            [2, 'Tonique hydratant',  'Rééquilibrez le pH et préparez l\'absorption des soins suivants.',                      'Tonique sans alcool'],
+            [3, 'Sérum vitamine C',   'Illuminez le teint et protégez contre les radicaux libres avec quelques gouttes.',      'Sérum éclat vitamine C 20%'],
+            [4, 'Crème hydratante',   'Maintenez l\'hydratation toute la journée avec une crème légère.',                     'Crème hydratante légère'],
+            [5, 'Protection solaire', 'SPF50 obligatoire même en hiver. Renouvelez toutes les 2h en extérieur.',               'Protection solaire SPF50+'],
         ];
 
         foreach ($morningSteps as [$order, $title, $desc, $product]) {
@@ -321,7 +352,7 @@ class AppFixtures extends Fixture
             $manager->persist($step);
         }
 
-        // Routine Soir
+        // ── Routine Soir ──────────────────────────────────────────────
         $eveningRoutine = new Routine();
         $eveningRoutine->setType('evening')
                        ->setName('Routine Soir MOCHISKIN')
@@ -330,14 +361,15 @@ class AppFixtures extends Fixture
                        ->setStepCount(7);
         $manager->persist($eveningRoutine);
 
+        // Étapes : [ordre, titre, description, produit recommandé]
         $eveningSteps = [
-            [1, 'Huile démaquillante',        '1ère étape du double nettoyage. L\'huile dissout le maquillage et les impuretés liposolubles.',       'Huile démaquillante douce'],
-            [2, 'Nettoyant moussant',          '2ème étape du double nettoyage. Élimine les résidus et nettoie la peau en profondeur.',              'Mousse nettoyante purifiante'],
-            [3, 'Exfoliant doux (2x/semaine)', 'Deux fois par semaine, éliminez les cellules mortes pour affiner le grain de peau.',                 'Exfoliant enzymatique'],
-            [4, 'Tonique apaisant',            'Rééquilibrez le pH avec un tonique apaisant pour préparer la peau aux actifs suivants.',             'Tonique hydratant et apaisant'],
-            [5, 'Sérum réparateur',            'Le soir, privilégiez rétinol, acide hyaluronique ou peptides selon vos besoins.',                   'Sérum anti-âge rétinol'],
-            [6, 'Contour des yeux',            'Appliquez délicatement en tapotant un soin spécifique pour cette zone fragile.',                     'Contour yeux anti-cernes'],
-            [7, 'Crème de nuit',               'Terminez avec une crème riche pour nourrir et régénérer pendant le sommeil.',                       'Crème de nuit régénérante'],
+            [1, 'Huile démaquillante',        '1ère étape du double nettoyage. Dissout maquillage et impuretés liposolubles.',  'Huile démaquillante douce'],
+            [2, 'Nettoyant moussant',          '2ème étape du double nettoyage. Nettoie la peau en profondeur.',               'Mousse nettoyante purifiante'],
+            [3, 'Exfoliant doux (2x/semaine)', 'Deux fois par semaine, éliminez les cellules mortes.',                         'Exfoliant enzymatique'],
+            [4, 'Tonique apaisant',            'Rééquilibrez le pH pour préparer la peau aux actifs suivants.',                'Tonique hydratant et apaisant'],
+            [5, 'Sérum réparateur',            'Privilégiez rétinol, acide hyaluronique ou peptides selon vos besoins.',       'Sérum anti-âge rétinol'],
+            [6, 'Contour des yeux',            'Appliquez en tapotant sur cette zone fragile.',                                'Contour yeux anti-cernes'],
+            [7, 'Crème de nuit',               'Nourrissez et régénérez pendant le sommeil avec une crème riche.',            'Crème de nuit régénérante'],
         ];
 
         foreach ($eveningSteps as [$order, $title, $desc, $product]) {
@@ -350,14 +382,18 @@ class AppFixtures extends Fixture
             $manager->persist($step);
         }
 
-        // ══════════════════════════════════════════
+        // ══════════════════════════════════════════════════════════════
         // 8. NEWSLETTER
-        // ══════════════════════════════════════════
+        // Chaque abonné a un type de peau, des préoccupations (concerns)
+        // et des centres d'intérêt (interests) associés
+        // ══════════════════════════════════════════════════════════════
+
+        // Format : [prénom, email, type de peau, concerns[], interests[]]
         $newsletterData = [
-            ['Sophie',  'sophie@exemple.com',  'Sèche',    ['hydratation', 'peaux-sensibles'], ['k-beauty', 'naturel']],
-            ['Marie',   'marie@exemple.com',   'Mixte',    ['pores', 'acne'],                  ['ingredients', 'tests']],
-            ['Julie',   'julie@exemple.com',   'Normale',  ['rides'],                          ['anti-age', 'diy']],
-            ['Laura',   'laura@exemple.com',   'Sensible', ['rougeurs'],                       ['naturel', 'diy']],
+            ['Sophie', 'sophie@exemple.com', 'Sèche',    ['hydratation', 'peaux-sensibles'], ['k-beauty', 'naturel']],
+            ['Marie',  'marie@exemple.com',  'Mixte',    ['pores', 'acne'],                  ['ingredients', 'tests']],
+            ['Julie',  'julie@exemple.com',  'Normale',  ['rides'],                          ['anti-age', 'diy']],
+            ['Laura',  'laura@exemple.com',  'Sensible', ['rougeurs'],                       ['naturel', 'diy']],
         ];
 
         foreach ($newsletterData as [$firstName, $email, $skinTypeName, $concerns, $interests]) {
@@ -366,21 +402,28 @@ class AppFixtures extends Fixture
                        ->setEmail($email)
                        ->setIsActive(true)
                        ->setSkinType($skinTypes[$skinTypeName]);
-
             $manager->persist($newsletter);
 
+            // Préoccupations skin (ex: pores, acné, rides...)
             foreach ($concerns as $concern) {
                 $nc = new NewsletterConcern();
                 $nc->setConcern($concern)->setNewsletter($newsletter);
                 $manager->persist($nc);
             }
 
+            // Centres d'intérêt (ex: k-beauty, DIY, ingrédients...)
             foreach ($interests as $interest) {
                 $ni = new NewsletterInterest();
                 $ni->setInterest($interest)->setNewsletter($newsletter);
                 $manager->persist($ni);
             }
         }
+
+        // ══════════════════════════════════════════════════════════════
+        // FLUSH FINAL
+        // Un seul flush à la fin pour optimiser les performances
+        // Doctrine envoie toutes les requêtes SQL en une seule transaction
+        // ══════════════════════════════════════════════════════════════
 
         $manager->flush();
     }
