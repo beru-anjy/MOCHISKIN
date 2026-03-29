@@ -1,73 +1,55 @@
 security:
-    # ── HASHERS ───────────────────────────────────────────────────────────────
-    # Algorithme de hachage des mots de passe
-    # "auto" = Symfony choisit le meilleur algo disponible (bcrypt/argon2)
-    # NE JAMAIS stocker un mot de passe en clair !
+
+    # ── Hashage des mots de passe ─────────────────────────────────────
+    # bcrypt est le standard — auto adapte le coût automatiquement
     password_hashers:
-        # Hachage spécifique pour l'entité User avec bcrypt
         App\Entity\User:
             algorithm: bcrypt
-        # Hachage global pour tout ce qui implémente PasswordAuthenticatedUserInterface
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
 
-    # ── PROVIDERS ─────────────────────────────────────────────────────────────
-    # Comment Symfony retrouve un User depuis son identifiant (email ici)
-    # L'email est unique dans la table user → parfait comme identifiant
+    # ── Fournisseur d'utilisateurs ────────────────────────────────────
+    # Indique à Symfony comment charger un utilisateur depuis la base
     providers:
         app_user_provider:
             entity:
                 class: App\Entity\User
+                # Symfony cherchera l'utilisateur par son email
                 property: email
 
-    # ── FIREWALLS ─────────────────────────────────────────────────────────────
+    # ── Firewalls ─────────────────────────────────────────────────────
     firewalls:
 
-        # Désactive la sécurité pour le profiler Symfony et les assets statiques
-        # ⚠️ Toujours en PREMIER, ne jamais modifier cet ordre
+        # Firewall pour les outils de développement (profiler, etc.)
+        # security: false = pas d'auth requise pour ces routes
         dev:
-            pattern: ^/(_profiler|_wdt|css|images|js)/
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        # Firewall principal : s'applique à toutes les autres routes
+        # Firewall principal — s'applique à tout le site
         main:
-            lazy: true          # User chargé uniquement si nécessaire (performance)
+            lazy: true
             provider: app_user_provider
 
+            # Formulaire de login standard Symfony
             form_login:
-                login_path: app_login       # Route GET : affiche le formulaire
-                check_path: app_login       # Route POST : traite la connexion
-                enable_csrf: true           # Protection CSRF activée (token auto)
-                # Après connexion réussie → redirige vers l'accueil
-                default_target_path: app_home
-                # false = si l'user tentait /admin avant → y redirige après login
-                always_use_default_target_path: false
+                # Route vers le formulaire de connexion
+                login_path: app_login
+                # Route qui traite le POST du formulaire
+                check_path: app_login
+                # Redirection après connexion réussie
+                default_target_path: admin
 
+            # Déconnexion
             logout:
-                path: app_logout            # Route qui déconnecte
-                target: app_home            # Redirige vers l'accueil après déco
+                # Route de déconnexion
+                path: app_logout
+                # Redirection après déconnexion
+                target: app_home
 
-    # ── ACCESS CONTROL ────────────────────────────────────────────────────────
-    # ⚠️ Évalué DE HAUT EN BAS — première règle correspondante gagne
+    # ── Contrôle d'accès ──────────────────────────────────────────────
+    # Les règles sont évaluées dans l'ordre — la première correspondante s'applique
     access_control:
-        # /admin → réservé aux admins uniquement
+        # /admin et toutes les sous-routes nécessitent ROLE_ADMIN
         - { path: ^/admin, roles: ROLE_ADMIN }
-
-        # ✅ CORRIGÉ : PUBLIC_ACCESS (pas ROLE_USER !)
-        # Si /login était ROLE_USER → boucle infinie pour les non-connectés
-        # Un visiteur non connecté doit pouvoir accéder à /login !
+        # /login est accessible à tous (PUBLIC_ACCESS)
         - { path: ^/login, roles: PUBLIC_ACCESS }
-
-        # Tout le reste → accessible sans connexion
-        # Commentaires anonymes, lecture articles, newsletter... tout est public
-
-# ── CONFIGURATION DE TEST ─────────────────────────────────────────────────────
-# En environnement de test, on réduit le coût du hachage pour la performance
-# Les tests n'ont pas besoin d'une sécurité maximale
-when@test:
-    security:
-        password_hashers:
-            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
-                algorithm: auto
-                cost: 4         # Valeur minimale pour bcrypt
-                time_cost: 3    # Valeur minimale pour argon
-                memory_cost: 10 # Valeur minimale pour argon
+        # Tout le reste est accessible à tous
