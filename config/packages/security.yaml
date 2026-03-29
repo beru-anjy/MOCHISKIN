@@ -53,3 +53,4 @@ security:
         # /login est accessible à tous (PUBLIC_ACCESS)
         - { path: ^/login, roles: PUBLIC_ACCESS }
         # Tout le reste est accessible à tous
+        - { path: ^/, roles: PUBLIC_ACCESS }
