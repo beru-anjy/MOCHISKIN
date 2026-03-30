@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a39e269b8b1233c27e5de695b63808e8",
+    "content-hash": "444134c670fa302f3265e75317c7a075",
     "packages": [
         {
             "name": "doctrine/collections",
@@ -1121,16 +1121,16 @@
         },
         {
             "name": "easycorp/easyadmin-bundle",
-            "version": "v5.0.2",
+            "version": "v5.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EasyCorp/EasyAdminBundle.git",
-                "reference": "75a421266c93e268849fcc9e97da47038fa09519"
+                "reference": "e2134a0d1e90245790ac131276bb283077e40562"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EasyCorp/EasyAdminBundle/zipball/75a421266c93e268849fcc9e97da47038fa09519",
-                "reference": "75a421266c93e268849fcc9e97da47038fa09519",
+                "url": "https://api.github.com/repos/EasyCorp/EasyAdminBundle/zipball/e2134a0d1e90245790ac131276bb283077e40562",
+                "reference": "e2134a0d1e90245790ac131276bb283077e40562",
                 "shasum": ""
             },
             "require": {
@@ -1168,7 +1168,6 @@
             "require-dev": {
                 "dama/doctrine-test-bundle": "^8.2",
                 "doctrine/doctrine-fixtures-bundle": "^3.4|3.5.x-dev|^4.0",
-                "moneyphp/money": "^4.8",
                 "phpstan/extension-installer": "^1.4",
                 "phpstan/phpstan": "^2.0",
                 "phpstan/phpstan-phpunit": "^2.0",
@@ -1216,7 +1215,7 @@
             ],
             "support": {
                 "issues": "https://github.com/EasyCorp/EasyAdminBundle/issues",
-                "source": "https://github.com/EasyCorp/EasyAdminBundle/tree/v5.0.2"
+                "source": "https://github.com/EasyCorp/EasyAdminBundle/tree/v5.0.0"
             },
             "funding": [
                 {
@@ -1224,7 +1223,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-03-08T19:34:29+00:00"
+            "time": "2026-02-26T07:02:18+00:00"
         },
         {
             "name": "egulias/email-validator",

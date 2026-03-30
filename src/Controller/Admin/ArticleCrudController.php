@@ -29,7 +29,7 @@ class ArticleCrudController extends AbstractCrudController
 {
     /**
      * Indique à EasyAdmin quelle entité ce controller gère.
-     * Obligatoire — doit retourner le FQCN de l'entité.
+     * Obligatoire — doit retourner le FQCN (Full Qualified Class Name) de l'entité.
      */
     public static function getEntityFqcn(): string
     {
@@ -38,75 +38,85 @@ class ArticleCrudController extends AbstractCrudController
 
     /**
      * configureCrud() — Paramètres globaux de ce CRUD
-     * Titre des pages, champ de tri par défaut, nombre d'éléments...
+     * Titre des pages, champ de tri par défaut, nombre d'éléments par page...
      */
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            // Titre affiché sur la page liste
+            // Libellés affichés dans l'interface admin (singulier / pluriel)
             ->setEntityLabelInSingular('Article')
             ->setEntityLabelInPlural('Articles')
-            // Champ utilisé pour la recherche globale (barre de recherche en haut)
+            // Champs utilisés pour la barre de recherche globale en haut de la liste
             ->setSearchFields(['title', 'excerpt', 'content'])
-            // Tri par défaut : publishedAt décroissant (articles récents en premier)
+            // Tri par défaut : articles les plus récents en premier
             ->setDefaultSort(['publishedAt' => 'DESC'])
-            // Nombre de résultats par page dans la liste
+            // Nombre de résultats affichés par page dans la liste
             ->setPaginatorPageSize(20);
     }
 
     /**
-     * configureFields() — Définit les champs affichés
+     * configureFields() — Définit les champs affichés selon la page
      *
-     * $pageName permet d'adapter les champs selon la page :
-     * - Crud::PAGE_INDEX  → liste
+     * $pageName permet d'adapter les champs selon le contexte :
+     * - Crud::PAGE_INDEX  → liste des articles
      * - Crud::PAGE_NEW    → formulaire de création
      * - Crud::PAGE_EDIT   → formulaire d'édition
-     * - Crud::PAGE_DETAIL → page de détail
+     * - Crud::PAGE_DETAIL → page de détail (lecture seule)
+     *
+     * Les méthodes hideOnIndex(), hideOnForm(), onlyOnForms()
+     * permettent de contrôler la visibilité champ par champ.
      */
     public function configureFields(string $pageName): iterable
     {
         return [
-            // ID — visible en liste uniquement, pas dans les formulaires
+            // ID auto-incrémenté — affiché en liste, masqué dans les formulaires
             IdField::new('id')->hideOnForm(),
 
-            // Titre de l'article — affiché partout
+            // Titre — affiché partout (liste, formulaires, détail)
             TextField::new('title', 'Titre'),
 
-            // Slug URL auto-généré depuis le titre
-            // SlugField::new() génère automatiquement le slug
-            // hideOnIndex() masque dans la liste pour gagner de la place
+            // Slug URL auto-généré à partir du champ "title"
+            // setTargetFieldName('title') = surveille le champ title en temps réel
+            // hideOnIndex() = masqué dans la liste pour ne pas surcharger l'affichage
             SlugField::new('slug', 'Slug')
                 ->setTargetFieldName('title')
                 ->hideOnIndex(),
 
-            // Résumé court — affiché en liste et formulaire
+            // Résumé court de l'article — affiché en liste et dans les formulaires
             TextareaField::new('excerpt', 'Résumé'),
 
-            // Contenu complet avec éditeur WYSIWYG
-            // hideOnIndex() car trop long pour la liste
+            // Contenu complet avec éditeur WYSIWYG (What You See Is What You Get)
+            // hideOnIndex() = trop long pour s'afficher dans la liste
+            // setNumOfRows(15) = hauteur de l'éditeur dans le formulaire
             TextEditorField::new('content', 'Contenu')
                 ->hideOnIndex()
                 ->setNumOfRows(15),
 
-            // Relation ManyToOne — dropdown autocomplete vers Category
+            // Catégorie de l'article — relation ManyToOne vers l'entité Category
+            // autocomplete() = active la recherche AJAX dans le dropdown
             AssociationField::new('category', 'Catégorie')
                 ->autocomplete(),
 
-            // Relation ManyToMany — multi-select vers Tag
+            // Tags de l'article — relation ManyToMany vers l'entité Tag
+            // autocomplete() = recherche AJAX multi-sélection
+            // hideOnIndex() = masqué en liste (trop verbeux)
             AssociationField::new('tags', 'Tags')
                 ->autocomplete()
                 ->hideOnIndex(),
 
-            // Auteur de l'article — relation ManyToOne vers User
+            // Auteur — relation ManyToOne vers l'entité User
+            // autocomplete() = recherche par nom/email dans le dropdown
             AssociationField::new('author', 'Auteur')
                 ->autocomplete(),
 
-            // Temps de lecture en minutes (calculé automatiquement ou saisi)
+            // Temps de lecture estimé en minutes — saisi manuellement ou calculé
+            // hideOnIndex() = masqué en liste pour alléger l'affichage
             IntegerField::new('readingTime', 'Lecture (min)')
                 ->hideOnIndex(),
 
-            // Date de publication — setFormat() adapte l'affichage
-            // hideOnForm() car elle est définie dans le constructeur de l'entité
+            // Date de publication — définie automatiquement dans le constructeur de Article
+            // hideOnForm() = non modifiable depuis les formulaires admin
+            // setFormat() = format d'affichage FR dans la liste et le détail
             DateTimeField::new('publishedAt', 'Publié le')
                 ->setFormat('dd/MM/Y HH:mm')
                 ->hideOnForm(),
@@ -114,39 +124,76 @@ class ArticleCrudController extends AbstractCrudController
     }
 
     /**
-     * configureFilters() — Filtres dans la barre latérale de la liste
+     * configureFilters() — Filtres affichés dans la barre latérale de la liste
      *
-     * Permettent de filtrer les articles par catégorie, date, etc.
-     * Disponibles uniquement sur la page liste (PAGE_INDEX).
+     * Ces filtres sont disponibles UNIQUEMENT sur PAGE_INDEX (la liste).
+     * Ils permettent de réduire les résultats sans toucher à la recherche globale.
+     *
+     * EntityFilter = filtre sur une relation (liste déroulante des valeurs)
+     * DateTimeFilter = filtre sur une plage de dates (date début / date fin)
+     * TextFilter = filtre textuel (contient / commence par / etc.)
      */
     public function configureFilters(
         \EasyCorp\Bundle\EasyAdminBundle\Config\Filters $filters
     ): \EasyCorp\Bundle\EasyAdminBundle\Config\Filters {
         return $filters
-            // Filtre par catégorie (liste déroulante)
+            // Filtre par catégorie — affiche un dropdown avec toutes les catégories
             ->add(EntityFilter::new('category', 'Catégorie'))
-            // Filtre par auteur
+            // Filtre par auteur — affiche un dropdown avec tous les utilisateurs
             ->add(EntityFilter::new('author', 'Auteur'))
-            // Filtre par date de publication (plage de dates)
+            // Filtre par plage de dates — champs "Du" et "Au"
             ->add(DateTimeFilter::new('publishedAt', 'Date de publication'))
-            // Filtre textuel sur le titre
+            // Filtre textuel sur le titre — champ de saisie libre
             ->add(TextFilter::new('title', 'Titre'));
     }
 
     /**
      * configureActions() — Boutons d'action dans la liste et les formulaires
      *
-     * EasyAdmin 4 fournit des actions par défaut :
-     * - INDEX     : edit, delete
-     * - DETAIL    : edit, delete, index (retour liste)
-     * - NEW/EDIT  : saveAndReturn, saveAndContinue
+     * ════════════════════════════════════════════════════════════════════
+     * RÈGLE IMPORTANTE EasyAdmin 4.x :
+     * ════════════════════════════════════════════════════════════════════
+     *
+     * EasyAdmin distingue deux cas d'usage pour les actions :
+     *
+     * 1. ->add()          → Pour ajouter une action qui N'EXISTE PAS encore sur la page.
+     *                       Ex : DETAIL n'est pas sur PAGE_INDEX par défaut → on l'ajoute.
+     *
+     * 2. ->updateAction() → Pour modifier les options d'une action QUI EXISTE DÉJÀ.
+     *                       Ex : SAVE_AND_ADD_ANOTHER existe déjà sur PAGE_NEW par défaut
+     *                       → on ne peut PAS l'ajouter une 2e fois avec ->add(),
+     *                       → on utilise ->updateAction() pour changer son libellé, icône, etc.
+     *
+     * Actions présentes PAR DÉFAUT selon la page :
+     * - PAGE_INDEX  : edit, delete                        → DETAIL absent  → utiliser ->add()
+     * - PAGE_DETAIL : edit, delete, index (retour liste)
+     * - PAGE_NEW    : saveAndReturn, saveAndContinue, saveAndAddAnother
+     * - PAGE_EDIT   : saveAndReturn, saveAndContinue
+     *
+     * Utiliser ->add() sur une action déjà présente lève une InvalidArgumentException.
+     * ════════════════════════════════════════════════════════════════════
      */
     public function configureActions(Actions $actions): Actions
     {
         return $actions
-            // Ajoute le bouton 'Voir le détail' dans la liste
+
+            // ✅ ->add() est CORRECT ici :
+            // Action::DETAIL n'existe pas par défaut sur PAGE_INDEX
+            // → on l'ajoute pour avoir un bouton "Voir le détail" dans la liste
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
-            // Ajoute 'Sauvegarder et ajouter un autre' dans le formulaire
-            ->add(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER);
+
+            // ✅ ->updateAction() est CORRECT ici :
+            // Action::SAVE_AND_ADD_ANOTHER existe DÉJÀ par défaut sur PAGE_NEW
+            // → on NE PEUT PAS utiliser ->add() (lèverait une InvalidArgumentException)
+            // → on utilise ->updateAction() pour personnaliser son libellé et son icône
+            ->update(
+                Crud::PAGE_NEW,
+                Action::SAVE_AND_ADD_ANOTHER,
+                fn(Action $action) => $action
+                    // Personnalise le libellé du bouton dans le formulaire de création
+                    ->setLabel('Sauvegarder et ajouter un autre article')
+                    // Ajoute une icône FontAwesome devant le libellé
+                    ->setIcon('fa fa-plus')
+            );
     }
 }
