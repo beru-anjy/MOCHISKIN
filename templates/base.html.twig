@@ -270,7 +270,8 @@
                     {# Bouton Admin : affiché UNIQUEMENT si ROLE_ADMIN #}
                     {# is_granted() vérifie le rôle sans planter si non connecté #}
                     {% if is_granted('ROLE_ADMIN') %}
-                        <a href="{{ path('admin') }}" class="btn-navbar-admin">
+                        <a href="/admin" class="btn-navbar-admin">
+                        {# <a href="{{ path('admin') }}" class="btn-navbar-admin"> #}
                             ⚙️ Admin
                         </a>
                     {% endif %}
