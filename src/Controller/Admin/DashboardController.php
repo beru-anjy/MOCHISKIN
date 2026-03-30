@@ -3,29 +3,29 @@
 namespace App\Controller\Admin;
 
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
-use Symfony\Component\Routing\Attribute\Route;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
-use App\Entity\Article;
-use App\Entity\Category;
-use App\Entity\Tag;
-use App\Entity\User;
-use App\Entity\Routine;
-use App\Entity\Comment;
-use App\Entity\Newsletter;
-use App\Entity\Contact;
-use App\Entity\SkinType;
 
+#[AdminDashboard(routePath: '/admin', routeName: 'admin')]
 class DashboardController extends AbstractDashboardController
 {
-    #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
-        return parent::index();
+        $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
+
+        return $this->redirect(
+            $adminUrlGenerator
+                ->setDashboard(DashboardController::class)
+                ->setController(ArticleCrudController::class)
+                ->setAction(Action::INDEX)
+                ->generateUrl()
+        );
     }
 
     public function configureDashboard(): Dashboard
@@ -43,19 +43,29 @@ class DashboardController extends AbstractDashboardController
             ->setLinkTarget('_blank');
 
         yield MenuItem::section('Contenu');
-        yield MenuItem::linkToCrud('Articles', 'fa fa-newspaper', Article::class);
-        yield MenuItem::linkToCrud('Catégories', 'fa fa-folder', Category::class);
-        yield MenuItem::linkToCrud('Tags', 'fa fa-tag', Tag::class);
-        yield MenuItem::linkToCrud('Commentaires', 'fa fa-comment', Comment::class);
+        // ✅ CORRIGÉ : on passe le CrudController (pas l'entité) + ->setAction('index')
+        yield MenuItem::linkTo(ArticleCrudController::class, 'Articles', 'fa fa-newspaper')
+            ->setAction('index');
+        yield MenuItem::linkTo(CategoryCrudController::class, 'Categories', 'fa fa-folder')
+            ->setAction('index');
+        yield MenuItem::linkTo(TagCrudController::class, 'Tags', 'fa fa-tag')
+            ->setAction('index');
+        yield MenuItem::linkTo(CommentCrudController::class, 'Commentaires', 'fa fa-comment')
+            ->setAction('index');
 
         yield MenuItem::section('Routines');
-        yield MenuItem::linkToCrud('Routines', 'fa fa-list', Routine::class);
+        yield MenuItem::linkTo(RoutineCrudController::class, 'Routines', 'fa fa-list')
+            ->setAction('index');
 
         yield MenuItem::section('Utilisateurs & CRM');
-        yield MenuItem::linkToCrud('Utilisateurs', 'fa fa-user', User::class);
-        yield MenuItem::linkToCrud('Newsletter', 'fa fa-envelope', Newsletter::class);
-        yield MenuItem::linkToCrud('Contacts', 'fa fa-phone', Contact::class);
-        yield MenuItem::linkToCrud('Types de peau', 'fa fa-spa', SkinType::class);
+        yield MenuItem::linkTo(UserCrudController::class, 'Utilisateurs', 'fa fa-user')
+            ->setAction('index');
+        yield MenuItem::linkTo(NewsletterCrudController::class, 'Newsletter', 'fa fa-envelope')
+            ->setAction('index');
+        yield MenuItem::linkTo(ContactCrudController::class, 'Contacts', 'fa fa-phone')
+            ->setAction('index');
+        yield MenuItem::linkTo(SkinTypeCrudController::class, 'Types de peau', 'fa fa-spa')
+            ->setAction('index');
     }
 
     public function configureUserMenu(UserInterface $user): UserMenu
