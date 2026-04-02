@@ -3,27 +3,24 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Article;
-
 // ── Champs EasyAdmin 4.x ──────────────────────────────────────────────
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
-
 // ── Filtres EasyAdmin 4.x ─────────────────────────────────────────────
-use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Filter\DateTimeFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
-
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 // ── Configuration des actions ─────────────────────────────────────────
-use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\DateTimeFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 
 class ArticleCrudController extends AbstractCrudController
 {
@@ -55,7 +52,7 @@ class ArticleCrudController extends AbstractCrudController
     }
 
     /**
-     * configureFields() — Définit les champs affichés selon la page
+     * configureFields() — Définit les champs affichés selon la page.
      *
      * $pageName permet d'adapter les champs selon le contexte :
      * - Crud::PAGE_INDEX  → liste des articles
@@ -124,7 +121,7 @@ class ArticleCrudController extends AbstractCrudController
     }
 
     /**
-     * configureFilters() — Filtres affichés dans la barre latérale de la liste
+     * configureFilters() — Filtres affichés dans la barre latérale de la liste.
      *
      * Ces filtres sont disponibles UNIQUEMENT sur PAGE_INDEX (la liste).
      * Ils permettent de réduire les résultats sans toucher à la recherche globale.
@@ -134,7 +131,7 @@ class ArticleCrudController extends AbstractCrudController
      * TextFilter = filtre textuel (contient / commence par / etc.)
      */
     public function configureFilters(
-        \EasyCorp\Bundle\EasyAdminBundle\Config\Filters $filters
+        \EasyCorp\Bundle\EasyAdminBundle\Config\Filters $filters,
     ): \EasyCorp\Bundle\EasyAdminBundle\Config\Filters {
         return $filters
             // Filtre par catégorie — affiche un dropdown avec toutes les catégories
@@ -148,7 +145,7 @@ class ArticleCrudController extends AbstractCrudController
     }
 
     /**
-     * configureActions() — Boutons d'action dans la liste et les formulaires
+     * configureActions() — Boutons d'action dans la liste et les formulaires.
      *
      * ════════════════════════════════════════════════════════════════════
      * RÈGLE IMPORTANTE EasyAdmin 4.x :
@@ -189,7 +186,7 @@ class ArticleCrudController extends AbstractCrudController
             ->update(
                 Crud::PAGE_NEW,
                 Action::SAVE_AND_ADD_ANOTHER,
-                fn(Action $action) => $action
+                fn (Action $action) => $action
                     // Personnalise le libellé du bouton dans le formulaire de création
                     ->setLabel('Sauvegarder et ajouter un autre article')
                     // Ajoute une icône FontAwesome devant le libellé

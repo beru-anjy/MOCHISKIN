@@ -3,23 +3,23 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
  * CRUD admin pour la gestion des utilisateurs.
@@ -30,8 +30,9 @@ class UserCrudController extends AbstractCrudController
     // UserPasswordHasherInterface est injecté automatiquement par Symfony (autowiring)
     // Il sert uniquement à hasher le mot de passe avant persistance en base
     public function __construct(
-        private UserPasswordHasherInterface $passwordHasher
-    ) {}
+        private UserPasswordHasherInterface $passwordHasher,
+    ) {
+    }
 
     public static function getEntityFqcn(): string
     {
@@ -57,11 +58,11 @@ class UserCrudController extends AbstractCrudController
             ->onlyOnForms()
             ->setFormType(RepeatedType::class)
             ->setFormTypeOptions([
-                'type'           => PasswordType::class,
-                'first_options'  => ['label' => 'Mot de passe'],
+                'type' => PasswordType::class,
+                'first_options' => ['label' => 'Mot de passe'],
                 'second_options' => ['label' => 'Confirmer'],
-                'mapped'         => false,
-                'required'       => $pageName === Crud::PAGE_NEW,
+                'mapped' => false,
+                'required' => Crud::PAGE_NEW === $pageName,
             ]);
 
         return [
@@ -78,8 +79,8 @@ class UserCrudController extends AbstractCrudController
             ChoiceField::new('roles', 'Rôles')
                 ->setChoices([
                     'Utilisateur' => 'ROLE_USER',
-                    'Admin'       => 'ROLE_ADMIN',
-                    'Éditeur'     => 'ROLE_EDITOR',
+                    'Admin' => 'ROLE_ADMIN',
+                    'Éditeur' => 'ROLE_EDITOR',
                 ])
                 ->allowMultipleChoices()
                 ->hideOnIndex(),
@@ -117,8 +118,8 @@ class UserCrudController extends AbstractCrudController
     private function addPasswordHashListener(FormBuilderInterface $formBuilder): FormBuilderInterface
     {
         $formBuilder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-            $form          = $event->getForm();
-            $user          = $event->getData();
+            $form = $event->getForm();
+            $user = $event->getData();
             $plainPassword = $form->get('password')->getData();
 
             // On hashe uniquement si un mot de passe a été saisi

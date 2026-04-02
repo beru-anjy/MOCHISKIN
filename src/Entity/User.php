@@ -75,10 +75,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->registrationDate = new \DateTimeImmutable();
-        $this->isActive         = true;
-        $this->roles            = [];
-        $this->articles         = new ArrayCollection();
-        $this->comments         = new ArrayCollection();
+        $this->isActive = true;
+        $this->roles = [];
+        $this->articles = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     // ══════════════════════════════════════════════════════════════════════════
@@ -92,7 +92,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     // ══════════════════════════════════════════════════════════════════════════
     public function __toString(): string
     {
-        $fullName = trim(($this->firstName ?? '') . ' ' . ($this->lastName ?? ''));
+        $fullName = trim(($this->firstName ?? '').' '.($this->lastName ?? ''));
 
         // Si prénom et nom sont renseignés → "Marie Dupont", sinon → email
         return $fullName ?: ($this->email ?? '');

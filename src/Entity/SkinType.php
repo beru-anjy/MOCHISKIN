@@ -9,7 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Entité SkinType — Type de peau (ex: "Peau grasse", "Peau sèche", "Peau mixte"...)
+ * Entité SkinType — Type de peau (ex: "Peau grasse", "Peau sèche", "Peau mixte"...).
  *
  * Cette entité est utilisée :
  * - En relation avec les utilisateurs (User) → chaque utilisateur peut avoir un type de peau

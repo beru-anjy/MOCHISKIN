@@ -52,8 +52,8 @@ class AppFixtures extends Fixture
         // Admin
         $admin = new User();
         $admin->setEmail('admin@mochiskin.com')
-              ->setFirstName('Anjy')
-              ->setLastName('CEO')
+              ->setFirstName('Angelina')
+              ->setLastName('PINTO CEO')
               ->setRoles(['ROLE_ADMIN', 'ROLE_USER'])
               ->setIsActive(true)
               ->setSkinType($skinTypes['Mixte'])
