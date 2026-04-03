@@ -67,19 +67,19 @@ yield MenuItem::linkToUrl('Voir le site', 'fa fa-eye', '/')
 // ── Section Contenu ────────────────────────────────────────────
 // Regroupe tout ce qui concerne le contenu éditorial du blog
 yield MenuItem::section('Contenu');
-yield MenuItem::linkToCrud('Articles', 'fa fa-newspaper', Article::class);
-yield MenuItem::linkToCrud('Catégories', 'fa fa-folder', Category::class);
-yield MenuItem::linkToCrud('Tags', 'fa fa-tag', Tag::class);
-yield MenuItem::linkToCrud('Commentaires', 'fa fa-comment', Comment::class);
+yield MenuItem::linkTo('Articles', 'fa fa-newspaper', Article::class);
+yield MenuItem::linkTo('Catégories', 'fa fa-folder', Category::class);
+yield MenuItem::linkTo('Tags', 'fa fa-tag', Tag::class);
+yield MenuItem::linkTo('Commentaires', 'fa fa-comment', Comment::class);
 // ── Section Routines ───────────────────────────────────────────
 yield MenuItem::section('Routines');
-yield MenuItem::linkToCrud('Routines', 'fa fa-list', Routine::class);
+yield MenuItem::linkTo('Routines', 'fa fa-list', Routine::class);
 // ── Section Utilisateurs & CRM ────────────────────────────────
 yield MenuItem::section('Utilisateurs & CRM');
-yield MenuItem::linkToCrud('Utilisateurs', 'fa fa-user', User::class);
-yield MenuItem::linkToCrud('Newsletter', 'fa fa-envelope', Newsletter::class);
-yield MenuItem::linkToCrud('Contacts', 'fa fa-phone', Contact::class);
-yield MenuItem::linkToCrud('Types de peau','fa fa-spa', SkinType::class);
+yield MenuItem::linkTo('Utilisateurs', 'fa fa-user', User::class);
+yield MenuItem::linkTo('Newsletter', 'fa fa-envelope', Newsletter::class);
+yield MenuItem::linkTo('Contacts', 'fa fa-phone', Contact::class);
+yield MenuItem::linkTo('Types de peau','fa fa-spa', SkinType::class);
 }
 
 
