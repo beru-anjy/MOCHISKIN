@@ -11,35 +11,45 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article
 {
+    // Identifiant unique auto-généré
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    // Titre de l'article
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
+    // Slug unique utilisé dans l'URL (ex: mon-article-skincare)
     #[ORM\Column(length: 255, unique: true)]
     private ?string $slug = null;
 
+    // Contenu complet de l'article (texte long)
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
+    // Résumé court affiché dans les listes d'articles
     #[ORM\Column(length: 255)]
     private ?string $excerpt = null;
 
+    // URL de l'image de couverture (optionnelle)
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imageUrl = null;
 
+    // Date de publication de l'article
     #[ORM\Column]
     private ?\DateTimeImmutable $publishedAt = null;
 
+    // Date de dernière modification
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    // Nombre de vues de l'article
     #[ORM\Column]
     private ?int $viewCount = null;
 
+    // Temps de lecture estimé en minutes
     #[ORM\Column]
     private ?int $readingTime = null;
 
@@ -84,13 +94,20 @@ class Article
     #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'articles')]
     private Collection $tags;
 
+    // Initialisation des valeurs par défaut à la création d'un article
     public function __construct()
     {
         $this->publishedAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTimeImmutable();
-        $this->viewCount = 0;
-        $this->tags = new ArrayCollection();
-        $this->comments = new ArrayCollection();
+        $this->updatedAt   = new \DateTimeImmutable();
+        $this->viewCount   = 0;
+        $this->tags        = new ArrayCollection();
+        $this->comments    = new ArrayCollection();
+    }
+
+    // Permet d'afficher l'article comme une chaîne de caractères (ex: dans les selects EasyAdmin)
+    public function __toString(): string
+    {
+        return $this->title ?? '';
     }
 
     public function getId(): ?int
@@ -106,7 +123,6 @@ class Article
     public function setTitle(string $title): static
     {
         $this->title = $title;
-
         return $this;
     }
 
@@ -118,7 +134,6 @@ class Article
     public function setSlug(string $slug): static
     {
         $this->slug = $slug;
-
         return $this;
     }
 
@@ -130,7 +145,6 @@ class Article
     public function setContent(string $content): static
     {
         $this->content = $content;
-
         return $this;
     }
 
@@ -142,7 +156,6 @@ class Article
     public function setExcerpt(string $excerpt): static
     {
         $this->excerpt = $excerpt;
-
         return $this;
     }
 
@@ -154,7 +167,6 @@ class Article
     public function setImageUrl(?string $imageUrl): static
     {
         $this->imageUrl = $imageUrl;
-
         return $this;
     }
 
@@ -166,7 +178,6 @@ class Article
     public function setPublishedAt(\DateTimeImmutable $publishedAt): static
     {
         $this->publishedAt = $publishedAt;
-
         return $this;
     }
 
@@ -178,7 +189,6 @@ class Article
     public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
-
         return $this;
     }
 
@@ -190,7 +200,6 @@ class Article
     public function setViewCount(int $viewCount): static
     {
         $this->viewCount = $viewCount;
-
         return $this;
     }
 
@@ -202,15 +211,12 @@ class Article
     public function setReadingTime(int $readingTime): static
     {
         $this->readingTime = $readingTime;
-
         return $this;
     }
 
-    // ── Comments ──────────────────────────────────────────────
+    // ── Commentaires ──────────────────────────────────────────
 
-    /**
-     * @return Collection<int, Comment>
-     */
+    /** @return Collection<int, Comment> */
     public function getComments(): Collection
     {
         return $this->comments;
@@ -222,7 +228,6 @@ class Article
             $this->comments->add($comment);
             $comment->setArticle($this);
         }
-
         return $this;
     }
 
@@ -233,11 +238,10 @@ class Article
                 $comment->setArticle(null);
             }
         }
-
         return $this;
     }
 
-    // ── Author ────────────────────────────────────────────────
+    // ── Auteur ────────────────────────────────────────────────
 
     public function getAuthor(): ?User
     {
@@ -247,11 +251,10 @@ class Article
     public function setAuthor(?User $author): static
     {
         $this->author = $author;
-
         return $this;
     }
 
-    // ── Category ──────────────────────────────────────────────
+    // ── Catégorie ─────────────────────────────────────────────
 
     public function getCategory(): ?Category
     {
@@ -261,15 +264,12 @@ class Article
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
-
         return $this;
     }
 
     // ── Tags ──────────────────────────────────────────────────
 
-    /**
-     * @return Collection<int, Tag>
-     */
+    /** @return Collection<int, Tag> */
     public function getTags(): Collection
     {
         return $this->tags;
@@ -280,14 +280,12 @@ class Article
         if (!$this->tags->contains($tag)) {
             $this->tags->add($tag);
         }
-
         return $this;
     }
 
     public function removeTag(Tag $tag): static
     {
         $this->tags->removeElement($tag);
-
         return $this;
     }
 }
