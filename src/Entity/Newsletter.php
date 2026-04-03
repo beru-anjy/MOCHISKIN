@@ -10,56 +10,53 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: NewsletterRepository::class)]
 class Newsletter
 {
+    // Identifiant unique auto-généré
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    // Prénom de l'abonné
     #[ORM\Column(length: 100)]
     private ?string $firstName = null;
 
+    // Email unique de l'abonné
     #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
-    // 🐛 BUGFIX : 'subscribetAt' → 'subscribedAt' (faute de frappe corrigée)
+    // Date d'inscription
     #[ORM\Column]
     private ?\DateTimeImmutable $subscribedAt = null;
 
+    // true = abonné confirmé / false = en attente de confirmation
     #[ORM\Column]
     private ?bool $isActive = null;
 
-    /**
-     * Relation ManyToOne vers SkinType :
-     * Plusieurs abonnés peuvent avoir le même type de peau.
-     * nullable → un abonné peut ne pas avoir renseigné son type de peau.
-     */
+    // Token UUID envoyé par email pour confirmer l'inscription (null après confirmation)
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $confirmationToken = null;
+
+    // Date limite de validité du token (24h après inscription)
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $tokenExpiresAt = null;
+
+    // Type de peau de l'abonné (optionnel)
     #[ORM\ManyToOne(inversedBy: 'newsletters')]
     private ?SkinType $skinType = null;
 
-    /**
-     * Relation OneToMany vers NewsletterConcern :
-     * Un abonné peut avoir plusieurs préoccupations.
-     * mappedBy: 'newsletter' → NewsletterConcern possède la clé étrangère $newsletter.
-     *
-     * @var Collection<int, NewsletterConcern>
-     */
+    // Préoccupations skincare de l'abonné (ex: acné, rides...)
     #[ORM\OneToMany(targetEntity: NewsletterConcern::class, mappedBy: 'newsletter')]
     private Collection $newsletterConcerns;
 
-    /**
-     * Relation OneToMany vers NewsletterInterest :
-     * Un abonné peut avoir plusieurs centres d'intérêt.
-     * mappedBy: 'newsletter' → NewsletterInterest possède la clé étrangère $newsletter.
-     *
-     * @var Collection<int, NewsletterInterest>
-     */
+    // Centres d'intérêt de l'abonné (ex: DIY, promos...)
     #[ORM\OneToMany(targetEntity: NewsletterInterest::class, mappedBy: 'newsletter')]
     private Collection $newsletterInterests;
 
+    // isActive = false par défaut → passe à true uniquement après clic sur le lien de confirmation
     public function __construct()
     {
-        $this->subscribedAt = new \DateTimeImmutable(); // 🐛 BUGFIX : subscribetAt → subscribedAt
-        $this->isActive = true;
+        $this->subscribedAt = new \DateTimeImmutable();
+        $this->isActive = false;
         $this->newsletterConcerns = new ArrayCollection();
         $this->newsletterInterests = new ArrayCollection();
     }
@@ -77,7 +74,6 @@ class Newsletter
     public function setFirstName(string $firstName): static
     {
         $this->firstName = $firstName;
-
         return $this;
     }
 
@@ -89,21 +85,17 @@ class Newsletter
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
-    // 🐛 BUGFIX : getSubscribetAt → getSubscribedAt
     public function getSubscribedAt(): ?\DateTimeImmutable
     {
         return $this->subscribedAt;
     }
 
-    // 🐛 BUGFIX : setSubscribetAt → setSubscribedAt
     public function setSubscribedAt(\DateTimeImmutable $subscribedAt): static
     {
         $this->subscribedAt = $subscribedAt;
-
         return $this;
     }
 
@@ -115,9 +107,47 @@ class Newsletter
     public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
-
         return $this;
     }
+
+    // ── Token de confirmation ─────────────────────────────────
+
+    public function getConfirmationToken(): ?string
+    {
+        return $this->confirmationToken;
+    }
+
+    // null = token effacé après confirmation (sécurité : non réutilisable)
+    public function setConfirmationToken(?string $token): static
+    {
+        $this->confirmationToken = $token;
+        return $this;
+    }
+
+    // ── Date d'expiration du token ────────────────────────────
+
+    public function getTokenExpiresAt(): ?\DateTimeImmutable
+    {
+        return $this->tokenExpiresAt;
+    }
+
+    // null = effacée après confirmation
+    public function setTokenExpiresAt(?\DateTimeImmutable $expiresAt): static
+    {
+        $this->tokenExpiresAt = $expiresAt;
+        return $this;
+    }
+
+    // Retourne true si le lien de confirmation a dépassé 24h
+    public function isTokenExpired(): bool
+    {
+        if ($this->tokenExpiresAt === null) {
+            return true;
+        }
+        return new \DateTimeImmutable() > $this->tokenExpiresAt;
+    }
+
+    // ── Type de peau ──────────────────────────────────────────
 
     public function getSkinType(): ?SkinType
     {
@@ -127,15 +157,12 @@ class Newsletter
     public function setSkinType(?SkinType $skinType): static
     {
         $this->skinType = $skinType;
-
         return $this;
     }
 
-    // ── NewsletterConcerns ────────────────────────────────────
+    // ── Préoccupations skincare ───────────────────────────────
 
-    /**
-     * @return Collection<int, NewsletterConcern>
-     */
+    /** @return Collection<int, NewsletterConcern> */
     public function getNewsletterConcerns(): Collection
     {
         return $this->newsletterConcerns;
@@ -147,7 +174,6 @@ class Newsletter
             $this->newsletterConcerns->add($newsletterConcern);
             $newsletterConcern->setNewsletter($this);
         }
-
         return $this;
     }
 
@@ -158,15 +184,12 @@ class Newsletter
                 $newsletterConcern->setNewsletter(null);
             }
         }
-
         return $this;
     }
 
-    // ── NewsletterInterests ───────────────────────────────────
+    // ── Centres d'intérêt ─────────────────────────────────────
 
-    /**
-     * @return Collection<int, NewsletterInterest>
-     */
+    /** @return Collection<int, NewsletterInterest> */
     public function getNewsletterInterests(): Collection
     {
         return $this->newsletterInterests;
@@ -178,7 +201,6 @@ class Newsletter
             $this->newsletterInterests->add($newsletterInterest);
             $newsletterInterest->setNewsletter($this);
         }
-
         return $this;
     }
 
@@ -189,7 +211,6 @@ class Newsletter
                 $newsletterInterest->setNewsletter(null);
             }
         }
-
         return $this;
     }
 }

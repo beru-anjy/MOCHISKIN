@@ -1,0 +1,55 @@
+{# templates/newsletter/confirmed.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription confirmée — MOCHISKIN{% endblock %}
+
+{% block body %}
+
+<div style="
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1rem;
+">
+    <div style="
+        background: white;
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 10px 40px rgba(255, 182, 193, 0.2);
+        text-align: center;
+        max-width: 500px;
+        width: 100%;
+    ">
+        {# Icône de célébration #}
+        <div style="font-size: 4rem; margin-bottom: 1rem;">🎉</div>
+
+        {# Titre de bienvenue #}
+        <h1 style="color: var(--peach-dark); margin-bottom: 1rem;">
+            Bienvenue {{ firstName }} !
+        </h1>
+
+        {# Message de confirmation #}
+        <p style="color: #666; line-height: 1.7; margin-bottom: 2rem;">
+            Votre inscription à la newsletter <strong>MOCHISKIN</strong>
+            est maintenant confirmée. 🌸<br>
+            Vous recevrez nos conseils skincare chaque dimanche à 9h.
+        </p>
+
+        {# Bouton retour au blog #}
+        <a href="{{ path('app_home') }}" style="
+            display: inline-block;
+            background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
+            color: white;
+            text-decoration: none;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+        ">
+            ← Retour au blog
+        </a>
+
+    </div>
+</div>
+
+{% endblock %}

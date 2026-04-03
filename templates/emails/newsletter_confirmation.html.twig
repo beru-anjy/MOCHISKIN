@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmez votre inscription — MOCHISKIN</title>
+</head>
+<body style="margin:0; padding:0; background-color:#fff5f7; font-family: Arial, sans-serif;">
+
+    <table width="100%" cellpadding="0" cellspacing="0"
+           style="background-color:#fff5f7; padding:40px 20px;">
+        <tr>
+            <td align="center">
+
+                <table width="600" cellpadding="0" cellspacing="0"
+                       style="background:white; border-radius:20px;
+                              box-shadow:0 4px 20px rgba(255,182,193,0.2);
+                              overflow:hidden; max-width:600px; width:100%;">
+
+                    {# Header #}
+                    <tr>
+                        <td style="background:linear-gradient(135deg,#FFCDB2,#FFC2D1);
+                                   padding:40px; text-align:center;">
+                            <h1 style="margin:0; color:white; font-size:28px;
+                                       font-weight:800; letter-spacing:3px;">
+                                MOCHISKIN
+                            </h1>
+                            <p style="margin:8px 0 0; color:rgba(255,255,255,0.85); font-size:14px;">
+                                Prendre soin de sa peau naturellement
+                            </p>
+                        </td>
+                    </tr>
+
+                    {# Corps #}
+                    <tr>
+                        <td style="padding:40px;">
+                            <p style="font-size:18px; color:#444; margin:0 0 8px;">
+                                Bonjour <strong>{{ firstName }}</strong> ! 🌸
+                            </p>
+                            <p style="color:#666; line-height:1.7; margin:0 0 24px;">
+                                Merci de vous être inscrit(e) à la newsletter <strong>MOCHISKIN</strong>.<br>
+                                Pour finaliser votre inscription et recevoir nos conseils skincare,
+                                veuillez confirmer votre adresse email en cliquant sur le bouton ci-dessous.
+                            </p>
+
+                            {# Bouton #}
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td align="center" style="padding:10px 0 30px;">
+                                        <a href="{{ confirmationUrl }}"
+                                           style="display:inline-block;
+                                                  background:linear-gradient(135deg,#FFCDB2,#FFC2D1);
+                                                  color:white; text-decoration:none;
+                                                  padding:16px 40px; border-radius:50px;
+                                                  font-weight:700; font-size:16px; letter-spacing:1px;">
+                                            ✅ Confirmer mon inscription
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="color:#aaa; font-size:13px; text-align:center; margin:0 0 24px;">
+                                ⏱ Ce lien expire dans <strong>24 heures</strong>.
+                            </p>
+
+                            <p style="color:#aaa; font-size:12px; line-height:1.6;">
+                                Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :<br>
+                                <a href="{{ confirmationUrl }}" style="color:#FFB4A2; word-break:break-all;">
+                                    {{ confirmationUrl }}
+                                </a>
+                            </p>
+                        </td>
+                    </tr>
+
+                    {# Footer #}
+                    <tr>
+                        <td style="background:#fff5f7; padding:24px 40px;
+                                   text-align:center; border-top:1px solid #ffe0e8;">
+                            <p style="color:#bbb; font-size:12px; margin:0 0 8px;">
+                                Vous recevez cet email car vous vous êtes inscrit(e) sur <strong>mochiskin.fr</strong>
+                            </p>
+                            <p style="color:#bbb; font-size:12px; margin:0;">
+                                Si vous n'êtes pas à l'origine de cette inscription, ignorez simplement cet email.
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
