@@ -25,3 +25,18 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # Chemin vers le fichier lock utilisé pour activer/désactiver la maintenance
+    # Ce paramètre est partagé entre le Subscriber et la Command
+    App\EventSubscriber\MaintenanceSubscriber:
+        arguments:
+            $lockFilePath: '%kernel.project_dir%/var/maintenance.lock'
+
+    App\Command\MaintenanceCommand:
+        arguments:
+            $lockFilePath: '%kernel.project_dir%/var/maintenance.lock'
+            
+            
+            
+            
+            # %kernel.project_dir% pointe vers la racine du projet (ex: /var/www/mochiskin)
