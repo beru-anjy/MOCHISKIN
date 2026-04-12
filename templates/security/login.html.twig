@@ -377,10 +377,14 @@
 
     </form>
 
-    {# ── FOOTER ─────────────────────────────────────────────────────────── #}
-    {# Pas de lien "Créer un compte" : les comptes sont créés par l'admin #}
-    {# dans EasyAdmin (Users → Nouveau) ou via les Fixtures #}
+{# ── FOOTER ─────────────────────────────────────────────────────────── #}
     <div class="auth-footer" style="margin-top: 1.5rem;">
+      {# Lien vers la page d'inscription #}
+      Pas encore de compte ?
+      <a href="{{ path('app_register') }}">Créer un compte</a>
+    </div>
+
+    <div class="auth-footer" style="margin-top: 0.8rem;">
       <a href="{{ path('app_home') }}" style="color:#bbb; font-weight:400;">
         ← Retour au blog
       </a>

@@ -8,25 +8,29 @@
     <meta name="description" content="{% block description %}Blog skincare naturel{% endblock %}">
     <meta name="keywords"    content="{% block keywords %}skincare, beaute, routine{% endblock %}">
     <meta name="robots"      content="index, follow">
-    <meta name="author"      content="Anjy">
+    <meta name="author"      content="Angelina PINTO - CEO">
 
-    {# ── Google Fonts ── #}
+    {# Favicon — logo affiché dans l'onglet du navigateur #}
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo.png') }}">
+
+    {# Google Fonts : Abel (corps) + Savate (titres) #}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Abel&family=Savate:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
 
-    {# ── Bootstrap CSS ── #}
+    {# Bootstrap 5 #}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    {# ── Font Awesome ── #}
+    {# Font Awesome : icônes réseaux sociaux et UI #}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    {# ── Ton CSS global (APRÈS Bootstrap pour pouvoir l'écraser) ── #}
+    {# CSS global du projet — chargé après Bootstrap pour pouvoir l'écraser #}
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
     {% block stylesheets %}
     <style>
-        /* ========== VARIABLES COULEURS ========== */
+        /* ── Palette de couleurs globale ── */
         :root {
             --peach-light: #FFE5D9;
             --peach-main:  #FFCDB2;
@@ -38,9 +42,10 @@
             --white:       #FFFFFF;
         }
 
-        /* ========== STYLES GENERAUX ========== */
+        /* ── Reset minimal + box-sizing global ── */
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
+        /* ── Corps de page : fond dégradé pêche/rose, hauteur pleine page ── */
         body {
             font-family: "Abel", sans-serif;
             font-weight: 400;
@@ -49,12 +54,13 @@
             min-height: 100vh;
         }
 
+        /* ── Titres : police Savate ── */
         h1, h2, h3, h4, h5, h6 {
             font-family: "Savate", sans-serif;
             color: var(--gray-soft);
         }
 
-        /* ========== NAVIGATION ========== */
+        /* ── Navbar : fond blanc semi-transparent avec effet flou ── */
         .navbar {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -62,14 +68,16 @@
             padding: 1rem 0;
         }
 
+       /* ── Logo MOCHISKIN dans la navbar ── */
         .navbar-brand {
             font-family: "Savate", sans-serif;
-            font-size: 1.8rem;
+            font-size: 3rem;   
             font-weight: 700;
             color: var(--peach-dark);
             letter-spacing: 2px;
         }
 
+        /* ── Liens de navigation : couleur + soulignement animé au hover ── */
         .nav-link {
             color: var(--gray-soft);
             font-weight: 500;
@@ -91,7 +99,7 @@
 
         .nav-link:hover::after { width: 100%; }
 
-        /* ========== BOUTONS ========== */
+        /* ── Bouton CTA principal : dégradé pêche/rose, coins arrondis ── */
         .btn-primary-custom {
             background: linear-gradient(135deg, var(--peach-main) 0%, var(--pink-main) 100%);
             border: none;
@@ -111,7 +119,7 @@
             color: white;
         }
 
-        /* ========== CARDS ========== */
+        /* ── Cards articles : fond blanc, ombres douces, effet lift au hover ── */
         .card {
             border: none;
             border-radius: 20px;
@@ -128,7 +136,7 @@
             object-fit: cover;
         }
 
-        /* ========== FOOTER ========== */
+        /* ── Footer : dégradé pêche/rose, liens blancs ── */
         footer {
             background: linear-gradient(135deg, var(--peach-main) 0%, var(--pink-main) 100%);
             color: white;
@@ -160,18 +168,17 @@
             border-top: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        /* ========== MESSAGES FLASH ========== */
+        /* ── Messages flash (succès, erreur, info) ── */
         .alert { border-radius: 15px; padding: 1rem 1.5rem; margin-bottom: 1rem; }
 
-        /* ========== NAVBAR AUTH (ajout) ========== */
-        /* Nom de l'utilisateur connecté dans la navbar */
+        /* ── Prénom affiché quand l'utilisateur est connecté ── */
         .navbar-user-name {
             color: var(--gray-soft);
             font-size: 0.9rem;
             font-weight: 500;
         }
 
-        /* Bouton Admin violet */
+        /* ── Bouton Admin : réservé aux utilisateurs ROLE_ADMIN ── */
         .btn-navbar-admin {
             background: #7c3aed;
             color: white;
@@ -183,7 +190,7 @@
         }
         .btn-navbar-admin:hover { background: #6d28d9; color: white; }
 
-        /* Bouton Déconnexion */
+        /* ── Bouton Déconnexion ── */
         .btn-navbar-logout {
             background: var(--peach-main);
             color: white;
@@ -195,7 +202,7 @@
         }
         .btn-navbar-logout:hover { background: var(--peach-dark); color: white; }
 
-        /* Bouton Connexion discret (visiteurs) */
+        /* ── Bouton Connexion : style discret pour visiteurs ── */
         .btn-navbar-login {
             background: transparent;
             color: var(--gray-soft);
@@ -210,6 +217,21 @@
             background: var(--peach-light);
             color: var(--gray-soft);
         }
+
+        /* ── Bouton Créer un compte : mis en avant avec dégradé pêche/rose ── */
+        .btn-navbar-register {
+            background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            padding: 0.3rem 0.9rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .btn-navbar-register:hover {
+            background: linear-gradient(135deg, var(--peach-dark), var(--peach-main));
+            color: white;
+        }
     </style>
     {% endblock %}
 </head>
@@ -219,8 +241,17 @@
 <nav class="navbar navbar-expand-lg sticky-top">
     <div class="container">
 
-        <a class="navbar-brand" href="{{ path('app_home') }}">MOCHISKIN</a>
+        {# Logo — redirige vers l'accueil #}
+        {# <a class="navbar-brand" href="{{ path('app_home') }}">MOCHISKIN</a> #}
+        {# Logo image — redirige vers l'accueil #}
+        <a class="navbar-brand" href="{{ path('app_home') }}">
+            <img src="{{ asset('images/logo.png') }}"
+            alt="MOCHISKIN"
+            height="120"
+             style="object-fit: contain;">
+        </a>
 
+        {# Burger menu — visible uniquement sur mobile #}
         <button class="navbar-toggler" type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#navbarNav"
@@ -232,7 +263,7 @@
 
         <div class="collapse navbar-collapse" id="navbarNav">
 
-            {# ── Liens de navigation ── #}
+            {# Liens principaux centrés — ajouter ici toute nouvelle page publique #}
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_home') }}">Accueil</a>
@@ -254,38 +285,38 @@
                 </li>
             </ul>
 
-            {# ── ZONE AUTH ────────────────────────────────────────────────── #}
-            {# app.user = objet User si connecté, null si visiteur anonyme #}
+            {# ── ZONE AUTH ── app.user = User connecté | null = visiteur #}
             <div class="d-flex align-items-center gap-2 ms-2">
 
                 {% if app.user %}
 
-                    {# ── User connecté ─────────────────────────────────────── #}
-
-                    {# Affiche le prénom de l'utilisateur connecté #}
+                    {# Prénom de l'utilisateur connecté #}
                     <span class="navbar-user-name">
                         👋 {{ app.user.firstName }}
                     </span>
 
-                    {# Bouton Admin : affiché UNIQUEMENT si ROLE_ADMIN #}
-                    {# is_granted() vérifie le rôle sans planter si non connecté #}
+                    {# Bouton Admin — affiché uniquement pour ROLE_ADMIN #}
                     {% if is_granted('ROLE_ADMIN') %}
                         <a href="/admin" class="btn-navbar-admin">
-                        {# <a href="{{ path('admin') }}" class="btn-navbar-admin"> #}
                             ⚙️ Admin
                         </a>
                     {% endif %}
 
-                    {# Bouton Déconnexion → route app_logout dans security.yaml #}
+                    {# Déconnexion — route définie dans security.yaml #}
                     <a href="{{ path('app_logout') }}" class="btn-navbar-logout">
                         Déconnexion
                     </a>
 
                 {% else %}
 
-                    {# ── Visiteur non connecté ─────────────────────────────── #}
-                    {# Bouton discret : uniquement pour les auteurs/admins #}
-                    {# Les visiteurs lambda n'ont pas besoin de compte #}
+                    {# Visiteur non connecté : accès inscription et connexion #}
+
+                    {# Créer un compte — route app_register dans RegistrationController #}
+                    <a href="{{ path('app_register') }}" class="btn-navbar-register">
+                        Créer un compte
+                    </a>
+
+                    {# Connexion — route app_login dans SecurityController #}
                     <a href="{{ path('app_login') }}" class="btn-navbar-login">
                         Connexion
                     </a>
@@ -293,15 +324,14 @@
                 {% endif %}
 
             </div>
-            {# ── FIN ZONE AUTH ─────────────────────────────────────────────── #}
+            {# ── FIN ZONE AUTH ── #}
 
         </div>
     </div>
 </nav>
 
 {# ══════════ MESSAGES FLASH ══════════ #}
-{# Affiche les messages de succès/erreur/info après une action #}
-{# Ex : "Commentaire en attente de modération", "Email de confirmation envoyé" #}
+{# Affiche les retours utilisateur après une action (ex : inscription réussie, erreur login) #}
 {% for label, messages in app.flashes %}
     {% for message in messages %}
         <div class="alert alert-{{ label }} alert-dismissible fade show container mt-3" role="alert">
@@ -311,7 +341,7 @@
     {% endfor %}
 {% endfor %}
 
-{# ══════════ CONTENU PRINCIPAL ══════════ #}
+{# ══════════ CONTENU PRINCIPAL — surchargé par chaque page enfant ══════════ #}
 {% block body %}{% endblock %}
 
 {# ══════════ FOOTER ══════════ #}
@@ -319,6 +349,7 @@
     <div class="container">
         <div class="row">
 
+            {# Colonne 1 : présentation du blog + réseaux sociaux #}
             <div class="col-md-4 mb-4">
                 <h5>MOCHISKIN</h5>
                 <p style="font-size:.9rem; line-height:1.6; color:rgba(255,255,255,.85);">
@@ -331,6 +362,7 @@
                 </div>
             </div>
 
+            {# Colonne 2 : liens de navigation dupliqués pour accessibilité footer #}
             <div class="col-md-4 mb-4">
                 <h5>Navigation</h5>
                 <a href="{{ path('app_home') }}">Accueil</a>
@@ -341,6 +373,7 @@
                 <a href="{{ path('app_contact') }}">Contact</a>
             </div>
 
+            {# Colonne 3 : liens légaux et contact #}
             <div class="col-md-4 mb-4">
                 <h5>Informations</h5>
                 <a href="{{ path('app_mentions_legales') }}">Mentions légales</a>
@@ -350,6 +383,7 @@
 
         </div>
 
+        {# Année générée dynamiquement — pas besoin de la mettre à jour manuellement #}
         <div class="copyright">
             &copy; {{ 'now'|date('Y') }} MOCHISKIN. Tous droits réservés.
         </div>
@@ -357,8 +391,7 @@
 </footer>
 
 {# ══════════ SCRIPTS ══════════ #}
-{# ⚠️ CRITIQUE : jQuery DOIT être chargé AVANT Bootstrap JS #}
-{# Sans ça, les animations jQuery (fadeIn, slideToggle...) ne fonctionnent pas #}
+{# jQuery chargé AVANT Bootstrap — obligatoire pour les plugins jQuery #}
 {% block javascripts %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

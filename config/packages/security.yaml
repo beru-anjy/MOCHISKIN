@@ -29,14 +29,21 @@ security:
             lazy: true
             provider: app_user_provider
 
+            # AJOUT — branche UserChecker sur ce firewall
+            # checkPreAuth()  → vérifie isActive  (avant le mot de passe)
+            # checkPostAuth() → vérifie isVerified (après le mot de passe)
+            user_checker: App\Security\UserChecker
+
             # Formulaire de login standard Symfony
             form_login:
                 # Route vers le formulaire de connexion
                 login_path: app_login
                 # Route qui traite le POST du formulaire
                 check_path: app_login
-                # Redirection après connexion réussie
-                default_target_path: admin
+                # Redirige vers /login après connexion
+                # SecurityController prend ensuite le relais pour router selon le rôle
+                default_target_path: app_login
+                use_referer: false
 
             # Déconnexion
             logout:

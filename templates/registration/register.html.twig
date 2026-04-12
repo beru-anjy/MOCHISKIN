@@ -491,8 +491,9 @@
 <script>
 // Toggle password visibility
 function toggleRegPassword() {
-  var input = document.getElementById('regPassword');
+  var input = document.querySelector('[name*="plainPassword"], [name*="password"], #regPassword');
   var btn   = document.querySelector('.toggle-pw');
+  if (!input) return;
   input.type = input.type === 'password' ? 'text' : 'password';
   btn.textContent = input.type === 'password' ? '👁' : '🙈';
 }
