@@ -129,7 +129,6 @@
                     <div>
                         <h6>Réseaux sociaux</h6>
                         <p class="mb-0">
-                            {# <a href="#" style="margin-right:.8rem;">Instagram</a> #}
                             <a href="https://fr.pinterest.com/pin/2111131072467715/" style="margin-right:.8rem;">Pinterest</a>
                             <a href="https://youtu.be/APC16_cpYyk?si=fiqHGz4n_9F309OE">YouTube</a>
                         </p>
@@ -137,29 +136,40 @@
                 </div>
             </div>
 
-            {# ── FORMULAIRE (col droite) ── #}
+            {# ── FORMULAIRE (col droite)
+               action = route app_contact_send (POST)
+               Le formulaire soumet vers Symfony qui sauvegarde en base
+               puis redirige avec un flash message de confirmation ── #}
             <div class="col-md-7">
                 <div class="contact-form-box">
                     <h3 class="mb-1" style="color:var(--peach-dark);">Envoyez-nous un message</h3>
                     <p class="text-muted mb-4 small">Nous vous répondrons dans les 24–48 heures.</p>
 
-                    <form id="contactForm">
+                    {# action → route POST qui traite et sauvegarde le message en base #}
+                    <form id="contactForm"
+                          method="POST"
+                          action="{{ path('app_contact_send') }}">
+
+                        {# Token CSRF — protège contre les soumissions frauduleuses #}
+                        <input type="hidden" name="_token" value="{{ csrf_token('contact') }}">
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Nom complet *</label>
-                            <input type="text" class="form-control" id="fullName"
+                            <input type="text" class="form-control"
+                                   id="fullName" name="fullName"
                                    required placeholder="Votre nom et prénom">
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Adresse e-mail *</label>
-                            <input type="email" class="form-control" id="email"
+                            <input type="email" class="form-control"
+                                   id="email" name="email"
                                    required placeholder="votre.email@exemple.com">
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Sujet *</label>
-                            <select class="form-select" id="subject" required>
+                            <select class="form-select" id="subject" name="subject" required>
                                 <option value="">Sélectionnez un sujet</option>
                                 <option value="question">Question générale</option>
                                 <option value="collaboration">Proposition de collaboration</option>
@@ -172,8 +182,10 @@
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Votre message *</label>
-                            <textarea class="form-control" id="message" rows="5"
-                                      required placeholder="Écrivez votre message ici..."></textarea>
+                            <textarea class="form-control"
+                                      id="message" name="message"
+                                      rows="5" required
+                                      placeholder="Écrivez votre message ici..."></textarea>
                         </div>
 
                         <div class="mb-4">
@@ -210,9 +222,9 @@ $(document).ready(function () {
         }, i * 100);
     });
 
-    // Validation formulaire contact
+    // Validation jQuery côté client — vérifie les champs avant soumission
+    // Complète la validation côté serveur dans ContactController
     $('#contactForm').on('submit', function (e) {
-        e.preventDefault();
         var name    = $('#fullName').val().trim();
         var email   = $('#email').val().trim();
         var subject = $('#subject').val();
@@ -220,28 +232,35 @@ $(document).ready(function () {
         var consent = $('#consent').is(':checked');
         var regex   = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+        // Vérification champs obligatoires
         if (!name || !email || !subject || !message) {
+            e.preventDefault();
             alert('Veuillez remplir tous les champs obligatoires (*).');
             return;
         }
+
+        // Vérification format email
         if (!regex.test(email)) {
+            e.preventDefault();
             alert('Email invalide.');
             return;
         }
+
+        // Vérification longueur minimum du message
         if (message.length < 10) {
+            e.preventDefault();
             alert('Message trop court (min. 10 caractères).');
             return;
         }
+
+        // Vérification consentement RGPD
         if (!consent) {
+            e.preventDefault();
             alert('Acceptez la politique de confidentialité.');
             return;
         }
 
-        var firstName   = name.split(' ')[0];
-        var subjectText = $('#subject option:selected').text();
-        alert('Merci ' + firstName + ' !\nVotre message "' + subjectText + '" a bien été envoyé.\nRéponse sous 24-48h à : ' + email);
-        this.reset();
-        $('html,body').animate({ scrollTop: 0 }, 600);
+        // Si tout est valide → le formulaire se soumet normalement vers Symfony
     });
 
 });
