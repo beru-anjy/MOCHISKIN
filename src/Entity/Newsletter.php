@@ -44,12 +44,14 @@ class Newsletter
     #[ORM\ManyToOne(inversedBy: 'newsletters')]
     private ?SkinType $skinType = null;
 
-    // Préoccupations skincare de l'abonné (ex: acné, rides...)
-    #[ORM\OneToMany(targetEntity: NewsletterConcern::class, mappedBy: 'newsletter')]
+    // ✅ cascade: remove — supprime automatiquement les concerns liés
+    // quand l'abonné est supprimé → évite l'erreur ForeignKeyConstraintViolation
+    #[ORM\OneToMany(targetEntity: NewsletterConcern::class, mappedBy: 'newsletter', cascade: ['remove'])]
     private Collection $newsletterConcerns;
 
-    // Centres d'intérêt de l'abonné (ex: DIY, promos...)
-    #[ORM\OneToMany(targetEntity: NewsletterInterest::class, mappedBy: 'newsletter')]
+    // ✅ cascade: remove — supprime automatiquement les intérêts liés
+    // quand l'abonné est supprimé → évite l'erreur ForeignKeyConstraintViolation
+    #[ORM\OneToMany(targetEntity: NewsletterInterest::class, mappedBy: 'newsletter', cascade: ['remove'])]
     private Collection $newsletterInterests;
 
     // isActive = false par défaut → passe à true uniquement après clic sur le lien de confirmation
@@ -161,6 +163,8 @@ class Newsletter
     }
 
     // ── Préoccupations skincare ───────────────────────────────
+    // Gestion de la collection NewsletterConcern (ex: acné, rides, taches...)
+    // cascade: remove configuré sur la relation → pas besoin de supprimer manuellement
 
     /** @return Collection<int, NewsletterConcern> */
     public function getNewsletterConcerns(): Collection
@@ -172,6 +176,7 @@ class Newsletter
     {
         if (!$this->newsletterConcerns->contains($newsletterConcern)) {
             $this->newsletterConcerns->add($newsletterConcern);
+            // Synchronisation du côté propriétaire de la relation
             $newsletterConcern->setNewsletter($this);
         }
         return $this;
@@ -188,6 +193,8 @@ class Newsletter
     }
 
     // ── Centres d'intérêt ─────────────────────────────────────
+    // Gestion de la collection NewsletterInterest (ex: DIY, K-beauty, naturel...)
+    // cascade: remove configuré sur la relation → pas besoin de supprimer manuellement
 
     /** @return Collection<int, NewsletterInterest> */
     public function getNewsletterInterests(): Collection
@@ -199,6 +206,7 @@ class Newsletter
     {
         if (!$this->newsletterInterests->contains($newsletterInterest)) {
             $this->newsletterInterests->add($newsletterInterest);
+            // Synchronisation du côté propriétaire de la relation
             $newsletterInterest->setNewsletter($this);
         }
         return $this;

@@ -1,11 +1,155 @@
-<h1>Hi! Please confirm your email!</h1>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            margin: 0; padding: 0;
+            background: linear-gradient(135deg, #FFF0F5 0%, #FFE5D9 100%);
+            font-family: 'Arial', sans-serif;
+        }
+        .email-wrapper {
+            max-width: 560px; margin: 40px auto;
+            background: #FFFFFF; border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(255, 180, 162, 0.2);
+        }
+        .email-header {
+            background: linear-gradient(135deg, #FFCDB2, #FFC2D1);
+            padding: 2.5rem 2rem; text-align: center;
+        }
+        .email-header .brand {
+            font-size: 2rem; font-weight: 800;
+            color: white; letter-spacing: 3px;
+        }
+        .email-header .tagline {
+            color: rgba(255,255,255,0.85);
+            font-size: 0.85rem; margin-top: 6px;
+        }
+        .email-header .hero-emoji {
+            font-size: 3rem; margin-bottom: 0.5rem;
+            display: block;
+        }
+        .email-body {
+            padding: 2.5rem 2rem; color: #6B6B6B;
+        }
+        .email-body h1 {
+            font-size: 1.5rem; color: #444;
+            margin-bottom: 1rem; line-height: 1.4;
+        }
+        .email-body p {
+            line-height: 1.8; font-size: 0.95rem;
+            margin-bottom: 1.2rem;
+        }
+        .highlight-box {
+            background: #FFF0F5; border-radius: 14px;
+            padding: 1.2rem 1.5rem; margin: 1.5rem 0;
+            border-left: 4px solid #FFC2D1;
+        }
+        .highlight-box p {
+            margin: 0; font-size: 0.9rem;
+        }
+        .btn-confirm {
+            display: inline-block;
+            background: linear-gradient(135deg, #FFCDB2, #FFC2D1);
+            color: white; font-weight: 700;
+            text-decoration: none; padding: 1rem 2.5rem;
+            border-radius: 50px; font-size: 1rem;
+            letter-spacing: 0.5px;
+        }
+        .perks {
+            display: flex; gap: 0.5rem;
+            flex-wrap: wrap; margin: 1.2rem 0;
+        }
+        .perk-badge {
+            background: #FFF0F5; color: #FFB4A2;
+            border-radius: 20px; padding: 0.3rem 0.9rem;
+            font-size: 0.82rem; font-weight: 600;
+        }
+        .expiry-note {
+            font-size: 0.82rem; color: #ccc;
+            margin-top: 0.8rem; text-align: center;
+        }
+        .divider {
+            height: 1px; background: #f0e8e8;
+            margin: 1.8rem 0;
+        }
+        .email-footer {
+            text-align: center; padding: 1.2rem;
+            background: #fdfafa; color: #ccc;
+            font-size: 0.8rem; line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
 
-<p>
-    Please confirm your email address by clicking the following link: <br><br>
-    <a href="{{ signedUrl|raw }}">Confirm my Email</a>.
-    This link will expire in {{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.
-</p>
+<div class="email-wrapper">
 
-<p>
-    Cheers!
-</p>
+    {# ── EN-TÊTE ── #}
+    <div class="email-header">
+        <span class="hero-emoji">🌸</span>
+        <div class="brand">MOCHISKIN</div>
+        <div class="tagline">Prendre soin de sa peau naturellement</div>
+    </div>
+
+    {# ── CORPS ── #}
+    <div class="email-body">
+
+        <h1>Yay, vous avez rejoint la famille MOCHISKIN ! 🎉</h1>
+
+        <p>
+            On est <strong>tellement contentes</strong> de vous accueillir ici ! 🥰<br>
+            Votre espace membre est prêt, vos routines vous attendent,
+            et on a hâte de partager plein de conseils skincare avec vous.
+        </p>
+
+        {# ── Ce qui attend l'utilisatrice ── #}
+        <div class="highlight-box">
+            <p>✨ <strong>Ce qui vous attend chez MOCHISKIN :</strong></p>
+            <br>
+            <p>💬 &nbsp; Commenter et échanger sur les articles</p>
+            <p>🧴 &nbsp; Des routines matin & soir personnalisées</p>
+            <p>🌿 &nbsp; Des conseils skincare fiables et naturels</p>
+            <p>🎁 &nbsp; Du contenu exclusif réservé aux membres</p>
+        </div>
+
+        <p>
+            Une toute petite étape avant de commencer —
+            confirmez votre adresse e-mail en cliquant sur le bouton ci-dessous ! 👇
+        </p>
+
+        {# ── BOUTON DE CONFIRMATION ── #}
+        <div style="text-align: center; margin: 2rem 0 0.5rem;">
+            <a href="{{ signedUrl|raw }}" class="btn-confirm">
+                ✅ Je confirme mon adresse e-mail !
+            </a>
+        </div>
+
+        {# ── Expiration du lien ── #}
+        <p class="expiry-note">
+            ⏱ Ce lien expirera
+            {{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.
+        </p>
+
+        <div class="divider"></div>
+
+        <p style="font-size: 0.88rem; color: #bbb;">
+            Vous n'êtes pas à l'origine de cette inscription ? Pas de souci,
+            ignorez simplement cet e-mail — aucune action ne sera effectuée. 😊
+        </p>
+
+        <p>À très vite sur MOCHISKIN ! 💖<br>
+        <strong style="color: #FFB4A2;">— L'équipe MOCHISKIN</strong></p>
+
+    </div>
+
+    {# ── FOOTER ── #}
+    <div class="email-footer">
+        © {{ 'now'|date('Y') }} MOCHISKIN — Tous droits réservés 🌸<br>
+        <small>Cet e-mail a été envoyé automatiquement, merci de ne pas y répondre.</small>
+    </div>
+
+</div>
+
+</body>
+</html>
