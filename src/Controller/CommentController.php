@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Comment;
 use App\Repository\ArticleRepository;
-use App\Repository\NewsletterRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,13 +12,6 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class CommentController extends AbstractController
 {
-    // On injecte NewsletterRepository pour l'Option B
-    // (vérifier si l'email du commentateur est un abonné newsletter)
-    public function __construct(
-        private readonly NewsletterRepository $newsletterRepository,
-    ) {
-    }
-
     // ── ROUTE : Traitement du formulaire de commentaire ───────────────────────
     // methods: ['POST'] → uniquement les soumissions de formulaire
     // {slug} → slug de l'article concerné par le commentaire
@@ -30,6 +22,15 @@ class CommentController extends AbstractController
         ArticleRepository $articleRepository,
         EntityManagerInterface $em,
     ): Response {
+        // ── SÉCURITÉ : réservé aux utilisateurs connectés ────────────────────
+        // Bloque toute tentative de POST sans être connecté
+        // (ex : appel direct à la route via un outil externe)
+        if (!$this->getUser()) {
+            $this->addFlash('error', 'Vous devez être connecté(e) pour laisser un commentaire.');
+
+            return $this->redirectToRoute('app_login');
+        }
+
         // ── ÉTAPE 1 : Trouver l'article par son slug ──────────────────────────
         $article = $articleRepository->findOneBy(['slug' => $slug]);
 
@@ -54,43 +55,11 @@ class CommentController extends AbstractController
         $comment->setContent($request->request->get('content'));
         $comment->setArticle($article);
 
-        // ── ÉTAPE 4 : LOGIQUE OPTION B ────────────────────────────────────────
-        // 3 cas selon qui commente :
-
-        $user = $this->getUser(); // null si visiteur non connecté
-
-        if (null !== $user) {
-            // ── CAS 1 : User connecté (auteur / admin) ────────────────────────
-            // On associe directement son compte User au commentaire
-            // authorName + authorEmail restent null (inutiles)
-            // getDisplayName() retournera : user->firstName + user->lastName
-            $comment->setAuthor($user);
-        } else {
-            // ── CAS 2 & 3 : Visiteur anonyme ─────────────────────────────────
-            $emailSaisi = $request->request->get('authorEmail');
-            $nomSaisi = $request->request->get('authorName');
-
-            // ★ OPTION B : Vérifier si l'email est connu dans Newsletter ★
-            // findOneBy cherche un abonné actif avec exactement cet email
-            $abonne = $this->newsletterRepository->findOneBy([
-                'email' => $emailSaisi,
-                'isActive' => true, // Seulement les abonnés ayant confirmé leur email
-            ]);
-
-            if (null !== $abonne) {
-                // ── CAS 2 : Email reconnu dans Newsletter ─────────────────────
-                // On utilise automatiquement le prénom de l'abonné newsletter
-                // L'utilisateur ne voit aucune différence dans le formulaire
-                // Mais son vrai prénom apparaît sur le commentaire publié
-                $comment->setAuthorName($abonne->getFirstName()); // ← prénom Newsletter
-                $comment->setAuthorEmail($emailSaisi);
-            } else {
-                // ── CAS 3 : Email inconnu = vraiment anonyme ──────────────────
-                // On utilise le nom et l'email saisis dans le formulaire tels quels
-                $comment->setAuthorName($nomSaisi);
-                $comment->setAuthorEmail($emailSaisi);
-            }
-        }
+        // ── ÉTAPE 4 : Associer l'utilisateur connecté ────────────────────────
+        // Grâce à la vérification en haut, $this->getUser() est forcément non null ici
+        // authorName + authorEmail restent null (champs dépréciés, non utilisés)
+        // getDisplayName() retournera : user->firstName + user->lastName
+        $comment->setAuthor($this->getUser());
 
         // ── ÉTAPE 5 : Sauvegarder en base de données ─────────────────────────
         // isApproved reste false → le commentaire est invisible sur le blog

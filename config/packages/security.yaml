@@ -1,13 +1,11 @@
 security:
 
     # ── Hashage des mots de passe ─────────────────────────────────────
-    # bcrypt est le standard — auto adapte le coût automatiquement
     password_hashers:
         App\Entity\User:
             algorithm: bcrypt
 
     # ── Fournisseur d'utilisateurs ────────────────────────────────────
-    # Indique à Symfony comment charger un utilisateur depuis la base
     providers:
         app_user_provider:
             entity:
@@ -29,9 +27,7 @@ security:
             lazy: true
             provider: app_user_provider
 
-            # AJOUT — branche UserChecker sur ce firewall
-            # checkPreAuth()  → vérifie isActive  (avant le mot de passe)
-            # checkPostAuth() → vérifie isVerified (après le mot de passe)
+         
             user_checker: App\Security\UserChecker
 
             # Formulaire de login standard Symfony
@@ -53,7 +49,7 @@ security:
                 target: app_home
 
     # ── Contrôle d'accès ──────────────────────────────────────────────
-    # Les règles sont évaluées dans l'ordre — la première correspondante s'applique
+
     access_control:
         # /admin et toutes les sous-routes nécessitent ROLE_ADMIN
         - { path: ^/admin, roles: ROLE_ADMIN }

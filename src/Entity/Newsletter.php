@@ -44,12 +44,10 @@ class Newsletter
     #[ORM\ManyToOne(inversedBy: 'newsletters')]
     private ?SkinType $skinType = null;
 
-    // ✅ cascade: remove — supprime automatiquement les concerns liés
     // quand l'abonné est supprimé → évite l'erreur ForeignKeyConstraintViolation
     #[ORM\OneToMany(targetEntity: NewsletterConcern::class, mappedBy: 'newsletter', cascade: ['remove'])]
     private Collection $newsletterConcerns;
 
-    // ✅ cascade: remove — supprime automatiquement les intérêts liés
     // quand l'abonné est supprimé → évite l'erreur ForeignKeyConstraintViolation
     #[ORM\OneToMany(targetEntity: NewsletterInterest::class, mappedBy: 'newsletter', cascade: ['remove'])]
     private Collection $newsletterInterests;

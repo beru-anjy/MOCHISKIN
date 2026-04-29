@@ -85,6 +85,8 @@
         color: white; border: none; border-radius: 25px;
         padding: .6rem 2rem; font-weight: 600;
         transition: all .3s ease;
+        text-decoration: none;
+        display: inline-block;
     }
     .btn-comment:hover { transform: translateY(-2px); color: white; box-shadow: 0 5px 15px rgba(255,182,193,.4); }
 
@@ -109,12 +111,19 @@
         color: var(--gray-soft);
     }
 
-    /* ── HINT NEWSLETTER ── */
-    .newsletter-hint {
-        font-size: .82rem;
-        color: #aaa;
-        margin-bottom: 1rem;
-        font-style: italic;
+    /* ── BLOC INVITATION CONNEXION ── */
+    .login-invite {
+        background: var(--rose-light);
+        border-radius: 14px;
+        padding: 2rem;
+        margin-top: 2rem;
+        text-align: center;
+        border: 2px dashed var(--peach-main);
+    }
+    .login-invite p {
+        color: var(--gray-soft);
+        margin-bottom: 1.2rem;
+        font-size: .97rem;
     }
 </style>
 {% endblock %}
@@ -173,10 +182,7 @@
                 <div class="comment-item">
                     <div class="d-flex justify-content-between mb-1">
                         <strong style="color:var(--peach-dark);">
-                            {# ✅ CORRIGÉ : getDisplayName() gère les 3 cas automatiquement #}
-                            {# Cas 1 : User connecté  → prénom + nom du compte #}
-                            {# Cas 2 : Abonné newsletter → prénom newsletter reconnu #}
-                            {# Cas 3 : Visiteur anonyme → nom saisi dans le formulaire #}
+                            {# getDisplayName() retourne prénom + nom du compte User connecté #}
                             {{ comment.displayName }}
                         </strong>
                         <small class="text-muted">{{ comment.createdAt|date('d M Y') }}</small>
@@ -209,28 +215,25 @@
             </div>
         {% endfor %}
 
-        {# ══ FORMULAIRE COMMENTAIRE ══ #}
-        <div class="comment-form">
-            <h5 class="mb-3">✍️ Laisser un commentaire</h5>
+        {# ══ FORMULAIRE / INVITATION ══ #}
 
-            {# ── CAS 1 : User connecté ───────────────────────────────────────── #}
-            {# app.user = objet User si connecté, null si visiteur #}
-            {% if app.user %}
+        {# ── CAS 1 : Utilisateur connecté → formulaire de commentaire ── #}
+        {% if app.user %}
 
-                {# On affiche son identité : pas besoin de saisir nom/email #}
+            <div class="comment-form">
+                <h5 class="mb-3">✍️ Laisser un commentaire</h5>
+
+                {# Affiche son identité : pas besoin de saisir nom/email #}
                 <div class="connected-badge">
                     ✅ Connecté en tant que
                     <strong>{{ app.user.firstName }} {{ app.user.lastName }}</strong>
                 </div>
 
                 {# Formulaire simplifié : seulement le contenu du commentaire #}
-                {# action → route app_comment_add dans CommentController #}
-                {# method POST → traitement côté serveur (pas de JS) #}
                 <form method="post"
                       action="{{ path('app_comment_add', {slug: article.slug}) }}">
 
                     {# Token CSRF : protection anti-falsification #}
-                    {# Vérifié dans CommentController::isCsrfTokenValid('comment', ...) #}
                     <input type="hidden" name="_token"
                            value="{{ csrf_token('comment') }}">
 
@@ -245,60 +248,23 @@
                         Publier le commentaire
                     </button>
                 </form>
+            </div>
 
-            {# ── CAS 2 & 3 : Visiteur (anonyme ou abonné newsletter) ──────────── #}
-            {% else %}
+        {# ── CAS 2 : Visiteur non connecté → invitation à se connecter ── #}
+        {% else %}
 
-                {# Hint discret pour les abonnés newsletter (Option B) #}
-                {# Si l'email saisi est dans Newsletter → prénom auto utilisé #}
-                <p class="newsletter-hint">
-                    💌 Abonné(e) à la newsletter ?
-                    Utilisez votre email d'inscription pour que votre prénom
-                    apparaisse automatiquement.
-                </p>
+            <div class="login-invite">
+                <p>🔒 Vous devez être connecté(e) pour laisser un commentaire.</p>
+                <a href="{{ path('app_login') }}" class="btn-comment me-2">
+                    Se connecter
+                </a>
+                <a href="{{ path('app_register') }}" class="btn-back">
+                    Créer un compte
+                </a>
+            </div>
 
-                {# Formulaire complet avec nom + email + commentaire #}
-                <form method="post"
-                      action="{{ path('app_comment_add', {slug: article.slug}) }}">
+        {% endif %}
 
-                    {# Token CSRF : protection anti-falsification #}
-                    <input type="hidden" name="_token"
-                           value="{{ csrf_token('comment') }}">
-
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Nom *</label>
-                        {# name="authorName" → récupéré dans CommentController #}
-                        <input type="text" class="form-control"
-                               name="authorName" required
-                               placeholder="Votre prénom">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">
-                            Email * <small class="text-muted">(non publié)</small>
-                        </label>
-                        {# name="authorEmail" → utilisé par l'Option B pour vérifier #}
-                        {# si cet email est dans la table Newsletter #}
-                        <input type="email" class="form-control"
-                               name="authorEmail" required
-                               placeholder="votre@email.com">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Commentaire *</label>
-                        {# name="content" → récupéré dans CommentController #}
-                        <textarea class="form-control" name="content"
-                                  rows="4" required
-                                  placeholder="Partagez votre avis..."></textarea>
-                    </div>
-
-                    <button type="submit" class="btn-comment">
-                        Publier le commentaire
-                    </button>
-                </form>
-
-            {% endif %}
-        </div>
     </div>
 
     <div class="text-center mb-5">
@@ -308,11 +274,6 @@
 </div>
 {% endblock %}
 
-{# ══ JAVASCRIPT ══ #}
-{# NOTE : Le formulaire est maintenant traité côté SERVEUR par CommentController #}
-{# Le JS jQuery de l'ancienne version est supprimé car il simulait uniquement #}
-{# l'ajout du commentaire sans vraiment le sauvegarder en base de données #}
-{# La soumission du formulaire recharge la page avec un message flash #}
 {% block javascripts %}
 {{ parent() }}
 {% endblock %}

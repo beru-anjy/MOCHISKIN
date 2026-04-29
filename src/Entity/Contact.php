@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ContactRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Contact — Entité représentant un message reçu via le formulaire de contact.
@@ -22,18 +23,26 @@ class Contact
 
     // Nom complet de l'expéditeur
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom est obligatoire")]
+    #[Assert\Length(max: 255)]
     private ?string $fullName = null;
 
     // Email de l'expéditeur — utilisé pour répondre au message
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "L'email est obligatoire")]
+    #[Assert\Email(message: "Email invalide")]
     private ?string $email = null;
 
     // Sujet du message (ex: collaboration, question, partenariat...)
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le sujet est obligatoire")]
+    #[Assert\Length(max: 255)]
     private ?string $subject = null;
 
     // Contenu complet du message
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: "Le message est obligatoire")]
+    #[Assert\Length(min: 10, max: 2000)]
     private ?string $message = null;
 
     // Date et heure d'envoi — initialisée automatiquement dans le constructeur
@@ -48,7 +57,7 @@ class Contact
     #[ORM\Column]
     private ?bool $isReplied = null;
 
-    // ✅ AJOUT — constructeur pour initialiser les valeurs par défaut
+    //constructeur pour initialiser les valeurs par défaut
     // Evite l'erreur "sent_at ne peut pas être vide" lors de la sauvegarde
     public function __construct()
     {
@@ -60,7 +69,7 @@ class Contact
         $this->isReplied = false;
     }
 
-    // ✅ AJOUT — permet à EasyAdmin d'afficher le nom de l'expéditeur
+    // permet à EasyAdmin d'afficher le nom de l'expéditeur
     // au lieu de "Contact #1" dans les listes et relations
     public function __toString(): string
     {

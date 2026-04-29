@@ -51,6 +51,18 @@
         border-color: var(--peach-dark);
         box-shadow: none;
     }
+
+    .field-error {
+        color: #dc3545;
+        font-size: 0.82rem;
+        margin-top: 4px;
+        display: none;
+    }
+    
+    .form-control.is-invalid,
+    .form-select.is-invalid {
+        border-color: #dc3545;
+    }   
     .consent-row {
         display: flex;
         align-items: flex-start;
@@ -59,6 +71,7 @@
         border-radius: 10px;
         padding: 1rem;
     }
+    
     .btn-send {
         background: linear-gradient(135deg, var(--peach-main) 0%, var(--pink-main) 100%);
         border: none;
@@ -158,6 +171,7 @@
                             <input type="text" class="form-control"
                                    id="fullName" name="fullName"
                                    required placeholder="Votre nom et prénom">
+                                   <span class="field-error" id="err-fullName">Ce champ est obligatoire.</span>
                         </div>
 
                         <div class="mb-3">
@@ -165,6 +179,7 @@
                             <input type="email" class="form-control"
                                    id="email" name="email"
                                    required placeholder="votre.email@exemple.com">
+                                   <span class="field-error" id="err-email">Email invalide ou obligatoire.</span>
                         </div>
 
                         <div class="mb-3">
@@ -186,6 +201,7 @@
                                       id="message" name="message"
                                       rows="5" required
                                       placeholder="Écrivez votre message ici..."></textarea>
+                                      <span class="field-error" id="err-message">Message obligatoire (min. 10 caractères).</span>
                         </div>
 
                         <div class="mb-4">
@@ -196,6 +212,7 @@
                                     J'ai lu et j'accepte la politique de confidentialité *
                                 </label>
                             </div>
+                                <span class="field-error" id="err-consent">Vous devez accepter la politique de confidentialité.</span>
                         </div>
 
                         <button type="submit" class="btn-send">Envoyer le message</button>
@@ -212,57 +229,40 @@
 {% block javascripts %}
 {{ parent() }}
 <script>
-$(document).ready(function () {
-
-    // Animation entrée des cartes infos
-    $('.info-card').each(function (i) {
-        var el = $(this).css({ opacity: 0, transform: 'translateX(-20px)' });
-        setTimeout(function () {
-            el.css({ opacity: 1, transform: 'translateX(0)', transition: 'all .4s ease' });
-        }, i * 100);
-    });
-
-    // Validation jQuery côté client — vérifie les champs avant soumission
-    // Complète la validation côté serveur dans ContactController
     $('#contactForm').on('submit', function (e) {
-        var name    = $('#fullName').val().trim();
-        var email   = $('#email').val().trim();
-        var subject = $('#subject').val();
-        var message = $('#message').val().trim();
-        var consent = $('#consent').is(':checked');
-        var regex   = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    var valid = true;
+    var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        // Vérification champs obligatoires
-        if (!name || !email || !subject || !message) {
-            e.preventDefault();
-            alert('Veuillez remplir tous les champs obligatoires (*).');
-            return;
-        }
+    // Reset
+    $('.field-error').hide();
+    $('.form-control, .form-select').removeClass('is-invalid');
 
-        // Vérification format email
-        if (!regex.test(email)) {
-            e.preventDefault();
-            alert('Email invalide.');
-            return;
-        }
+    if (!$('#fullName').val().trim()) {
+        $('#err-fullName').show();
+        $('#fullName').addClass('is-invalid');
+        valid = false;
+    }
+    if (!$('#email').val().trim() || !regex.test($('#email').val().trim())) {
+        $('#err-email').show();
+        $('#email').addClass('is-invalid');
+        valid = false;
+    }
+    if (!$('#subject').val()) {
+        $('#err-subject').show();
+        $('#subject').addClass('is-invalid');
+        valid = false;
+    }
+    if ($('#message').val().trim().length < 10) {
+        $('#err-message').show();
+        $('#message').addClass('is-invalid');
+        valid = false;
+    }
+    if (!$('#consent').is(':checked')) {
+        $('#err-consent').show();
+        valid = false;
+    }
 
-        // Vérification longueur minimum du message
-        if (message.length < 10) {
-            e.preventDefault();
-            alert('Message trop court (min. 10 caractères).');
-            return;
-        }
-
-        // Vérification consentement RGPD
-        if (!consent) {
-            e.preventDefault();
-            alert('Acceptez la politique de confidentialité.');
-            return;
-        }
-
-        // Si tout est valide → le formulaire se soumet normalement vers Symfony
-    });
-
+    if (!valid) e.preventDefault();
 });
 </script>
 {% endblock %}

@@ -35,6 +35,17 @@
         box-shadow: 0 8px 28px rgba(255, 182, 193, .15);
     }
 
+    .field-error {
+        color: #dc3545;
+        font-size: 0.82rem;
+        margin-top: 4px;
+        display: none;
+    }
+
+    .form-control.is-invalid {
+        border-color: #dc3545;
+    }
+
     .check-item {
         display: flex;
         align-items: center;
@@ -172,6 +183,7 @@
                     {# Formulaire → pointe vers app_newsletter_subscribe (POST) #}
                     <form id="newsletterForm"
                           method="post"
+                          novalidate
                           action="{{ path('app_newsletter_subscribe') }}">
 
                         {# Token CSRF pour sécuriser la soumission #}
@@ -184,7 +196,8 @@
                             </label>
                             <input type="text" class="form-control"
                                    id="firstName" name="firstName"
-                                   required placeholder="Marie">
+                                   placeholder="Marie">
+                            <span class="field-error" id="err-firstName">Le prénom est obligatoire.</span>
                         </div>
 
                         <div class="mb-3">
@@ -193,7 +206,8 @@
                             </label>
                             <input type="email" class="form-control"
                                    id="email" name="email"
-                                   required placeholder="marie@exemple.com">
+                                   placeholder="marie@exemple.com">
+                            <span class="field-error" id="err-email">Email invalide ou obligatoire.</span>
                         </div>
 
                         <div class="mb-3">
@@ -256,12 +270,13 @@
 
                         <div class="mb-4">
                             <div class="check-item">
-                                <input type="checkbox" id="consent" name="consent" required>
+                                <input type="checkbox" id="consent" name="consent">
                                 <label for="consent">
                                     J'accepte la politique de confidentialité
                                     <span style="color: var(--peach-dark);">*</span>
                                 </label>
                             </div>
+                            <span class="field-error" id="err-consent">Vous devez accepter la politique de confidentialité.</span>
                         </div>
 
                         <button type="submit" class="btn-subscribe">
@@ -352,9 +367,65 @@
 <script>
 $(document).ready(function () {
 
-    // FAQ accordion
+    // ── FAQ accordion ─────────────────────────────────────────────────────────
     $('.faq-q').on('click', function () {
         $(this).next('.faq-a').slideToggle(250);
+    });
+
+    // ── Validation formulaire newsletter ─────────────────────────────────────
+    // Vérifie les champs obligatoires avant soumission côté client
+    $('#newsletterForm').on('submit', function (e) {
+        var valid = true;
+        var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        // Reset : on cache toutes les erreurs et retire les bordures rouges
+        $('.field-error').hide();
+        $('.form-control').removeClass('is-invalid');
+
+        // Vérification du prénom
+        if (!$('#firstName').val().trim()) {
+            $('#err-firstName').show();
+            $('#firstName').addClass('is-invalid');
+            valid = false;
+        }
+
+        // Vérification de l'email (présence + format)
+        if (!$('#email').val().trim() || !regex.test($('#email').val().trim())) {
+            $('#err-email').show();
+            $('#email').addClass('is-invalid');
+            valid = false;
+        }
+
+        // Vérification de la case consentement
+        if (!$('#consent').is(':checked')) {
+            $('#err-consent').show();
+            valid = false;
+        }
+
+        // Si au moins un champ invalide → on bloque et on remonte vers l'erreur
+        if (!valid) {
+            e.preventDefault();
+
+            // Trouve le premier champ invalide (input rouge)
+            var $premier = $('.form-control.is-invalid').first();
+
+            // Fallback : si pas de champ is-invalid (ex: consent seul), cible l'erreur visible
+            if ($premier.length === 0) {
+                $premier = $('.field-error:visible').first();
+            }
+
+            // Scroll fluide vers le premier champ en erreur (offset 120px pour la navbar)
+            if ($premier.length) {
+                $('html, body').animate({
+                    scrollTop: $premier.offset().top - 120
+                }, 400, function () {
+                    // Focus sur le champ après le scroll (pas sur checkbox)
+                    if ($premier.is('input[type!="checkbox"]')) {
+                        $premier.focus();
+                    }
+                });
+            }
+        }
     });
 
 });

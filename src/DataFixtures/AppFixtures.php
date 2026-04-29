@@ -172,9 +172,9 @@ class AppFixtures extends Fixture
                 'views'    => 342,
                 'date'     => '2025-01-15',
                 // Routine matin — produits de soin alignés sur fond blanc
-                'image'    => 'https://images.unsplash.com/photo-1709551264845-e9dddd775388?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-            ],
-            [
+                'image'    => '/images/articles/routine_matin.jpg',
+
+
                 'title'   => 'Comment choisir son sérum selon son type de peau',
                 'slug'    => 'comment-choisir-serum-type-peau',
                 'excerpt' => 'Le sérum est l\'étape clé de votre routine. Voici comment le choisir selon votre type de peau.',
@@ -195,9 +195,9 @@ class AppFixtures extends Fixture
                 'views'    => 218,
                 'date'     => '2025-01-12',
                 // Sérum — flacons de sérum skincare sur fond clair
-                'image'    => 'https://images.unsplash.com/photo-1741896136069-f3588d8993b5?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-            ],
-            [
+                'image'    => '/images/articles/serum.jpg',
+
+
                 'title'   => 'Les bienfaits du double nettoyage coréen',
                 'slug'    => 'bienfaits-double-nettoyage-coreen',
                 'excerpt' => 'Le double nettoyage est une technique coréenne incontournable pour une peau nette et éclatante.',
@@ -216,8 +216,10 @@ class AppFixtures extends Fixture
                 'views'    => 189,
                 'date'     => '2025-01-08',
                 // Double nettoyage — mousse nettoyante / soin visage
-                'image'    => 'https://images.unsplash.com/photo-1629732047356-30c7e14e712b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'image'    => '/images/articles/double_nettoyage.jpg',
             ],
+
+
             [
                 'title'   => 'L\'acide hyaluronique : tout ce que vous devez savoir',
                 'slug'    => 'acide-hyaluronique-tout-savoir',
@@ -235,8 +237,10 @@ class AppFixtures extends Fixture
                 'views'    => 275,
                 'date'     => '2025-01-05',
                 // Acide hyaluronique — texture sérum transparent / gros plan produit
-                'image'    => 'https://images.unsplash.com/photo-1741896136350-db887ec67c46?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'image'    => '/images/articles/acide-hyaluronique.jpg',
             ],
+
+
             [
                 'title'   => '3 masques maison faciles à faire soi-même',
                 'slug'    => '3-masques-maison-faciles',
@@ -275,7 +279,7 @@ class AppFixtures extends Fixture
                 'views'    => 201,
                 'date'     => '2026-01-18',
                 // Routine soir — produits de soin nocturne, ambiance douce
-                'image'    => 'https://images.unsplash.com/photo-1670201203270-7bc9b329d2eb?q=80&w=1011&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'image'    => '/images/articles/routine_soir.jpg',
             ],
         ];
 

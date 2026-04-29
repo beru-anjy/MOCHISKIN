@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -22,9 +23,13 @@ class RegistrationFormType extends AbstractType
             // Champ email — sert aussi d'identifiant de connexion
             ->add('email', EmailType::class, [
                 'attr' => ['autocomplete' => 'email'],
+                'constraints' => [
+                    new NotBlank(message: 'L\'email est obligatoire.'),
+                    new Email(message: 'Email invalide.'),
+                ],
             ])
 
-            // ✅ AJOUT — prénom requis, mappé directement sur User::firstName
+           
             ->add('firstName', TextType::class, [
                 'attr' => ['autocomplete' => 'given-name'],
                 'constraints' => [
@@ -33,7 +38,7 @@ class RegistrationFormType extends AbstractType
                 ],
             ])
 
-            // ✅ AJOUT — nom requis, mappé directement sur User::lastName
+           
             ->add('lastName', TextType::class, [
                 'attr' => ['autocomplete' => 'family-name'],
                 'constraints' => [

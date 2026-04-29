@@ -30,15 +30,11 @@ class Comment
 
     // Email du visiteur anonyme
     // nullable: true pour la même raison que authorName
-    // Utilisé par l'Option B pour vérifier si l'email est dans Newsletter
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $authorEmail = null;
 
     /**
      * Relation ManyToOne vers User
-     * ✅ CORRIGÉ : nullable: true (pas nullable: false !)
-     * Pourquoi ? Un visiteur anonyme n'a PAS de compte User.
-     * null = commentaire anonyme | renseigné = User connecté.
      */
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: true)] // ← WAS false, MUST be true

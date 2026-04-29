@@ -53,7 +53,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $isActive = null;
 
     // Relation ManyToOne → un user a un type de peau, un type de peau a plusieurs users
-    // ⚠️ SkinType doit avoir __toString() pour s'afficher dans les dropdowns EasyAdmin
     #[ORM\ManyToOne(inversedBy: 'users')]
     private ?SkinType $skinType = null;
 
@@ -81,15 +80,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->comments = new ArrayCollection();
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    // ✅ CORRECTION AJOUTÉE — méthode __toString()
-    //
-    // Sans cette méthode, EasyAdmin ne sait pas comment afficher un objet User
-    // dans les colonnes de relation (ex: colonne "Auteur" dans la liste des articles)
-    // et lève une erreur : "Object could not be converted to string"
-    //
-    // Affiche "Prénom Nom", avec fallback sur l'email si l'un des deux est absent
-    // ══════════════════════════════════════════════════════════════════════════
+
     public function __toString(): string
     {
         $fullName = trim(($this->firstName ?? '').' '.($this->lastName ?? ''));

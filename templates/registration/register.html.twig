@@ -348,6 +348,16 @@
     50% { transform: translateY(-10px) rotate(12deg); }
   }
 
+  /* ── Erreurs Symfony — messages en rouge sous les champs ── */
+  /* Cible les messages générés par form_errors() dans Twig  */
+  .form-error-message,
+  ul.form-errors li {
+    color: #dc3545;
+    font-size: 0.82rem;
+    margin-top: 4px;
+    display: block;
+  }
+
   @media (max-width: 480px) {
     .auth-card { padding: 2rem 1.5rem; }
     .field-row { grid-template-columns: 1fr; }
@@ -527,7 +537,6 @@ document.addEventListener('DOMContentLoaded', function () {
   // Animate step dots on form interaction
   var fields = document.querySelectorAll('#registerForm input');
   var dots   = document.querySelectorAll('.step-dot');
-  var filled = 0;
 
   fields.forEach(function(f) {
     f.addEventListener('blur', function() {
