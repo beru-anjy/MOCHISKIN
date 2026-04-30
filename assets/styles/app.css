@@ -1,10 +1,6 @@
 /* Bootstrap en premier */
 @import "bootstrap/dist/css/bootstrap.min.css";
 
-/* Puis ton app.css global */
-@import "../../public/css/app.css";
-
-
 /* CSS Globales */
 :root {
     --peach-light : #FFE5D9;
