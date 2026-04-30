@@ -11,7 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 // ── Filtres EasyAdmin 4.x ─────────────────────────────────────────────
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
@@ -79,6 +79,15 @@ class ArticleCrudController extends AbstractCrudController
                 ->setTargetFieldName('title')
                 ->hideOnIndex(),
 
+                
+            // Image de l'article
+            ImageField::new('imageUrl', 'Image')
+                ->setBasePath('/uploads/articles/')
+                ->setUploadDir('public/uploads/articles/')
+                ->setUploadedFileNamePattern('[slug]-[timestamp].[extension]')
+                ->hideOnIndex(),
+
+
             // Résumé court de l'article — affiché en liste et dans les formulaires
             TextareaField::new('excerpt', 'Résumé'),
 
@@ -105,11 +114,6 @@ class ArticleCrudController extends AbstractCrudController
             // autocomplete() = recherche par nom/email dans le dropdown
             AssociationField::new('author', 'Auteur')
                 ->autocomplete(),
-
-            // Temps de lecture estimé en minutes — saisi manuellement ou calculé
-            // hideOnIndex() = masqué en liste pour alléger l'affichage
-            IntegerField::new('readingTime', 'Lecture (min)')
-                ->hideOnIndex(),
 
             // Date de publication — définie automatiquement dans le constructeur de Article
             // hideOnForm() = non modifiable depuis les formulaires admin
