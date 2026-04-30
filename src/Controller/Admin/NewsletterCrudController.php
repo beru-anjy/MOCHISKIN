@@ -33,7 +33,7 @@ class NewsletterCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id')->hideOnForm(),
+            IdField::new('id')->hideOnIndex()->hideOnForm(),
             TextField::new('firstName', 'Prénom'),
             EmailField::new('email', 'Email'),
             BooleanField::new('isActive', 'Actif')->renderAsSwitch(true),

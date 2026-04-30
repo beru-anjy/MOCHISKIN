@@ -120,6 +120,13 @@
     margin-bottom: 7px;
   }
 
+  .form-error-message {
+    color: #dc3545;
+    font-size: 0.82rem;
+    margin-top: 4px;
+    display: block;
+  }
+
   .field-wrapper {
     position: relative;
   }
@@ -348,16 +355,6 @@
     50% { transform: translateY(-10px) rotate(12deg); }
   }
 
-  /* ── Erreurs Symfony — messages en rouge sous les champs ── */
-  /* Cible les messages générés par form_errors() dans Twig  */
-  .form-error-message,
-  ul.form-errors li {
-    color: #dc3545;
-    font-size: 0.82rem;
-    margin-top: 4px;
-    display: block;
-  }
-
   @media (max-width: 480px) {
     .auth-card { padding: 2rem 1.5rem; }
     .field-row { grid-template-columns: 1fr; }
@@ -414,7 +411,9 @@
             }) }}
             <span class="field-icon">👤</span>
           </div>
-          {{ form_errors(registrationForm.firstName) }}
+          {% for error in registrationForm.firstName.vars.errors %}
+              <span class="form-error-message">⚠️ {{ error.message }}</span>
+          {% endfor %}
         </div>
 
         <div class="field-group">
@@ -425,7 +424,9 @@
             }) }}
             <span class="field-icon">👤</span>
           </div>
-          {{ form_errors(registrationForm.lastName) }}
+          {% for error in registrationForm.lastName.vars.errors %}
+              <span class="form-error-message">⚠️ {{ error.message }}</span>
+          {% endfor %}
         </div>
       </div>
 
@@ -438,7 +439,9 @@
           }) }}
           <span class="field-icon">✉</span>
         </div>
-        {{ form_errors(registrationForm.email) }}
+        {% for error in registrationForm.email.vars.errors %}
+            <span class="form-error-message">⚠️ {{ error.message }}</span>
+        {% endfor %}
       </div>
 
       {# Password #}
@@ -451,6 +454,7 @@
           <span class="field-icon">🔒</span>
           <button type="button" class="toggle-pw" onclick="toggleRegPassword()" title="Afficher">👁</button>
         </div>
+
         {# Password strength bar #}
         <div class="strength-bar">
           <div class="strength-segment" id="seg1"></div>
@@ -459,7 +463,9 @@
           <div class="strength-segment" id="seg4"></div>
         </div>
         <div class="strength-label" id="strengthLabel"></div>
-        {{ form_errors(registrationForm.plainPassword) }}
+        {% for error in registrationForm.plainPassword.vars.errors %}
+            <span class="form-error-message">⚠️ {{ error.message }}</span>
+        {% endfor %}
       </div>
 
       {# Consent checkbox #}
@@ -472,7 +478,9 @@
           <a href="#">politique de confidentialité</a> *
         </span>
       </label>
-      {{ form_errors(registrationForm.agreeTerms) }}
+      {% for error in registrationForm.agreeTerms.vars.errors %}
+          <span class="form-error-message">⚠️ {{ error.message }}</span>
+      {% endfor %}
 
       {# Submit #}
       <button type="submit" class="btn-auth" id="submitBtn">
@@ -537,6 +545,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Animate step dots on form interaction
   var fields = document.querySelectorAll('#registerForm input');
   var dots   = document.querySelectorAll('.step-dot');
+  var filled = 0;
 
   fields.forEach(function(f) {
     f.addEventListener('blur', function() {

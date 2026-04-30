@@ -52,11 +52,15 @@
         box-shadow: none;
     }
 
-    .field-error {
+   .field-error {
         color: #dc3545;
         font-size: 0.82rem;
         margin-top: 4px;
         display: none;
+    }
+    
+    .field-error::before {
+        content: '⚠️ ';
     }
     
     .form-control.is-invalid,

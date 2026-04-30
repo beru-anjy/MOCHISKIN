@@ -30,7 +30,7 @@ class RoutineCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id')->hideOnForm(),
+            IdField::new('id')->hideOnIndex()->hideOnForm(),
             TextField::new('name', 'Nom'),
             ChoiceField::new('type', 'Type')->setChoices(['Matin' => 'morning', 'Soir' => 'evening']),
             TextareaField::new('description', 'Description')->hideOnIndex()->setNumOfRows(3),

@@ -34,7 +34,7 @@ class CommentCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id')->hideOnForm(),
+            IdField::new('id')->hideOnIndex()->hideOnForm(),
             TextareaField::new('content', 'Commentaire'),
             AssociationField::new('article', 'Article'),
             AssociationField::new('author', 'Auteur'),

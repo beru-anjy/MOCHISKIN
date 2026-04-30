@@ -21,6 +21,10 @@ class Contact
     #[ORM\Column]
     private ?int $id = null;
 
+    // SÉCURITÉ
+    // Même si l'attribut "required" est supprimé dans le navigateur,
+    // Symfony rejette la donnée ici avant toute persistance en base.
+
     // Nom complet de l'expéditeur
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "Le nom est obligatoire")]
@@ -31,6 +35,7 @@ class Contact
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "L'email est obligatoire")]
     #[Assert\Email(message: "Email invalide")]
+    #[Assert\Length(max: 255)]
     private ?string $email = null;
 
     // Sujet du message (ex: collaboration, question, partenariat...)
@@ -57,7 +62,7 @@ class Contact
     #[ORM\Column]
     private ?bool $isReplied = null;
 
-    //constructeur pour initialiser les valeurs par défaut
+    // Constructeur pour initialiser les valeurs par défaut
     // Evite l'erreur "sent_at ne peut pas être vide" lors de la sauvegarde
     public function __construct()
     {
@@ -69,7 +74,7 @@ class Contact
         $this->isReplied = false;
     }
 
-    // permet à EasyAdmin d'afficher le nom de l'expéditeur
+    // Permet à EasyAdmin d'afficher le nom de l'expéditeur
     // au lieu de "Contact #1" dans les listes et relations
     public function __toString(): string
     {

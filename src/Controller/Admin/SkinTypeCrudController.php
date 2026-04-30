@@ -28,7 +28,7 @@ class SkinTypeCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id')->hideOnForm(),
+            IdField::new('id')->hideOnIndex()->hideOnForm(),
             TextField::new('name', 'Nom'),
             TextareaField::new('description', 'Description')
                 ->hideOnIndex()

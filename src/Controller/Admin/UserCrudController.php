@@ -68,7 +68,7 @@ class UserCrudController extends AbstractCrudController
         return [
             // L'ID est affiché en liste mais masqué dans les formulaires
             // car il est auto-généré par la base de données — on ne le saisit jamais
-            IdField::new('id')->hideOnForm(),
+            IdField::new('id')->hideOnIndex()->hideOnForm(),
 
             EmailField::new('email', 'Email'),
             TextField::new('firstName', 'Prénom'),

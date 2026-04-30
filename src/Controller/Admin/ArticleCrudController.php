@@ -67,7 +67,7 @@ class ArticleCrudController extends AbstractCrudController
     {
         return [
             // ID auto-incrémenté — affiché en liste, masqué dans les formulaires
-            IdField::new('id')->hideOnForm(),
+            IdField::new('id')->hideOnIndex()->hideOnForm(),
 
             // Titre — affiché partout (liste, formulaires, détail)
             TextField::new('title', 'Titre'),
@@ -115,7 +115,7 @@ class ArticleCrudController extends AbstractCrudController
             // hideOnForm() = non modifiable depuis les formulaires admin
             // setFormat() = format d'affichage FR dans la liste et le détail
             DateTimeField::new('publishedAt', 'Publié le')
-                ->setFormat('dd/MM/Y HH:mm')
+                ->setFormat('dd/MM/Y')
                 ->hideOnForm(),
         ];
     }
