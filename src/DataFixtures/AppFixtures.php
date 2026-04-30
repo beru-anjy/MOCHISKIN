@@ -173,8 +173,9 @@ class AppFixtures extends Fixture
                 'date'     => '2025-01-15',
                 // Routine matin — produits de soin alignés sur fond blanc
                 'image'    => '/images/articles/routine_matin.jpg',
+            ],
 
-
+            [
                 'title'   => 'Comment choisir son sérum selon son type de peau',
                 'slug'    => 'comment-choisir-serum-type-peau',
                 'excerpt' => 'Le sérum est l\'étape clé de votre routine. Voici comment le choisir selon votre type de peau.',
@@ -196,8 +197,9 @@ class AppFixtures extends Fixture
                 'date'     => '2025-01-12',
                 // Sérum — flacons de sérum skincare sur fond clair
                 'image'    => '/images/articles/serum.jpg',
-
-
+            ],
+            
+            [
                 'title'   => 'Les bienfaits du double nettoyage coréen',
                 'slug'    => 'bienfaits-double-nettoyage-coreen',
                 'excerpt' => 'Le double nettoyage est une technique coréenne incontournable pour une peau nette et éclatante.',
