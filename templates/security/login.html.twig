@@ -310,6 +310,20 @@
       </div>
     {% endif %}
 
+    {# ── EMAIL DE CONFIRMATION ENVOYÉ ──────────────────────────────────── #}
+    {% for message in app.flashes('info') %}
+        <div class="alert-auth" style="background:#fff8e1; border-color:#ffe082; color:#8a6a00;">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {# ── COMPTE VÉRIFIÉ AVEC SUCCÈS ─────────────────────────────────────── #}
+    {% for firstName in app.flashes('account_verified') %}
+        <div class="alert-auth" style="background:#f0fff4; border-color:#b2dfdb; color:#2e7d52; animation: none;">
+            🎉 Bienvenue {{ firstName }} ! Votre compte est confirmé, vous pouvez vous connecter.
+        </div>
+    {% endfor %}
+
     {# ── FORMULAIRE DE CONNEXION ──────────────────────────────────────────── #}
     {# action="app_login" = route check_path définie dans security.yaml #}
     <form method="post" action="{{ path('app_login') }}">

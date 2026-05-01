@@ -8,7 +8,6 @@ use App\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
@@ -28,9 +27,7 @@ class RegistrationController extends AbstractController
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
         EntityManagerInterface $entityManager,
-        Security $security
-    ): Response
-    {
+    ): Response {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
@@ -44,7 +41,7 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // Envoie l'email de confirmation
+            // ── Envoie l'email de confirmation ────────────────────────────────
             $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
                 (new TemplatedEmail())
                     ->from(new Address('contact@mochiskin.fr', 'MOCHISKIN'))
@@ -53,9 +50,11 @@ class RegistrationController extends AbstractController
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
 
-            // Connecte automatiquement l'utilisateur après inscription
-            // Nécessaire pour que verifyUserEmail puisse retrouver l'utilisateur via getUser()
-            return $security->login($user, 'form_login', 'main');
+            // On redirige vers la page de login avec un message flash d'info
+            // L'utilisateur doit d'abord confirmer son email avant de se connecter
+            $this->addFlash('info', '📧 Un email de confirmation vous a été envoyé. Veuillez cliquer sur le lien pour activer votre compte.');
+
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('registration/register.html.twig', [
@@ -63,23 +62,36 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    // Route : /verify/email — traite le lien de confirmation reçu par email
+    // ── Route : /verify/email — traite le lien de confirmation reçu par email ──
     #[Route('/verify/email', name: 'app_verify_email')]
-    public function verifyUserEmail(Request $request, TranslatorInterface $translator): Response
+    public function verifyUserEmail(Request $request, TranslatorInterface $translator, EntityManagerInterface $em): Response
     {
-        // L'utilisateur doit être connecté pour vérifier son email
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        // Maintenant : on récupère l'utilisateur via le paramètre 'id' dans l'URL
+        $id = $request->query->get('id');
+
+        if (!$id) {
+            return $this->redirectToRoute('app_register');
+        }
+
+        $user = $em->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            return $this->redirectToRoute('app_register');
+        }
 
         try {
-            // Vérifie la signature et passe is_verified à true
-            $user = $this->getUser();
+            // Vérifie la signature du lien et passe isVerified à true
             $this->emailVerifier->handleEmailConfirmation($request, $user);
         } catch (VerifyEmailExceptionInterface $exception) {
             $this->addFlash('verify_email_error', $translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
             return $this->redirectToRoute('app_register');
         }
 
-        $this->addFlash('success', 'Votre email a bien été confirmé. Vous pouvez vous connecter.');
+        // ── Flash "compte confirmé" → affiché sur la page login sous forme de pop-up
+        $this->addFlash('account_verified', $user->getFirstName());
+
+        // Redirige vers la page de connexion SANS connecter l'utilisateur
         return $this->redirectToRoute('app_login');
     }
 }
