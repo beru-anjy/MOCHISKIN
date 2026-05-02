@@ -143,9 +143,8 @@
     accent-color: var(--peach-dark);
     cursor: pointer;
   }
-  .forgot-link { color: #ccc; text-decoration: none; font-size: 0.85rem; cursor: default; }
-  .btn-auth {
-    width: 100%;
+  .forgot-link { color: var(--peach-dark); text-decoration: none; font-size: 0.85rem; transition: opacity 0.2s;
+  .forgot-link:hover { opacity: 0.7; }
     padding: 1rem;
     background: linear-gradient(135deg, var(--peach-main) 0%, var(--pink-main) 100%);
     border: none;
@@ -380,9 +379,9 @@
           <input type="checkbox" name="_remember_me">
           Se souvenir de moi
         </label>
-        <span class="forgot-link" title="Fonctionnalité non disponible">
-          Mot de passe oublié ?
-        </span>
+        <a href="{{ path('app_forgot_password_request') }}" class="forgot-link">
+                Mot de passe oublié ?
+        </a>
       </div>
 
       <button type="submit" class="btn-auth">Se connecter →</button>
