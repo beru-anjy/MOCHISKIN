@@ -13,8 +13,6 @@
     position: relative;
     overflow: hidden;
   }
-
-  /* Floating blobs background */
   .auth-wrapper::before {
     content: '';
     position: fixed;
@@ -33,7 +31,6 @@
     opacity: 0.6;
     pointer-events: none;
   }
-
   .auth-card {
     background: white;
     border-radius: 28px;
@@ -45,13 +42,10 @@
     z-index: 2;
     animation: slideUp 0.5s ease both;
   }
-
   @keyframes slideUp {
     from { opacity: 0; transform: translateY(24px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-
-  /* Top accent bar */
   .auth-card::before {
     content: '';
     position: absolute;
@@ -60,12 +54,7 @@
     background: linear-gradient(90deg, var(--peach-main), var(--pink-main), var(--peach-dark));
     border-radius: 28px 28px 0 0;
   }
-
-  .auth-logo {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-
+  .auth-logo { text-align: center; margin-bottom: 2rem; }
   .auth-logo .brand {
     font-family: 'Savate', sans-serif;
     font-size: 2rem;
@@ -78,13 +67,7 @@
     display: block;
     margin-bottom: 4px;
   }
-
-  .auth-logo .tagline {
-    font-size: 0.85rem;
-    color: #bbb;
-    letter-spacing: 1px;
-  }
-
+  .auth-logo .tagline { font-size: 0.85rem; color: #bbb; letter-spacing: 1px; }
   .auth-title {
     font-family: 'Savate', sans-serif;
     font-size: 1.6rem;
@@ -93,19 +76,8 @@
     margin-bottom: 0.3rem;
     text-align: center;
   }
-
-  .auth-subtitle {
-    text-align: center;
-    color: #aaa;
-    font-size: 0.9rem;
-    margin-bottom: 2rem;
-  }
-
-  /* Form fields */
-  .field-group {
-    margin-bottom: 1.4rem;
-  }
-
+  .auth-subtitle { text-align: center; color: #aaa; font-size: 0.9rem; margin-bottom: 2rem; }
+  .field-group { margin-bottom: 1.4rem; }
   .field-group label {
     display: block;
     font-size: 0.82rem;
@@ -115,11 +87,7 @@
     color: #888;
     margin-bottom: 8px;
   }
-
-  .field-wrapper {
-    position: relative;
-  }
-
+  .field-wrapper { position: relative; }
   .field-wrapper .field-icon {
     position: absolute;
     left: 14px;
@@ -130,7 +98,6 @@
     pointer-events: none;
     transition: color 0.3s;
   }
-
   .field-wrapper input {
     width: 100%;
     padding: 0.85rem 1rem 0.85rem 2.8rem;
@@ -143,18 +110,12 @@
     transition: all 0.25s ease;
     outline: none;
   }
-
   .field-wrapper input:focus {
     border-color: var(--peach-main);
     background: white;
     box-shadow: 0 0 0 4px rgba(255, 176, 132, 0.12);
   }
-
-  .field-wrapper:focus-within .field-icon {
-    color: var(--peach-dark);
-  }
-
-  /* Password toggle */
+  .field-wrapper:focus-within .field-icon { color: var(--peach-dark); }
   .toggle-pw {
     position: absolute;
     right: 14px;
@@ -169,8 +130,6 @@
     transition: color 0.2s;
   }
   .toggle-pw:hover { color: var(--peach-dark); }
-
-  /* Remember + forgot */
   .form-options {
     display: flex;
     justify-content: space-between;
@@ -178,31 +137,13 @@
     margin-bottom: 1.8rem;
     font-size: 0.88rem;
   }
-
-  .remember-label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    color: #888;
-  }
-
+  .remember-label { display: flex; align-items: center; gap: 8px; cursor: pointer; color: #888; }
   .remember-label input[type="checkbox"] {
     width: 16px; height: 16px;
     accent-color: var(--peach-dark);
     cursor: pointer;
   }
-
-  {# "Mot de passe oublié" est désactivé car pas de système de reset dans ce projet #}
-  {# Tu pourras l'activer plus tard avec symfony/reset-password-bundle #}
-  .forgot-link {
-    color: #ccc;
-    text-decoration: none;
-    font-size: 0.85rem;
-    cursor: default;
-  }
-
-  /* Submit button */
+  .forgot-link { color: #ccc; text-decoration: none; font-size: 0.85rem; cursor: default; }
   .btn-auth {
     width: 100%;
     padding: 1rem;
@@ -218,16 +159,8 @@
     transition: all 0.3s ease;
     box-shadow: 0 6px 20px rgba(255, 182, 193, 0.4);
   }
-
-  .btn-auth:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 28px rgba(255, 182, 193, 0.55);
-  }
-
+  .btn-auth:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(255, 182, 193, 0.55); }
   .btn-auth:active { transform: translateY(0); }
-
-  /* Error alert */
-  {# Animation "shake" pour attirer l'attention sur l'erreur #}
   .alert-auth {
     background: #fff1f3;
     border: 1.5px solid #ffc2d1;
@@ -241,14 +174,23 @@
     gap: 8px;
     animation: shake 0.4s ease;
   }
-
+  .alert-info-login {
+    background: #dbeafe;
+    border: 1.5px solid #93c5fd;
+    border-radius: 12px;
+    padding: 0.9rem 1.1rem;
+    font-size: 0.88rem;
+    color: #1e40af;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
   @keyframes shake {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-6px); }
     75% { transform: translateX(6px); }
   }
-
-  /* Decorative petals */
   .petal {
     position: absolute;
     font-size: 1.4rem;
@@ -259,82 +201,149 @@
   .petal:nth-child(1) { top: 12px; right: 24px; animation-delay: 0s; }
   .petal:nth-child(2) { bottom: 40px; left: 20px; animation-delay: 2s; font-size: 1rem; }
   .petal:nth-child(3) { top: 50%; right: 16px; animation-delay: 4s; font-size: 0.9rem; }
-
   @keyframes float {
     0%, 100% { transform: translateY(0) rotate(0deg); }
     50% { transform: translateY(-10px) rotate(15deg); }
   }
-
-  /* Footer links */
-  .auth-footer {
-    text-align: center;
-    font-size: 0.9rem;
-    color: #aaa;
-    margin-top: 1.5rem;
-  }
-
-  .auth-footer a {
-    color: var(--peach-dark);
-    font-weight: 700;
-    text-decoration: none;
-    transition: opacity 0.2s;
-  }
+  .auth-footer { text-align: center; font-size: 0.9rem; color: #aaa; margin-top: 1.5rem; }
+  .auth-footer a { color: var(--peach-dark); font-weight: 700; text-decoration: none; transition: opacity 0.2s; }
   .auth-footer a:hover { opacity: 0.7; }
+
+  /* ── POP-UP COMPTE ACTIVE ── */
+  .popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  .popup-box {
+    background: white;
+    border-radius: 24px;
+    padding: 2.5rem 2rem;
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(255, 182, 193, 0.4);
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    position: relative;
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.85) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .popup-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--peach-main), var(--pink-main), var(--peach-dark));
+    border-radius: 24px 24px 0 0;
+  }
+  .popup-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    display: block;
+    animation: bounce 0.6s ease 0.3s both;
+  }
+  @keyframes bounce {
+    0%   { transform: scale(0); }
+    60%  { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+  .popup-title {
+    font-family: 'Savate', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #444;
+    margin-bottom: 0.8rem;
+  }
+  .popup-text { color: #888; font-size: 0.97rem; line-height: 1.7; margin-bottom: 1.8rem; }
+  .popup-text strong { color: var(--peach-dark); }
+  .popup-btn {
+    background: linear-gradient(135deg, var(--peach-main), var(--pink-main));
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 0.8rem 2.5rem;
+    font-family: 'Savate', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(255, 182, 193, 0.4);
+  }
+  .popup-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255, 182, 193, 0.55); }
 </style>
 {% endblock %}
 
 {% block body %}
+
+{# ══ POP-UP COMPTE ACTIVÉ ════════════════════════════════════════════════════ #}
+{# Déclenché par : addFlash('account_verified', $user->getFirstName())         #}
+{# dans RegistrationController::verifyUserEmail()                              #}
+{# Le flash contient uniquement le PRÉNOM pour personnaliser le message        #}
+{% set prenom = app.flashes('account_verified') %}
+{% if prenom|length > 0 %}
+  <div class="popup-overlay" id="verifiedPopup">
+    <div class="popup-box">
+      <span class="popup-icon">✅</span>
+      <h2 class="popup-title">Compte activé !</h2>
+      <p class="popup-text">
+        Bienvenue <strong>{{ prenom|first }}</strong> ! 🌸<br>
+        Votre compte a bien été activé.<br>
+        Vous pouvez maintenant vous connecter.
+      </p>
+      <button class="popup-btn"
+              onclick="document.getElementById('verifiedPopup').remove()">
+        Se connecter →
+      </button>
+    </div>
+  </div>
+{% endif %}
+
 <div class="auth-wrapper">
   <div class="auth-card">
 
-    {# Décorations flottantes #}
     <span class="petal">🌸</span>
     <span class="petal">✿</span>
     <span class="petal">🌿</span>
 
-    {# Logo #}
     <div class="auth-logo">
       <span class="brand">MOCHISKIN</span>
       <span class="tagline">Prendre soin de sa peau naturellement</span>
     </div>
 
     <h1 class="auth-title">Bon retour 👋</h1>
-    <p class="auth-subtitle">Espace réservé aux abonées du blog</p>
+    <p class="auth-subtitle">Espace réservé aux abonnées du blog</p>
+
+    {# ── MESSAGE INFO APRÈS INSCRIPTION ──────────────────────────────────── #}
+    {# Apparaît après inscription pour inviter à vérifier sa boîte mail      #}
+    {% for message in app.flashes('info') %}
+      <div class="alert-info-login">
+        {{ message }}
+      </div>
+    {% endfor %}
 
     {# ── ERREUR DE CONNEXION ──────────────────────────────────────────────── #}
-    {# Affiché si mauvais email ou mauvais mot de passe #}
-    {# error.messageKey est traduit automatiquement par Symfony via security.yaml #}
     {% if error %}
       <div class="alert-auth">
         ⚠️ {{ error.messageKey|trans(error.messageData, 'security') }}
       </div>
     {% endif %}
 
-    {# ── EMAIL DE CONFIRMATION ENVOYÉ ──────────────────────────────────── #}
-    {% for message in app.flashes('info') %}
-        <div class="alert-auth" style="background:#fff8e1; border-color:#ffe082; color:#8a6a00;">
-            {{ message }}
-        </div>
-    {% endfor %}
-
-    {# ── COMPTE VÉRIFIÉ AVEC SUCCÈS ─────────────────────────────────────── #}
-    {% for firstName in app.flashes('account_verified') %}
-        <div class="alert-auth" style="background:#f0fff4; border-color:#b2dfdb; color:#2e7d52; animation: none;">
-            🎉 Bienvenue {{ firstName }} ! Votre compte est confirmé, vous pouvez vous connecter.
-        </div>
-    {% endfor %}
-
     {# ── FORMULAIRE DE CONNEXION ──────────────────────────────────────────── #}
-    {# action="app_login" = route check_path définie dans security.yaml #}
     <form method="post" action="{{ path('app_login') }}">
 
-      {# Token CSRF : protège contre les attaques Cross-Site Request Forgery #}
-      {# Symfony vérifie ce token automatiquement grâce à enable_csrf: true #}
       <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-      {# ── CHAMP EMAIL ────────────────────────────────────────────────────── #}
-      {# name="_username" = nom de champ attendu par Symfony Security #}
-      {# last_username = pré-remplit le champ si erreur de connexion précédente #}
       <div class="field-group">
         <label for="inputEmail">Email</label>
         <div class="field-wrapper">
@@ -350,9 +359,6 @@
         </div>
       </div>
 
-      {# ── CHAMP MOT DE PASSE ─────────────────────────────────────────────── #}
-      {# name="_password" = nom de champ attendu par Symfony Security #}
-      {# Le bouton 👁 permet d'afficher/masquer le mot de passe (JS en bas) #}
       <div class="field-group">
         <label for="inputPassword">Mot de passe</label>
         <div class="field-wrapper">
@@ -369,31 +375,21 @@
         </div>
       </div>
 
-      {# ── OPTIONS ────────────────────────────────────────────────────────── #}
       <div class="form-options">
-        {# Se souvenir de moi : Symfony gère le cookie de session longue durée #}
         <label class="remember-label">
           <input type="checkbox" name="_remember_me">
           Se souvenir de moi
         </label>
-
-        {# "Mot de passe oublié" désactivé : pas de système de reset dans ce projet #}
-        {# Pour l'activer plus tard : composer require symfonycasts/reset-password-bundle #}
         <span class="forgot-link" title="Fonctionnalité non disponible">
           Mot de passe oublié ?
         </span>
       </div>
 
-      {# ── BOUTON CONNEXION ───────────────────────────────────────────────── #}
-      <button type="submit" class="btn-auth">
-        Se connecter →
-      </button>
+      <button type="submit" class="btn-auth">Se connecter →</button>
 
     </form>
 
-{# ── FOOTER ─────────────────────────────────────────────────────────── #}
     <div class="auth-footer" style="margin-top: 1.5rem;">
-      {# Lien vers la page d'inscription #}
       Pas encore de compte ?
       <a href="{{ path('app_register') }}">Créer un compte</a>
     </div>
@@ -411,17 +407,15 @@
 {% block javascripts %}
 {{ parent() }}
 <script>
-// Afficher / masquer le mot de passe
-// Bascule entre type="password" et type="text"
 function togglePassword() {
   var input = document.getElementById('inputPassword');
   var btn   = document.querySelector('.toggle-pw');
   if (input.type === 'password') {
     input.type = 'text';
-    btn.textContent = '🙈'; // Masqué → œil barré
+    btn.textContent = '🙈';
   } else {
     input.type = 'password';
-    btn.textContent = '👁';  // Affiché → œil normal
+    btn.textContent = '👁';
   }
 }
 </script>
