@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Email envoyé — MOCHISKIN{% endblock %}
+
+{% block body %}
+    <p>
+        Si un compte correspond à votre adresse email, vous allez recevoir
+        un lien valable
+        {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+    </p>
+    <p>
+        Vous n'avez rien reçu ? Vérifiez vos spams ou
+        <a href="{{ path('app_forgot_password_request') }}">réessayez</a>.
+    </p>
+{% endblock %}
