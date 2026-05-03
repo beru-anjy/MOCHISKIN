@@ -143,13 +143,12 @@
     accent-color: var(--peach-dark);
     cursor: pointer;
   }
-  .forgot-link { 
-    color: var(--peach-dark); 
-    text-decoration: none; 
-    font-size: 0.85rem; 
-    transition: opacity 0.2s; 
-}
-
+  .forgot-link {
+    color: var(--peach-dark);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: opacity 0.2s;
+  }
   .forgot-link:hover { opacity: 0.7; }
   .btn-auth {
     width: 100%;
@@ -180,8 +179,7 @@
     align-items: center;
     gap: 8px;
     animation: shake 0.4s ease;
-  }  
-
+  }
   .alert-info-login {
     background: #dbeafe;
     border: 1.5px solid #93c5fd;
@@ -194,7 +192,6 @@
     align-items: center;
     gap: 8px;
   }
-  
   @keyframes shake {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-6px); }
@@ -296,9 +293,6 @@
 {% block body %}
 
 {# ══ POP-UP COMPTE ACTIVÉ ════════════════════════════════════════════════════ #}
-{# Déclenché par : addFlash('account_verified', $user->getFirstName())         #}
-{# dans RegistrationController::verifyUserEmail()                              #}
-{# Le flash contient uniquement le PRÉNOM pour personnaliser le message        #}
 {% set prenom = app.flashes('account_verified') %}
 {% if prenom|length > 0 %}
   <div class="popup-overlay" id="verifiedPopup">
@@ -333,22 +327,18 @@
     <h1 class="auth-title">Bon retour 👋</h1>
     <p class="auth-subtitle">Espace réservé aux abonnées du blog</p>
 
-    {# ── MESSAGE INFO APRÈS INSCRIPTION ──────────────────────────────────── #}
-    {# Apparaît après inscription pour inviter à vérifier sa boîte mail      #}
     {% for message in app.flashes('info') %}
       <div class="alert-info-login">
         {{ message }}
       </div>
     {% endfor %}
 
-    {# ── ERREUR DE CONNEXION ──────────────────────────────────────────────── #}
     {% if error %}
       <div class="alert-auth">
         ⚠️ {{ error.messageKey|trans(error.messageData, 'security') }}
       </div>
     {% endif %}
 
-    {# ── FORMULAIRE DE CONNEXION ──────────────────────────────────────────── #}
     <form method="post" action="{{ path('app_login') }}">
 
       <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
@@ -390,7 +380,7 @@
           Se souvenir de moi
         </label>
         <a href="{{ path('app_forgot_password_request') }}" class="forgot-link">
-                Mot de passe oublié ?
+          Mot de passe oublié ?
         </a>
       </div>
 
