@@ -143,8 +143,16 @@
     accent-color: var(--peach-dark);
     cursor: pointer;
   }
-  .forgot-link { color: var(--peach-dark); text-decoration: none; font-size: 0.85rem; transition: opacity 0.2s;
+  .forgot-link { 
+    color: var(--peach-dark); 
+    text-decoration: none; 
+    font-size: 0.85rem; 
+    transition: opacity 0.2s; 
+}
+
   .forgot-link:hover { opacity: 0.7; }
+  .btn-auth {
+    width: 100%;
     padding: 1rem;
     background: linear-gradient(135deg, var(--peach-main) 0%, var(--pink-main) 100%);
     border: none;
@@ -172,7 +180,8 @@
     align-items: center;
     gap: 8px;
     animation: shake 0.4s ease;
-  }
+  }  
+
   .alert-info-login {
     background: #dbeafe;
     border: 1.5px solid #93c5fd;
@@ -185,6 +194,7 @@
     align-items: center;
     gap: 8px;
   }
+  
   @keyframes shake {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-6px); }
