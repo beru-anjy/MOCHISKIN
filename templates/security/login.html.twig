@@ -294,6 +294,7 @@
 
 {# ══ POP-UP COMPTE ACTIVÉ ════════════════════════════════════════════════════ #}
 {% set prenom = app.flashes('account_verified') %}
+{% set infoMessages = app.flashes('info') %}
 {% if prenom|length > 0 %}
   <div class="popup-overlay" id="verifiedPopup">
     <div class="popup-box">
@@ -327,7 +328,7 @@
     <h1 class="auth-title">Bon retour 👋</h1>
     <p class="auth-subtitle">Espace réservé aux abonnées du blog</p>
 
-    {% for message in app.flashes('info') %}
+    {% for message in infoMessages %}
       <div class="alert-info-login">
         {{ message }}
       </div>
