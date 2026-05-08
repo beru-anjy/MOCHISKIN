@@ -53,6 +53,8 @@ security:
     access_control:
         # /admin et toutes les sous-routes nécessitent ROLE_ADMIN
         - { path: ^/admin, roles: ROLE_ADMIN }
+         # Commentaire nécessite d'être connecté
+        - { path: ^/article/.*/comment, roles: ROLE_USER }
         # /login est accessible à tous (PUBLIC_ACCESS)
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/verify/email, roles: PUBLIC_ACCESS }
