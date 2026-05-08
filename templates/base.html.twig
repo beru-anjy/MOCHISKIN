@@ -333,12 +333,14 @@
 {# ══════════ MESSAGES FLASH ══════════ #}
 {# Affiche les retours utilisateur après une action (ex : inscription réussie, erreur login) #}
 {% for label, messages in app.flashes %}
-    {% for message in messages %}
-        <div class="alert alert-{{ label }} alert-dismissible fade show container mt-3" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    {% endfor %}
+    {% if label != 'account_verified' %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show container mt-3" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
 {% endfor %}
 
 {# ══════════ CONTENU PRINCIPAL — surchargé par chaque page enfant ══════════ #}
