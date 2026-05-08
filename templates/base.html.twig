@@ -331,9 +331,8 @@
 </nav>
 
 {# ══════════ MESSAGES FLASH ══════════ #}
-{# Affiche les retours utilisateur après une action (ex : inscription réussie, erreur login) #}
 {% for label, messages in app.flashes %}
-    {% if label != 'account_verified' %}
+    {% if label != 'account_verified' and label != 'info' %}
         {% for message in messages %}
             <div class="alert alert-{{ label }} alert-dismissible fade show container mt-3" role="alert">
                 {{ message }}
