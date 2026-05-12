@@ -175,7 +175,7 @@
                             <input type="text" class="form-control"
                                    id="fullName" name="fullName"
                                    required placeholder="Votre nom et prénom">
-                                   <span class="field-error" id="err-fullName">Ce champ est obligatoire.</span>
+                                   <span class="field-error" id="err-fullName">Le nom est obligatoire.</span>
                         </div>
 
                         <div class="mb-3">
@@ -233,6 +233,8 @@
 {% block javascripts %}
 {{ parent() }}
 <script>
+$(document).ready(function () {
+
     $('#contactForm').on('submit', function (e) {
     var valid = true;
     var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\NewsletterRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: NewsletterRepository::class)]
@@ -18,10 +19,15 @@ class Newsletter
 
     // Prénom de l'abonné
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank(message: "Le prénom est obligatoire")]
+    #[Assert\Length(max: 100)]
     private ?string $firstName = null;
 
     // Email unique de l'abonné
     #[ORM\Column(length: 255, unique: true)]
+    #[Assert\NotBlank(message: "L'email est obligatoire")]
+    #[Assert\Email(message: "Email invalide")]
+    #[Assert\Length(max: 255)]
     private ?string $email = null;
 
     // Date d'inscription
