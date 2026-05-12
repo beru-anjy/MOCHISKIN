@@ -173,6 +173,7 @@
     display: flex;
     gap: 4px;
     margin-top: 7px;
+    display: none;
   }
 
   .strength-segment {
@@ -525,9 +526,17 @@ document.addEventListener('DOMContentLoaded', function () {
   var label  = document.getElementById('strengthLabel');
   var colors = ['#ffb4b4', '#ffcba4', '#ffe08a', '#86efac'];
   var labels = ['Très faible', 'Faible', 'Moyen', 'Fort 💪'];
+  var bar    = document.querySelector('.strength-bar');
+
+  // Cacher la barre par défaut
+  if (bar) bar.style.display = 'none';
 
   pwInput.addEventListener('input', function() {
     var v = this.value;
+
+    // Afficher/cacher la barre selon si le champ est vide
+    if (bar) bar.style.display = v.length > 0 ? 'flex' : 'none';
+
     var score = 0;
     if (v.length >= 8) score++;
     if (/[A-Z]/.test(v)) score++;
@@ -545,7 +554,6 @@ document.addEventListener('DOMContentLoaded', function () {
   // Animate step dots on form interaction
   var fields = document.querySelectorAll('#registerForm input');
   var dots   = document.querySelectorAll('.step-dot');
-  var filled = 0;
 
   fields.forEach(function(f) {
     f.addEventListener('blur', function() {
